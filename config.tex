@@ -1,0 +1,95 @@
+\documentclass[12pt,oneside]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%   Zusaetzliche Pakete  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{enumerate}  
+\usepackage{fancyhdr}
+\usepackage{a4wide}
+\usepackage{graphicx}
+\usepackage{palatino}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{titlesec}
+\usepackage{acronym}% http://ctan.org/pkg/acronym
+\usepackage{enumitem}% http://ctan.org/pkg/enumitem
+
+%folgende Zeile auskommentieren für englische Arbeiten
+\usepackage[ngerman]{babel}
+%folgende Zeile auskommentieren für deutsche Arbeiten
+%\usepackage[ngerman, english]{babel}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[bookmarks]{hyperref}
+\usepackage[justification=centering]{caption}
+\usepackage[style=authoryear,natbib=true,backend=biber,maxbibnames=20]{biblatex}
+\usepackage{csquotes}
+\bibliography{literatur}
+
+\setlength{\parindent}{0em} 
+\setlist[itemize]{noitemsep, topsep=0pt}
+\setlist[enumerate]{noitemsep, topsep=0pt}
+
+\graphicspath{{./figs/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Definition der Kopfzeile %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\pagestyle{fancy}
+\fancyhf{}
+\cfoot{\thepage}
+\setlength{\headheight}{16pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Definition des Deckblattes und der Titelseite  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\JMUTitle}[9]{
+
+  \thispagestyle{empty}
+  \vspace*{\stretch{1}}
+  {\parindent0cm
+  \rule{\linewidth}{.7ex}}
+  \begin{flushright}
+    \vspace*{\stretch{1}}
+    \sffamily\bfseries\Huge
+    #1\\
+    \vspace*{\stretch{1}}
+    \sffamily\bfseries\large
+    #2\\
+    \vspace*{\stretch{1}}
+    \sffamily\bfseries\small
+    #3
+  \end{flushright}
+  \rule{\linewidth}{.7ex}
+
+  \vspace*{\stretch{1}}
+  \begin{center}
+    \includegraphics[width=2in]{figs/2015_10_05_THB_FB-IM_Logo_RGB} \\
+    \vspace*{\stretch{1}}
+    \Large  Bachelorarbeit\\
+
+    \vspace*{\stretch{2}}
+   \large Fachbereich Informatik\\
+    \large und Medien\\
+    \large Technische Hochschule Brandenburg\\
+    \vspace*{\stretch{1}}
+    \large Betreuer:  #8 \\[1mm]
+    
+    \vspace*{\stretch{1}}
+    \large Brandenburg, den #7 \\
+        \vspace*{\stretch{0.25}}
+
+    Bearbeitungszeit: TT.MM.JJJJ - TT.MM.JJJJ % Die Bearbeitungszeit der Seminar-/ Abschlussarbeit ist hier einzutragen.
+
+  \end{center}
+}
+
+\titlespacing*{\section}
+{0pt}{3.5ex plus 1ex minus .2ex}{.2ex plus .2ex}
+\titlespacing*{\subsection}
+{0pt}{1.5ex plus 1ex minus .2ex}{.2ex plus .2ex}
+\titlespacing*{\subsubsection}
+{0pt}{1.5ex plus 1ex minus .2ex}{.2ex plus .2ex}

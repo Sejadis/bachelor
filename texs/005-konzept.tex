@@ -1,0 +1,8 @@
+\section{Konzept}
+\subsection{Struktur Nodes}
+Um eine einfache sowie übersichtliche Steuerung des Greifarms zu ermöglichen wird die Funktionalität in mehrere ROS2 Nodes aufgeteilt. Generell werden folgende Funktionalitäten benötigt: der Planer, die Speicherung des aktuellen Zustands der Welt, die Ausführung des Plans sowie die Möglichkeit Eingaben zu verarbeiten und an die entsprechende Stelle weiterzuleiten.\newline
+Diese Aufteilung entspricht auch einer guten Aufteilung und Trennung der Verantwortungen um daraus ROS2 Nodes zu machen. Hier haben die Nodes folgende Verantwortlichkeiten:\newline
+Die Planungs-Node muss mit einer gegebenen Domäne und einem Problem eine einen Plan bestehend aus einer Reihe von Aktionen zurückgeben.\newline
+Die Welt-Node hält den aktuellen Zustand der Welt bzw. des Problems und muss diesen konsistent halten.\newline
+Die Ausführungs-Node muss entsprechend eines gegebenen Plans die beinhalteten Aktionen ausführen.\newline
+Die Eingabe-Node ermöglicht die Erstellung eines Problem mit einem Welt-Zustand und einem Ziel.

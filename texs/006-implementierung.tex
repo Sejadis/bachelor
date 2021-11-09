@@ -1,0 +1,35 @@
+\section{Implementierung}
+
+\subsection {Inbetriebnahme Greifarm}
+Der OMX wird als Bausatz geliefert.Für die Inbetriebnahme ist daher der Zusammenbau und die Installation der entsprechenden Software  nötig. 
+\subsubsection{Zusammenbau}
+-Bausatz ca 40 Teile (ohne Schrauben)\\
+-Rausbrechen Plastik bei Vorbereitung Servos\\
+-Servos einzeln anschließen und per Dynamixel Wizard ID setzen\\
+Der Bausatz des OMX besteht aus ca. 60 Teilen (ohne Schrauben, s. Abbildung \ref{fig:omxparts}).Einige der mit den Servomotoren mitgelieferten Teile werden dabei nicht benötigt, da der Bausatz des OMX diese auch enthält oder ersetzt (z.B. längere Kabel). Von allen Schrauben wurde außerdem Ersatz mitgeliefert.\\
+Der Zusammenbau erfolgte nach der auf der Webseite verfügbaren Bauanleitung VERWEIS ANLEITUNG. Zu beachten ist, dass hier vorrausgesetzt wird, dass den Servos bereits die IDs 11 (Basis des Greifarms) bis 15 (Greifer) zugewiesen wurden. Dies kann über die Software DYNAMIXEL Wizard{\footnote{VERWEIS ODER LINK}} gemacht werden: die Servos einzeln über das U2D2{\footnote{ERKLÄRUNG ODER VERWEIS HINZUFÜGEN}} an den PC anschließen, die ID setzen und den Servo entsprechend markieren oder die ID merken. Weiterhin müssen bei den Abdeckungen der Servos 12 und 14 die vorgestanzten Abdeckungen herausgebrochen werden. Dies ist in der Anleitung leicht zu übersehen. Weiterhin wird angenommen, dass das Horn der Servos bereits angebracht ist. Hierbei ist darauf zu achten, dass die Einkerbung an Horn und Servo übereinstimmen.
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=\textwidth]{parts.jpg}
+\caption{Bausatz für den OpenMANIPULATOR-X}
+\label{fig:omxparts}
+\end{figure}
+\subsubsection{Virtuelle Maschine}
+-Ubuntu 20.04\\
+-- Auflösung Einstellung "keine"\\
+-Installation ROS2 Foxy\\
+-Installation OMX\\
+Zur Nutzung des Greifarms wurde eine \ac{VM} mit VirtualBox {\footnote{https://www.virtualbox.org}} von Oracle aufgesetzt. Als Betriebssystem der \ac{VM} wurde das für ROS2 Foxy empfohlene \citet{foxyreq} Ubuntu 20.04 {\footnote{https://releases.ubuntu.com/20.04/}} gewählt. Danach wurde entsprechend der Anleitung für den OpenMANIPULATOR-X \citet{foxyinstall} zuerst ROS 2 Foxy über das Installations-Script von ROBOTIS und im Anschluss die für den Greifarm benötigten Packages installiert.
+\subsection{Steuerung Greifarm}
+\subsubsection{OMX-Controller}
+\subsubsection{Topics}
+\subsubsection{Kinematik}
+\subsection{PlanSys2}
+\cite{plansys}
+\subsubsection{PDDL-Domain}
+-Durative Actions\\
+-Gripper + Blockworld\\
+- keine existential/negative Preconditions\\
+\subsubsection{Action Nodes}
+
+%\newpage
