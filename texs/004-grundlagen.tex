@@ -1,16 +1,24 @@
 \section {Grundlagen}
+\subsection{ROS2}
+\ac{ROS2} ist eine Sammlung von Bibliotheken und Werkzeugen für Robotik-Applikationen welche alle OpenSource sind. Die erste \ac{ROS2} Release-Version erschien im Dezember 2017 unter dem Namen Ardent Apalon \citet{ros2docs}.\\
+Es werden  mehrere \acp{RCL}  zur Verfügung gestellt, welche den Zugriff auf die \ac{ROS2}-API ermöglichen. Die \acp{RCL} für die Sprachen C++ und Python (rclcpp und rclpy) werden dabei direkt vom \ac{ROS2}-Team verwaltet. Von der Community wurden weitere \acp{RCL}, unter anderem für die Sprachen C\#, Swift und Rust, entwickelt.\\
+Um die Entwicklung der \acp{RCL} zu vereinfachen und die Logik sprachenunabhängig zu machen werden Funktionalitäten als C Interfaces zugängllich gemacht, für welche in den \acp{RCL} Wrapper geschrieben werden.
+\subsubsection{Node}
+\subsubsection{Message}
+\subsubsection{Service}
+\subsubsection{Action}
+\subsubsection{Topic}
 \subsection{OpenMANIPULATOR-X}
-Der OpenMANIPULATOR-X ist ein von der Firma ROBOTIS{\footnote{http://en.robotis.com}} hergestellter Greifarm nach den Prinzipien ``OpenSoftware`` und ``OpenHardware``. OpenSoftware steht hierbei dafür, dass es ein OpenSource Projekt ist und auf dem OpenSource Projekt \ac{ROS2} basiert. OpenHardware steht dafür, dass die meisten Komponenten als STL-Dateien zur Verfügung stehen und als Ersatzteile oder zum Anpassen des Greifarms mittels eines 3D-Druckers selbst hergestellt werden können. \newline
+Der OpenMANIPULATOR-X ist ein von der Firma ROBOTIS{\footnote{http://en.robotis.com}} nach den Prinzipien ``OpenSoftware`` und ``OpenHardware`` hergestellter Greifarm. OpenSoftware steht hierbei dafür, dass es ein OpenSource Projekt ist und auf dem OpenSource Projekt \ac{ROS2} basiert. OpenHardware steht dafür, dass die meisten Komponenten als STL-Dateien zur Verfügung stehen und als Ersatzteile oder zum Anpassen des Greifarms mittels eines 3D-Druckers selbst hergestellt werden können. \newline
 Der OMX(Greifarm?,Abk?) ist eine 5DOF (5 Degrees of Freedom) Plattform, welche mittels 5 Servomotoren{\footnote{DYNAMIXEL XM430-W350-T}} gesteuert wird. Dies ist aufgeteilt in 4DOF für den Arm sowie 1DOF für den Greifer.
 Es kann eine Last bis 500g getragen werden
-\subsubsection{ROS2}
 \subsection {Planung}
-\subsubsection{Allgemein}
 \subsubsection{STRIPS}
 \subsubsection{PDDL}
 \subsubsection{PDDL-Plugin für VS Code}
+\subsubsection{Partial Order Planning}
 \subsubsection{Partial Order Planning Forward}
-{\cite{popf}}
+\citep{popf}
 \subsubsection{Behavior Tree}
 
 \newpage

@@ -19,11 +19,27 @@ Der Zusammenbau erfolgte nach der auf der Webseite verfügbaren Bauanleitung VER
 -- Auflösung Einstellung "keine"\\
 -Installation ROS2 Foxy\\
 -Installation OMX\\
-Zur Nutzung des Greifarms wurde eine \ac{VM} mit VirtualBox {\footnote{https://www.virtualbox.org}} von Oracle aufgesetzt. Als Betriebssystem der \ac{VM} wurde das für ROS2 Foxy empfohlene \citet{foxyreq} Ubuntu 20.04 {\footnote{https://releases.ubuntu.com/20.04/}} gewählt. Danach wurde entsprechend der Anleitung für den OpenMANIPULATOR-X \citet{foxyinstall} zuerst ROS 2 Foxy über das Installations-Script von ROBOTIS und im Anschluss die für den Greifarm benötigten Packages installiert.
-\subsection{Steuerung Greifarm}
+Zur Nutzung des Greifarms wurde eine \ac{VM} mit VirtualBox {\footnote{https://www.virtualbox.org}} von Oracle aufgesetzt. Als Betriebssystem der \ac{VM} wurde das für ROS2 Foxy empfohlene \citep{foxyreq} Ubuntu 20.04 {\footnote{\url{https://releases.ubuntu.com/20.04/}}} gewählt. Danach wurde entsprechend der Anleitung für den OpenMANIPULATOR-X \citep{foxyinstall} zuerst ROS 2 Foxy über das Installations-Script von ROBOTIS und im Anschluss die für den Greifarm benötigten Packages installiert.
+\subsection{Steuerung OMX}
+Die Steuerung des OMX erfolgt über die vom \emph{open\_manipulator\_x\_controller}\\ \verb|open_manipulator_x_controller| zur Verfügung gestellten Topics und Services.
 \subsubsection{OMX-Controller}
+Der OMX-Controller ist ein Package, welches automatisch beim Installieren der für den OMX benötigten Software installiert wird. Er kann über die entsprechende Launch-Datei mit dem Befehl
+\begin{verbatim}
+ros2 launch open_manipulator_x_controller 
+     open_manipulator_x_controller.launch.py
+\end{verbatim}
+gestartet werden.
 \subsubsection{Topics}
 \subsubsection{Kinematik}
+\subsubsection{Teleop} \label{teleop}
+Mit einem laufenden OMX-Controller kann der OMX auch ohne extra Programmierung direkt ferngesteuert werden. Mögliche Geräte zur Steuerung sind die Tastatur sowie Playstation- und XBOX-Controller. Für \ac{ROS2} Foxy wird aktuell allerdings nur die Steuerung über die Tastatur unterstützt.\\
+Der OMX kann dabei sowohl im Task Space als auch im Joint Space kontrolliert werden (s. Abbildung \ref{fig:teleopkeyboard}). Zusätzlich gibt es 2 vordefinierte Posen (Init und Home) in die der OMX bewegt werden kann (s. Abbildung \ref{fig:teleiopposes}).
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=\textwidth]{teleopkeyboard.png}
+\caption{Fernsteuerung des OMX über die Tastatur}
+\label{fig:teleopkeyboard}
+\end{figure}
 \subsection{PlanSys2}
 \cite{plansys}
 \subsubsection{PDDL-Domain}
