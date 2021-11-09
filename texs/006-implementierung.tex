@@ -41,11 +41,20 @@ Der OMX kann dabei sowohl im Task Space als auch im Joint Space kontrolliert wer
 \label{fig:teleopkeyboard}
 \end{figure}
 \subsection{PlanSys2}
-\cite{plansys}
+\cite{plansys}\\
+Für die Implementierung der in \ref{konzept:nodes} genannten Funktionalitäten wird das Framework \ac{PlanSys2} genutzt. Es übernimmt dabei alle Funktionalitäten: die Verwaltung der Daten zur Domäne und dem aktuellen Problem erfolget über die domain-expert und problem-expert Nodes. Die planer Node ist für die komplette Planung zuständig und die Executioner Node für die Ausführung des Plans.\\
+Es müssen hier lediglich die Domäne erstellt sowie die tatsächliche Funktionalität der einzelnen Aktionen implementiert werden.
 \subsubsection{PDDL-Domain}
 -Durative Actions\\
 -Gripper + Blockworld\\
 - keine existential/negative Preconditions\\
+Beim erstellen der Domäne ist zu beachten, das \ac{popf} nicht alle Funktionen unterstützt, die mit PDDL beschrieben werden können. Dies beinhaltet unter anderem existentielle sowie negative Vorbedingungen. Die vollständige Liste ist auf \ref{popfpddlsupport} zu finden. Das Wort Action im Namen der Nodes bezieht sich hier auf die Aktionen der Domäne, nicht auf \ac{ROS2} Actions.
 \subsubsection{Action Nodes}
-
+Obwohl in der Domäne mehr als 2 Aktionen beschrieben sind, beschränken sich die ausgeführten Aktionen auf ein bewegen des OMX sowie die Kontrolle des Greifers. Für diese wird jeweils eine Node erstellt. Damit diese Nodes von \ac{PlanSys2} genutzt werden können müssen sie von der Basisklasse \verb|plansys2::ActionExecutorClient| erben. Da diese von \ac{PlanSys2} nur in C++ zur Verfügung gestellt wird, müssen auch die Aktionen in C++ implementiert werden.\\
+In jeder Aktion muss die Methode \verb|void do_work()| implementiert werden. Diese wird mit einem bestimmten Zeitintervall aufgerufen während die Aktion aktiv ist. Das Intervall wird im Konstruktor gesetzt (s. Zeile \ref{code:line:nodeintervall} in \ref{code:gripperactionnode}). Das Mapping einer Node zu einer Aktion erfolgt durch das Setzen des Parameters \verb|action_name| nach dem Erstellen der Node (s. Zeile \ref{code:line:actionname} in \ref{code:gripperactionnode}).
+\subsubsection{Move Gripper Aktion}
+\subsubsection{Control Gripper Aktion}
+Die Logik Node zur Steuerung des Greifers wird in der Klasse \verb|ControlGripperAction| (s. \ref{code:gripperactionnode}) implementiert. Da es vom OMX kein Feedback gibt, ob oder wann etwas gegriffen wurde, wird die Aktion mit einer fixen Wartezeit implementiert: wenn die Aktion gestartet wird, wird ein Request zur Steuerung des Greifers erzeugt (s. Zeile \ref{code:line:gripperrequest} in \ref{code:gripperactionnode}) und gesendet und nach einer bestimmten Zeit die Aktion beendet. Um unnötige Aufrufe der Methode während des Wartens zu verhindern wird die Wartezeit über das Zeitintervall zur Ausführung der Node gesetzt. Die Aktion wird hierdurch immer beim 2. Aufruf der Methode \verb|do_work| beendet.\\
+Zum Senden des Requests wird ein \ac{ROS2} Client für den Service \verb|goal_tool_control| mit dem Typ \verb|open_manipulator_msgs::srv::SetJointPosition| erstellt. 
+Um sowohl die Aktionen zum Öffnen sowie Schließen des Greifers mit einer Node implementieren zu können wird ein Parameter eingeführt, welcher über die Launch-Datei gesetzt wird und die Bewegung des Greifers bestimmt.
 %\newpage
