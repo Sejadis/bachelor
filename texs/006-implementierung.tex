@@ -20,8 +20,13 @@ Der Zusammenbau erfolgte nach der auf der Webseite verfügbaren Bauanleitung VER
 -Installation ROS2 Foxy\\
 -Installation OMX\\
 Zur Nutzung des Greifarms wurde eine \ac{VM} mit VirtualBox {\footnote{https://www.virtualbox.org}} von Oracle aufgesetzt. Als Betriebssystem der \ac{VM} wurde das für ROS2 Foxy empfohlene \citep{foxyreq} Ubuntu 20.04 {\footnote{\url{https://releases.ubuntu.com/20.04/}}} gewählt. Danach wurde entsprechend der Anleitung für den OpenMANIPULATOR-X \citep{foxyinstall} zuerst ROS 2 Foxy über das Installations-Script von ROBOTIS und im Anschluss die für den Greifarm benötigten Packages installiert.
+
+
 \subsection{Steuerung OMX}
 Die Steuerung des OMX erfolgt über die vom \emph{open\_manipulator\_x\_controller}\\ \verb|open_manipulator_x_controller| zur Verfügung gestellten Topics und Services.
+
+
+
 \subsubsection{Anschluss über U2D2}{\label{u2d2}}
 Der OMX wird über das U2D2 und das U2D2 Power Hub Board (s. Abbildung \ref{fig:u2d2}) per USB an den PC angeschlossen.\\
 Das U2D2 konvertiert die Signale der DYNAMIXEL und ermöglicht die Kontrolle über den PC. Zur Nutzung des U2D2 in der \ac{VM} muss das Gerät FTDI XXXXXXXXX über das Geräte-Menü der \ac{VM} an diese gebunden werden (s. Abbildung \ref{fig:ftdivm}).
@@ -37,6 +42,9 @@ Das U2D2 konvertiert die Signale der DYNAMIXEL und ermöglicht die Kontrolle üb
 \caption{Geräte-Menü der \ac{VM} mit gebundenem U2D2}
 \label{fig:ftdivm}
 \end{figure}
+
+
+
 \subsubsection{OMX-Controller}
 Der OMX-Controller ist ein Package, welches automatisch beim Installieren der für den OMX benötigten Software installiert wird. Er kann über die entsprechende Launch-Datei mit dem Befehl
 \begin{verbatim}
@@ -44,8 +52,16 @@ ros2 launch open_manipulator_x_controller
      open_manipulator_x_controller.launch.py
 \end{verbatim}
 gestartet werden.
+
+
+
 \subsubsection{Topics}
+
+
+
 \subsubsection{Kinematik}
+
+
 \subsubsection{Teleop} \label{teleop}
 Mit einem laufenden OMX-Controller kann der OMX auch ohne extra Programmierung direkt ferngesteuert werden. Mögliche Geräte zur Steuerung sind die Tastatur sowie Playstation- und XBOX-Controller. Für \ac{ROS2} Foxy wird aktuell allerdings nur die Steuerung über die Tastatur unterstützt.\\
 Der OMX kann dabei sowohl im Task Space als auch im Joint Space kontrolliert werden (s. Abbildung \ref{fig:teleopkeyboard}). Zusätzlich gibt es 2 vordefinierte Posen (Init und Home) in die der OMX bewegt werden kann (s. Abbildung \ref{fig:teleopposes}).
@@ -69,10 +85,16 @@ Der OMX kann dabei sowohl im Task Space als auch im Joint Space kontrolliert wer
     \caption{Home (l.) und Init (r.) Pose der Tastatur Teleop}
     \label{fig:teleopposes}
 \end{figure}
+
+
+
 \subsection{PlanSys2}
 \cite{plansys}\\
 Für die Implementierung der in \ref{konzept:nodes} genannten Funktionalitäten wird das Framework \ac{PlanSys2} genutzt. Es übernimmt dabei alle Funktionalitäten: die Verwaltung der Daten zur Domäne und dem aktuellen Problem erfolget über die domain-expert und problem-expert Nodes. Die planer Node ist für die komplette Planung zuständig und die Executioner Node für die Ausführung des Plans.\\
 Es müssen hier lediglich die Domäne erstellt sowie die tatsächliche Funktionalität der einzelnen Aktionen implementiert werden. Das Wort Action im Namen der Nodes und den folgenden Kapiteln bezieht sich hier auf die Aktionen der Domäne, nicht auf \ac{ROS2} Actions.
+
+
+
 \subsubsection{PDDL-Domain}
 -Durative Actions\\
 -Gripper + Blockworld\\
@@ -84,10 +106,24 @@ Das Prädikat \verb|clear| ist notwendig, da \ac{POPF} weder existentielle noch 
 Da alle Aktionen eine Dauer haben und \ac{PlanSys2} auch nur diese unterstützt, werden alle Aktionen als \verb|durative-action| modelliert. Es wird jeder Aktion eine Dauer zugeordnet (\verb|:duration (= ?duration 0.25)|) welche auch für Metriken genutzt werden kann. Zusätzlich bekommen Bedingungen und Effekte einen temporalen Zusatz: \verb|at start| und \verb|at end| können sowohl für Bedingungen als auch Effekte benutzt werden um festzulegen zu welchem Zeitpunkt der Aktion diese Bedingung zutreffen oder der Effekt eintritt. Für Bedingungen gibt es außerdem \verb|over all| damit eine Bedingung über die komplette Dauer der Aktiion zutreffen muss damit sie gültig ist.\\
 Im aktuellen Szenario wird \verb|over all| dafür genutzt, allen Block-Aktionen die Bedingung zu geben, dass sich der Greifer über die komplette Zeit an der gleichen Stelle wie der entsprechende Block befinden muss.\\
 Nur in der \verb|MOVE-GRIPPER| Aktion wird \verb|at start| für einen Effekt genutzt: \verb|(at start(not (gripper_at ?g ?l_from)))|. Sobald die Aktion beginnt befindet sich der Greifer nicht mehr an der Ausgangsposition und erst am Ende der Aktion wird die neue Position als Fakt gesetzt (\verb| (at end(gripper_at ?g ?l_to))|), Würden beide Effekte erst am Ende der Aktion eintreten, würde der Planer mehrere \verb|MOVE-GRIPPER| Aktionen parallel ausführen (s. Abbildung \ref{fig:tempgrippereffect}). Dies ist zum einen physisch nicht möglich, hinterlässt die Welt aber auch in einem ungültigen Zustand, da der Greifer sich dann an mehreren Positionen gleichzeitig befinden würde.
+
+
+
 \subsubsection{Action Nodes}
 Obwohl in der Domäne mehr als 2 Aktionen beschrieben sind, beschränken sich die ausgeführten Aktionen auf ein Bewegen des OMX sowie die Kontrolle des Greifers. Für diese wird jeweils eine Node erstellt. Damit diese Nodes von \ac{PlanSys2} genutzt werden können müssen sie von der Basisklasse \verb|plansys2::ActionExecutorClient| erben. Da diese von \ac{PlanSys2} nur in C++ zur Verfügung gestellt wird, müssen auch die Aktionen in C++ implementiert werden.\\
 In jeder Aktion muss die Methode \verb|void do_work()| implementiert werden. Diese wird mit einem bestimmten Zeitintervall aufgerufen während die Aktion aktiv ist. Das Intervall wird im Konstruktor gesetzt (s. Zeile \ref{code:line:nodeintervall} in \ref{code:gripperactionnode}). Das Mapping einer Node zu einer Aktion erfolgt durch das Setzen des Parameters \verb|action_name| nach dem Erstellen der Node (s. Zeile \ref{code:line:actionname} in \ref{code:gripperactionnode}).
+
+
+
 \subsubsection{Move Gripper Aktion}
+Die Logik Node zur Bewegung des OMX wird in der Klasse \verb|MoveGripperAction| (s. \ref{code:moveactionnode}) implementiert. Insgesamt umfasst dies das Senden des Bewegungsrequests an den vom OMX-Controller erstellten Service \verb|goal_task_space_path_position_only| mit dem Typ \verb|open_manipulator_msgs::srv::SetKinematicsPose| (s. Zeile \ref{code:line:poseclient} in\ref{code:moveactionnode}) sowie das Beenden der Aktion wenn der OMX an der Zielposition angekommen ist. Ob die Bewegung beendet ist wird über den im Topic \verb|states| gesendeten Bewegungsstatus geprüft. Dieser kann die beiden Werte \verb|IS_MOVING| und \verb|STOPPED| annehmen. Der aktuelle Status wird mit dem letzten empfangenen verglichen: war der letze Status \verb|IS_MOVING| und der aktuelle \verb|STOPPED|, waren wir in einer Bewegung, die jetzt beendet ist.\\
+Um die Zielkoordinaten der Bewegung zu erhalten muss der String Parameter der Aktion in Zahlenwerte konvertiert werden. Dies erfolgt über mehrere Stufen mittels mehrer Maps. Zunächst wird der String, welcher im Format \verb|s<Nummer des Stapels>l<Höhe innerhalb eines Stapels>| vorliegt zu 2 Integer im Bereich 1 bis 3 gemappt. Diese werden im 2. Schritt über weitere Maps zu Y und Z Koordinaten konvertiert. Die X Koordinate ist im Rahmen dieser Arbeit fest auf den Wert 0,25 gesetzt.\\
+Um eine kollisionsfreie Bewegung sicherzustellen findet diese nicht direkt von der aktuellen zur Zielposition statt. Stattdessen werden mehrere Zwischenpositionen errechnet und entsprechende Bewegungen zuerst ausgeführt. Zunächst wird der OMX bei gleichbleibenden X und Y Koordinaten auf eine Z Koordinate von 0,25 bewegt. Dies entspricht eine Höhe in der keine Blöcke liegen können. Die zweite Zwischenposition bleibt auf der gleichen Höhe (Z Koordinate 0,25) und bewegt sich zur X und Y Koordinate der Zielposition. Diese Zwischenposition befindet sich also exakt oberhalb der Zielposition, sodass eine vertikale Bewegung zur Zielposition ohne Kollision nötig ist.\\
+Diese Zwischenpositionen werden übersprungen, wenn die aktuelle Position des OMX bereits dem korrekten Stapel der Zielposition entspricht. Hierbei werden die aktuellen Koordinaten auf 2 Dezimalstellen gerundet.\\
+Für alle benötigten Positionen wird ein Request erzeugt und einer Queue hinzugefügt. Der Auslöser, den nächsten Request zu senden ist jeweils das Ende der vorherigen Bewegung.\\
+Um Zugriff auf die aktuelle Position des OMX zu erhalten wird ein weiterer Subscriber für das Topic \verb|kinematics_pose| benötigt, welches eine Message vom Typ \verb|open_manipulator_msgs::msg::KinematicsPose| veröffentlicht.
+
+
 \subsubsection{Control Gripper Aktion}
 Die Logik Node zur Steuerung des Greifers wird in der Klasse \verb|ControlGripperAction| (s. \ref{code:gripperactionnode}) implementiert. Da es vom OMX kein Feedback gibt, ob oder wann etwas gegriffen wurde, wird die Aktion mit einer fixen Wartezeit implementiert: wenn die Aktion gestartet wird, wird ein Request zur Steuerung des Greifers erzeugt (s. Zeile \ref{code:line:gripperrequest} in \ref{code:gripperactionnode}) und gesendet und nach einer bestimmten Zeit die Aktion beendet. Um unnötige Aufrufe der Methode während des Wartens zu verhindern wird die Wartezeit über das Zeitintervall zur Ausführung der Node gesetzt. Die Aktion wird hierdurch immer beim 2. Aufruf der Methode \verb|do_work| beendet.\\
 Zum Senden des Requests wird ein \ac{ROS2} Client für den Service \verb|goal_tool_control| mit dem Typ \verb|open_manipulator_msgs::srv::SetJointPosition| erstellt. 
