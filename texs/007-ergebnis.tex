@@ -1,1 +1,24 @@
 \section{Ergebnis}
+\subsection{Zusammenfassung}
+- off. Unterstützung von Foxy des OMX erst während der Bearbeitung
+\subsection{Ausblick}
+\subsubsection{MoveIt}
+Um den in der dieser Arbeit verwendeten Ansatz der Bewegungsplanung robuster und dynamischer zu machen empfiehlt sich die Implementierung der Bibliothek MoveIt \footnote{MOVEIT URL}. Zum Zeitpunkt der Bearbeitung wird diese vom OMX beim Betrieb mit \ac{ROS2} Foxy allerdings nocht nicht offiziell unterstützt.\\
+MoveIt bietet mittels virtueller Szenen die Möglichkeit effiziente und kollisionsfreie Wege für die Bewegung des OMX zu planen und auszuführen.
+\subsubsection{Vorschläge für Übungen in der Lehre}
+Um die Verwendung des OMX in der Lehre näher zu bringen gibt es in dem für diese Arbeit entstandenen Package mehrere Stellen, an denen angesetzt werden kann.\\
+Grundsätzlich lassen sich diese in folgende Bereiche aufteilen:
+\begin{itemize}
+\item \ac{ROS2}
+\item Domäne und Problem in PDDL
+\item ...
+\end{itemize}
+Für jeden dieser Bereiche besteht die Möglichkeit die Aufgaben in die folgenden Richtungen zu führen:
+\begin{itemize}
+\item Fehlersuche mit sinnvoll platzierten Fehlern
+\item Erkennen und Korrigieren weggelassener Abschnitte, welche durch das Verstehen des Codes erkannt werden können
+\item die Anpassung des Codes an ein ähnliches Szenario
+\end{itemize}
+Ein Beispiel für die Domäne ist, den Effekt der \verb|MOVE-GRIPPER| Aktion der die Startposition löscht erst am Ende der Aktion auszuführen, was dazu führt, dass zum Start des Plans alle nötigen Bewegungen gleichzeitig ausgeführt werden.\\
+Eine Aufgabe für das Schreiben/ Anpassen eines Problems in PDDL, welche sich anbietet, ist eine vorgegeben Problemdatei, welche nur die grundlegende Struktur über Stapel und Positionen enthält so zu erweitern, dass eine von mehreren möglichen, vorgegebenen Varianten von gestapelten Blöcken beschreibt. Die Aufgabe kann dadurch erleichtert werden, dass das gegebene Problem bereits eine bestimmte Stapelung von Blöcken darstellt und nur angepasst werden muss.\\
+Für alle Aufgaben die PDDL betreffen bietet es sich an, VS-Code mit dem PDDL-Plugin zu nutzen um schnelle Iterationen und eine Visualisierung der Pläne zu ermöglichen.
