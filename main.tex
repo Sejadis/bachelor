@@ -101,8 +101,12 @@ Obige Zusammenfassung in englischer Sprache.
 \clearpage
 \appendix
 \section{Quellcode} % Bei englischsprachiger Arbeit anzupassen auf: Appendix A
-\subsection{Domain.pddl}
-\lstinputlisting{domain.pddl}
+\subsection{Planungsdomäne}
+\lstinputlisting[language=pddl]{apdx/domain.pddl}
+\subsection{Gripper Package Launch Datei}
+\lstinputlisting[language=Python]{apdx/blockworld_gripper_launch.py}
+\subsection{Move Gripper Action Node}
+\lstinputlisting[language=C++]{apdx/move_gripper_action_node.cpp}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Versicherung zur Leistungserbringung 
@@ -111,12 +115,3 @@ Obige Zusammenfassung in englischer Sprache.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \end{document}
-
-%---
-\include{texs/003-einführung}
-\clearemptydoublepage
-\include{texs/004-grundlagen}
-\include{texs/005-konzept}
-\include{texs/006-implementierung}
-\include{texs/007-ergebnis}
-%---
