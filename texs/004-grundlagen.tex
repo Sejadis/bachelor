@@ -66,11 +66,16 @@ float32 response_float
 \end{lstlisting}
 \end{minipage}
 \subsubsection{Action}
-Action Definitionen bestehen aus den 3 Teilen Anfrage, Ergebnis und Feedback. Wie auch für Service Definitionen gilt, das die Teile durch \verb|-| getrennt sind und jeder einzelne Teil gültig ist, wenn er einer gültigen Message Definition entspricht. 
+Action Definitionen bestehen aus den 3 Teilen Anfrage, Ergebnis und Feedback, in dieser Reihenfolge. Wie auch für Service Definitionen gilt, das die Teile durch \verb|-| getrennt sind und jeder einzelne Teil gültig ist, wenn er einer gültigen Message Definition entspricht. 
 \subsection{ROS2 Node Kommunikation}{\label{rosnodecomm}
+Damit verschiedene Nodes untereinander kommunizieren können, gibt es verschieden Mechanismen, welche sich primär darin unterscheiden in welche Richtungen Nachrichten gesendet werden und ob es eine direkte Reaktion gibt. Für alle Mechnismen gilt, das sie von einer Node unter einem bestimmten Namen sowie einem Typ zur Verfügung gestellt werden und von anderen Nodes durch eben diese genutzt werden können.
 \subsubsection{Topic}
-\subsubsection{Service}
-\subsubsection{Action}
+Topics entsprechen in etwa einem Newsletter System: eine Node veröffentlicht Daten, welche von allen anderen Nodes empfangen wird, die sich für diese registriert haben. Das Format der Daten entspricht einer gewählten Message Definition.
+\subsubsection{Service und Client}
+Services werden für Prozesse genutzt, in denen eine Anfrage gesendet und eine Antwort erwartet wird. Als Typ wird eine Service Definition genutzt.
+\subsubsection{Action Server und Client}
+Actions sind für länger andauernde Prozesse gedacht. Eine Node erstellt einen Action Server über welchen eine Action zur Verfügung gestellt wird. Andere Nodes können über einen Action Client eine Anfrage senden. Der Server bearbeitet die Anfrage und sendet bei Beendigung eine Antwort mit einem Ergebnis an den Client. Während der Dauer der Action kann der Server den Client optional mit Feedback Nachrichten über den aktuellen Status informieren.\\
+Als Typ wird eine Action Definition genutzt. 
 \subsection{OpenMANIPULATOR-X}
 Der OpenMANIPULATOR-X ist ein von der Firma ROBOTIS{\footnote{http://en.robotis.com}} nach den Prinzipien ``OpenSoftware`` und ``OpenHardware`` hergestellter Greifarm. OpenSoftware steht hierbei dafür, dass es ein OpenSource Projekt ist und auf dem OpenSource Projekt \ac{ROS2} basiert. OpenHardware steht dafür, dass die meisten Komponenten als STL-Dateien zur Verfügung stehen und als Ersatzteile oder zum Anpassen des Greifarms mittels eines 3D-Druckers selbst hergestellt werden können. \newline
 Der OMX(Greifarm?,Abk?) ist eine 5DOF (5 Degrees of Freedom) Plattform, welche mittels 5 Servomotoren{\footnote{DYNAMIXEL XM430-W350-T}} gesteuert wird. Dies ist aufgeteilt in 4DOF für den Arm sowie 1DOF für den Greifer.
