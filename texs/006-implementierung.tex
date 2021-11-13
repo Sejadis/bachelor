@@ -124,10 +124,17 @@ Für alle benötigten Positionen wird ein Request erzeugt und einer Queue hinzug
 Um Zugriff auf die aktuelle Position des OMX zu erhalten wird ein weiterer Subscriber für das Topic \verb|kinematics_pose| benötigt, welches eine Message vom Typ \verb|open_manipulator_msgs::msg::KinematicsPose| veröffentlicht.
 
 
-\subsubsection{Control Gripper Aktion}
-Die Logik Node zur Steuerung des Greifers wird in der Klasse \verb|ControlGripperAction| (s. \ref{code:gripperactionnode}) implementiert. Da es vom OMX kein Feedback gibt, ob oder wann etwas gegriffen wurde, wird die Aktion mit einer fixen Wartezeit implementiert: wenn die Aktion gestartet wird, wird ein Request zur Steuerung des Greifers erzeugt (s. Zeile \ref{code:line:gripperrequest} in \ref{code:gripperactionnode}) und gesendet und nach einer bestimmten Zeit die Aktion beendet. Um unnötige Aufrufe der Methode während des Wartens zu verhindern wird die Wartezeit über das Zeitintervall zur Ausführung der Node gesetzt. Die Aktion wird hierdurch immer beim 2. Aufruf der Methode \verb|do_work| beendet.\\
-Zum Senden des Requests wird ein \ac{ROS2} Client für den Service \verb|goal_tool_control| mit dem Typ \verb|open_manipulator_msgs::srv::SetJointPosition| erstellt. 
-Um sowohl die Aktionen zum Öffnen sowie Schließen des Greifers mit einer Node implementieren zu können wird ein Parameter eingeführt, welcher über die Launch-Datei gesetzt wird und die Bewegung des Greifers bestimmt.
-\subsection{Praktisches Bsp}
 
-%\newpage
+\subsubsection{Package}
+- Launch file\\
+- text datei mit commands \\
+- pkg build config\\
+Alle erstellten Komponenten werden in einem eigenen \ac{ROS2} Package gebündelt. Dies umfasst die C++ Dateien für die Aktionen sowie die Domänendatei. Zusätzlich wurde eine Launch Datei erstellt um das komplette System über einen Befehl starten zu können. In der Launch Datei wird zum einen \ac{PlanSys2} und zum anderen die Nodes für alle Aktionen gestartet. Weiterhin wird hier festgelegt, welche Domäne genutzt wird.\\
+Das Package enthält außerdem eine Readme Datei in der die nötigen Schritte beschrieben sind um das gesamte System, einschließlich OMX, zu starten. Sie enthält auch die nötigen Befehle um über das \ac{PlanSys2} Terminal ein Problem zu initialisieren, welches 3 Stapel mit je 3 möglichen Höhenpositionen hat, sowie einige platzierte Blöcke.
+
+
+\subsection{Praktische Anwendung}
+Um das System praktisch anwenden zu können wurden mehrere farbige Würfel aus LEGO gebaut (s. Abbildung \ref{fig:legocubes}). Auf der Basisplatte des OMX wurden die Positionen der 3 Stapel markiert. 
+\subsubsection{PlanSys2 Terminal}
+Das \ac{PlanSys2} Terminal ist eine separate Node, welche es ermöglicht, das System durch Eingabe über die Konsole zu steuern. Die wichtigsten Befehle sind hierbei \verb|get|, \verb|set| und \verb|run|. Mit \verb|get| können die Typen, Prädikate und Aktionen der geladenen Domäne sowie des aktuellen Problems angezeigt werden. Der \verb|set| Befehl wird genutzt um das aktuelle Problem zu verändern. Es können Instanzen, Prädikate sowie das Ziel erstellt und geändert werden. Über den Befehl \verb|run| lässt sich der Plan für das aktuelle Ziel ausführen. Es ist auch möglich nur einen Plan zu suchen, ohne ihn direkt auszuführen. Dies ist mit \verb|get plan| möglich.\\
+Während der Ausführung eines Plans wird im Terminal die aktuelle Aktion sowie dessen Fortschritt (gesteuert über den Feedback Kanal innerhalb der Aktion) angezeigt.
