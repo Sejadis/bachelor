@@ -14,7 +14,7 @@
 \usepackage{listings}
 \usepackage{acronym}% http://ctan.org/pkg/acronym
 \usepackage{enumitem}% http://ctan.org/pkg/enumitem
-\usepackage{color}
+\usepackage{xcolor}
 
 %folgende Zeile auskommentieren für englische Arbeiten
 \usepackage[ngerman]{babel}
@@ -25,9 +25,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage[bookmarks]{hyperref}
 \usepackage[justification=centering]{caption}
-\usepackage[style=authoryear,natbib=true,maxbibnames=20]{biblatex}
+\usepackage[style=trad-abbrv,backend=biber,natbib=true,maxbibnames=20]{biblatex}
 \usepackage{csquotes}
-\bibliography{literatur}
+\addbibresource{literatur.bib}
 
 \setlength{\parindent}{0em} 
 \setlist[itemize]{noitemsep, topsep=0pt}
