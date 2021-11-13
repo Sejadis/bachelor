@@ -7,6 +7,9 @@ Die \acp{RCL} für die Sprachen C++ und Python (rclcpp und rclpy) werden dabei d
 Von der Community wurden weitere \acp{RCL}, unter anderem für die Sprachen C\#, Swift und Rust, entwickelt.\\
 Um die Entwicklung der \acp{RCL} zu vereinfachen und die Logik sprachen unabhängig zu machen werden Funktionalitäten als C Interfaces zugänglich gemacht, für welche in den \acp{RCL} Wrapper geschrieben werden.
 \subsubsection{Node}
+Nodes sind die grundlegenden Komponenten, aus welchen eine \ac{ROS2} Anwendung besteht.
+Typischerweise besteht eine Anwendung aus mehreren Nodes.
+Entsprechend dem Prinzip Separation of Concerns (Trennung der Zuständigkeiten) sollen Nodes so implementiert werden, dass sie jeweils nur eine spezifische Aufgabe haben.
 \subsection{ROS2 Interfaces}
 In diesem Abschnitt werden die verschiedenen Arten von Interfaces beschrieben, welche für die im folgenden Abschnitt~\ref{rosnodecomm} erklärten Methoden zur Kommunikation zwischen mehreren Nodes genutzt werden.\\
 \ac{ROS2} Interfaces sind Definitionen, welche Daten mit welchen Typen gesendet werden.
@@ -109,7 +112,36 @@ Der OMX(Greifarm?,Abk?) ist eine 5DOF (5 Degrees of Freedom) Plattform, welche m
 Dies ist aufgeteilt in 4DOF für den Arm sowie 1DOF für den Greifer.
 Es kann eine Last bis 500g getragen werden
 \subsection {Planung}
-\subsubsection{STRIPS}
+Planung (auch Handlungsplanung) ist ein Bereich der Künstlichen Intelligenz, welcher sich mit der Lösung von Planungs- und Schedulingproblem befasst~\cite{aiplanning}.
+\subsubsection{Stanford Research Institute Problem Solver}
+Der \ac{STRIPS} ist ein automatischer Planer, welcher von Richard Fikes und Nils Nilsson 1971 entwickelt wurde~\cite{FIKES1971189}.
+Mit dem gleichen Namen wird auch die Sprache bezeichnet, welche als Eingabe für diesen Planer genutzt wird.
+In diesem Abschnitt wird nur auf die Sprache eingegangen, welche die Grundlage vieler weiterer Sprachen zur Darstellung von Planungsdomänen und -problemen ist.\\
+Ein \ac{STRIPS}-Modell besteht aus 3 Teilen:
+\begin{itemize}
+    \item Startzustand
+    \item Zielzustand
+    \item Aktionen
+\end{itemize}
+Aktionen bestehen wiederum aus:
+\begin{itemize}
+    \item Vorbedingungen
+    \item Effekten
+\end{itemize}
+Ein \ac{STRIPS}-Modell kann außerdem mathematisch als 4-Tupel \((P,I,O,G)\) beschrieben werden:
+\begin{enumerate}
+    \item \(P\): eine Menge von Bedingungen
+    \item \(I\):
+    \item \(O\): der Startzustand, eine Menge von Bedingungen, die wahr sind
+    \item \(G\): der Zielzustand, ein Paar \((N,M)\)
+\end{enumerate}
+Es gilt die \emph{Closed World Assumption (CWA)}: alles was nicht explizit als wahr beschrieben ist, gilt als falsch.
+
+%Bedingungen werden als Prädikate dargestellt: \verb|Geöffnet(Baumarkt)| beschreibt die Bedingung, dass ein Subjekt \emph{Baumarkt} die Eigenschaft \emph{Geöffnet} hat.
+Ein Plan besteht aus mehreren Aktionen, welche, in der gegebenen Reihenfolge ausgeführt, vom Startzustand zu einem Zustand führen, von dem der Zielzustand eine Teilmenge ist.\\
+Aktionen sind 4-Tupel, bei dem jedes Element eine Menge von Bedingungen sind.
+Die ersten zwei Mengen beschreiben die Vorbedingungen: Bedingungen die wahr sein müssen sowie Bedingungen, die falsch sein müssen.
+Die letzten beiden Mengen beschreiben den Effekt, den die Aktion nach ihrer Ausführung auf einen Zustand hat: Bedingungen die wahr werden und Bedingungen die falsch werden.
 \subsubsection{Planning Domain Definition Language}
 Die \ac{PDDL} ist eine Sprache zur Modellierung von Planungs...
 \subsubsection{PDDL-Plugin für VS Code}
@@ -121,5 +153,5 @@ Die \ac{PDDL} ist eine Sprache zur Modellierung von Planungs...
 \subsubsection{Partial Order Planning}
 \subsubsection{Forward Chaining Partial Order Planning}
 \subsubsection{Partial Order Planning Forward}
-\citep{popf}
+~\citep{popf}
 \subsubsection{Behavior Tree}
