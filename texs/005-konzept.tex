@@ -1,15 +1,22 @@
 labe\section{Konzept}{\label{konzept}}
 In diesem Abschnitt wird der Ansatz beschrieben, mit dem in dieser Arbeit vorgegangen werden soll.
 \subsection{Inbetriebnahme}
-Im ersten Schritt muss der OMX in Betrieb genommen werden. Dies beinhaltet den Zusammenbau und Konfiguration sowie die Installation nötiger Software. Ein besonderes Augenmerk wird dabei darauf gelegt,  Details festzuhalten welche in den gegebenen Anleitungen nicht explizit angegeben werden oder leicht zu übersehen sind.
+Im ersten Schritt muss der OMX in Betrieb genommen werden.
+Dies beinhaltet den Zusammenbau und Konfiguration sowie die Installation nötiger Software.
+Ein besonderes Augenmerk wird dabei darauf gelegt, Details festzuhalten welche in den gegebenen Anleitungen nicht explizit angegeben werden oder leicht zu übersehen sind.
 \subsection{Struktur Nodes}{\label{konzept:nodes}}
-Um eine einfache sowie übersichtliche Steuerung des Greifarms zu ermöglichen wird die Funktionalität in mehrere ROS2 Nodes aufgeteilt. Generell werden folgende Funktionalitäten benötigt: der Planer, die Speicherung des aktuellen Zustands der Welt, die Ausführung des Plans sowie die Möglichkeit Eingaben zu verarbeiten und an die entsprechenden Nodes weiterzuleiten.\\
-Diese Aufteilung entspricht auch einer guten Aufteilung und Trennung der Verantwortungen um daraus ROS2 Nodes zu machen. Hier haben die Nodes folgende Verantwortlichkeiten:\\
+Um eine einfache sowie übersichtliche Steuerung des Greifarms zu ermöglichen wird die Funktionalität in mehrere ROS2 Nodes aufgeteilt.
+Generell werden folgende Funktionalitäten benötigt: der Planer, die Speicherung des aktuellen Zustands der Welt, die Ausführung des Plans sowie die Möglichkeit Eingaben zu verarbeiten und an die entsprechenden Nodes weiterzuleiten.\\
+Diese Aufteilung entspricht auch einer guten Aufteilung und Trennung der Verantwortungen um daraus ROS2 Nodes zu machen.
+Hier haben die Nodes folgende Verantwortlichkeiten:\\
 Die Planungs-Node muss mit einer gegebenen Domäne und einem Problem einen Plan bestehend aus einer Reihe von Aktionen zurückgeben.\\
-Die Welt-Node hält den aktuellen Zustand der Welt bzw. des Problems und muss diesen konsistent halten.\\
-Die Ausführungs-Node muss entsprechend eines Plans die gegeben Aktionen ausführen.\\
+Die Welt-Node hält den aktuellen Zustand der Welt bzw.\ des Problems und muss diesen konsistent halten.\\
+Die Ausführungs-Node muss entsprechend eines Plans die gegebenen Aktionen ausführen.\\
 Die Eingabe-Node ermöglicht die Erstellung eines Problems mit einem Welt-Zustand und einem Ziel.
 \subsection{Planungsmodell}{\label{konzept:planningmodel}}
-Für die Erstellung von Plänen wird eine Domäne im \ac{PDDL} Format erstellt. In der Domäne werden die Aspekte des Stapelns von Blöcken mit denen des Greifers kombiniert. Zusätzlich werden \emph{durative actions} genutzt um die Dauer der einzelnen Aktionen zu modellieren.
+Für die Erstellung von Plänen wird eine Domäne im \ac{PDDL} Format erstellt.
+In der Domäne werden die Aspekte des Stapelns von Blöcken mit denen des Greifers kombiniert.
+Zusätzlich werden \emph{durative actions} genutzt, um die Dauer der einzelnen Aktionen zu modellieren.
 \subsection{Erstellung von Übungsbeispielen}{\label{konzept:exercise}}
-Abschließend soll eine Übersicht, mit Möglichkeiten den OMX in die Lehre einzubinden,  erstellt werden. Dies umfasst spezifische Beispiele sowie allgemeine Ansatzpunkte um die Benutzung des OMX sowie dessen grundlegenden Konzepte zu vermitteln.
+Abschließend soll eine Übersicht, mit Möglichkeiten den OMX in die Lehre einzubinden,  erstellt werden.
+Dies umfasst spezifische Beispiele sowie allgemeine Ansatzpunkte, um die Benutzung des OMX sowie dessen grundlegenden Konzepte zu vermitteln.
