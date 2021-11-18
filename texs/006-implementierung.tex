@@ -42,7 +42,7 @@ Das U2D2 konvertiert die Signale der DYNAMIXEL und ermöglicht die Kontrolle üb
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=\textwidth]{u2d2}
-\caption{U2D2 Power Hub Board mit montiertem U2D2 (LINKS/RECHTS im Bild)}
+\caption{U2D2 Power Hub Board mit montiertem U2D2 (rechts im Bild)}
 \label{fig:u2d2}
 \end{figure}
 \begin{figure}[ht!]
@@ -88,14 +88,14 @@ Zusätzlich gibt es 2 vordefinierte Posen (Init und Home) in die der OMX bewegt 
     \centering
     \begin{minipage}[t]{0.45\linewidth}
         \centering
-        \includegraphics[width=\linewidth]{omxposes}
+        \includegraphics[width=\linewidth,keepaspectratio]{initpose}
     \end{minipage}% <- sonst wird hier ein Leerzeichen eingefügt
     \hfill
     \begin{minipage}[t]{0.45\linewidth}
         \centering
-        \includegraphics[width=\linewidth]{omxposes}
+        \includegraphics[width=\linewidth,keepaspectratio]{homepose}
     \end{minipage}
-    \caption{Home (l.) und Init (r.) Pose der Tastatur Teleop}
+    \caption{Init (l.) und Home (r.) Pose der Tastatur Teleop}
     \label{fig:teleopposes}
 \end{figure}
 
@@ -156,7 +156,9 @@ Da es vom OMX kein Feedback gibt, ob oder wann etwas gegriffen wurde, wird die A
 Um unnötige Aufrufe der Methode während des Wartens zu verhindern wird die Wartezeit über das Zeitintervall zur Ausführung der Node gesetzt.
 Die Aktion wird hierdurch immer beim 2.\ Aufruf der Methode \verb|do_work| beendet.\\
 Zum Senden des Requests wird ein \ac{ROS2} Client für den Service \verb|goal_tool_control| mit dem Typ \verb|open_manipulator_msgs::srv::SetJointPosition| erstellt. 
-Um sowohl die Aktionen zum Öffnen sowie Schließen des Greifers mit einer Node implementieren zu können wird ein Parameter eingeführt, welcher über die Launch-Datei gesetzt wird und die Bewegung des Greifers bestimmt.
+Um sowohl die Aktionen zum Öffnen sowie Schließen des Greifers mit einer Node implementieren zu können wird ein Parameter eingeführt, welcher über den Konstruktor gesetzt wird und die Bewegung des Greifers bestimmt.
+Für jede Aktion wird eine Node mit entsprechenden Parametern erzeugt.
+Diese Nodes werden alle einem \verb|MultiThreadedExecutor| hinzugefügt. Dadurch können alle Nodes gemeinsam gestartet werden und laufen in einem Prozess, sind durch mehrere Threads aber unabhängig voneinander.
 
 \subsubsection{Move Gripper Aktion}
 Die Logik Node zur Bewegung des OMX wird in der Klasse \verb|MoveGripperAction| (s.~\ref{code:moveactionnode}) implementiert.
@@ -165,16 +167,15 @@ Ob die Bewegung beendet ist wird über den im Topic \verb|states| gesendeten Bew
 Dieser kann die beiden Werte \verb|IS_MOVING| und \verb|STOPPED| annehmen.
 Der aktuelle Status wird mit dem letzten empfangenen verglichen: war der letze Status \verb|IS_MOVING| und der aktuelle \verb|STOPPED|, waren wir in einer Bewegung, die jetzt beendet ist.\\
 Um die Zielkoordinaten der Bewegung zu erhalten, muss der String Parameter der Aktion in Zahlenwerte konvertiert werden.
-Dies erfolgt über mehrere Stufen mittels mehrerer Maps.
-Zunächst wird der String, welcher im Format \verb|s<Nummer des Stapels>l<Höhe innerhalb eines Stapels>| vorliegt zu 2 Integer im Bereich 1 bis 3 gemappt.
-Diese werden im 2.\ Schritt über weitere Maps zu Y und Z Koordinaten konvertiert.
+Zunächst werden aus dem String, welcher im Format \verb|s<Nummer des Stapels>l<Höhe innerhalb eines Stapels>| vorliegt, die 2 Integerwerten mit Hilfe einer regular Expression extrahiert.
+Diese werden im 2.\ Schritt über Maps zu Y und Z Koordinaten konvertiert.
 Die X Koordinate ist im Rahmen dieser Arbeit fest auf den Wert 0,25 gesetzt.\\
 Um eine kollisionsfreie Bewegung sicherzustellen findet diese nicht direkt von der aktuellen zur Zielposition statt.
 Stattdessen werden mehrere Zwischenpositionen errechnet und entsprechende Bewegungen zuerst ausgeführt.
 Zunächst wird der OMX bei gleichbleibenden X und Y Koordinaten auf eine Z Koordinate von 0,25 bewegt.
 Dies entspricht eine Höhe in der keine Blöcke liegen können.
 Die zweite Zwischenposition bleibt auf der gleichen Höhe (Z Koordinate 0,25) und bewegt sich zur X und Y Koordinate der Zielposition.
-Diese Zwischenposition befindet sich also exakt oberhalb der Zielposition, sodass eine vertikale Bewegung zur Zielposition ohne Kollision nötig ist.\\
+Diese Zwischenposition befindet sich exakt oberhalb der Zielposition, sodass eine vertikale Bewegung zur Zielposition ohne Kollision möglich ist.\\
 Diese Zwischenpositionen werden übersprungen, wenn die aktuelle Position des OMX bereits dem korrekten Stapel der Zielposition entspricht.
 Hierbei werden die aktuellen Koordinaten auf 2 Dezimalstellen gerundet.\\
 Für alle benötigten Positionen wird ein Request erzeugt und einer Queue hinzugefügt.
@@ -202,10 +203,38 @@ Auf der Basisplatte des OMX wurden die Positionen der 3 Stapel markiert.
 \subsubsection{PlanSys2 Terminal}
 Das \ac{PlanSys2} Terminal ist eine separate Node, welche es ermöglicht, das System durch Eingabe über die Konsole zu steuern.
 Die wichtigsten Befehle sind hierbei \verb|get|, \verb|set| und \verb|run|.
-Mit \verb|get| können die Typen, Prädikate und Aktionen der geladenen Domäne sowie des aktuellen Problems angezeigt werden.
+Mit \verb|get| können die Typen, Prädikate und Aktionen der geladenen Domäne sowie des aktuellen Problems angezeigt werden (s. Abbildung~\ref{fig:plansysterminal}).
 Der \verb|set| Befehl wird genutzt, um das aktuelle Problem zu verändern.
 Es können Instanzen, Prädikate sowie das Ziel erstellt und geändert werden.
 Über den Befehl \verb|run| lässt sich der Plan für das aktuelle Ziel ausführen.
 Es ist auch möglich nur einen Plan zu suchen, ohne ihn direkt auszuführen.
-Dies ist mit \verb|get plan| möglich.\\
+Dies ist mit \verb|get plan| möglich (s. Abbildung~\ref{fig:terminalplan}).\\
 Während der Ausführung eines Plans wird im Terminal die aktuelle Aktion sowie dessen Fortschritt (gesteuert über den Feedback Kanal innerhalb der Aktion) angezeigt.
+\subsubsection{Abstürze und Fehlersuche}
+Während der Ausführung eines Plans kam es wiederholt zu Abstürzen der \ac{PlanSys2} Node.
+Diese Abstürze verhinderten eine vollständige Ausführung des Plans und erforderten einen Neustart des \ac{PlanSys2}-Systems.
+Der Absturz erfolgte immer mit einem Exit Code 11, der auf ein SEGMANTATION FAULT hinweist.
+Um die Stelle des Absturzes zu finden wurde \ac{PlanSys2} zunächst in der distributed anstelle der Monolithic Version gestartet.
+Hierdurch werden alle Nodes in eigenen Prozessen gestartet.
+Dies ermöglichte ein Eingrenzen auf die Executor Node.\\
+Für das weitere Debugging wurde der GNU Project Debugger (GDB) sowie xterm (musste separat installiert werden) genutzt.
+In der Launch-Datei für den Executor wurde der Node \verb|prefix=['xterm -e gdb -ex run --args'],| hinzugefügt, um beim Start der Node auch eine Debugging-Session zu starten.\\
+Über den backtrace nach einem Absturz wurde die Methode\\\verb|ActionExecutor::request_for_performers()| als Ursache für den Absturz identifiziert.
+Innerhalb dieser Methode wurde das Problem in der Zeile\\\verb|action_hub_pub_->publish(msg);| gefunden.
+Zum Zeitpunkt eines Absturzes hatte die Variable \verb|action_hub_pub_| den Wert \verb|null|.
+Um den Absturz zu verhindern wurde ein \verb|null|-Check implementiert.
+Obwohl dieser dafür sorgt, dass einige Messages nicht gesendet werden, führte diese Änderung zu keinen offensichtlichen Nebenwirkung und Pläne werden normal ausgeführt.
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{plansys2terminal}
+    \caption{\ac{PlanSys2} Terminal mit Abfrage der Typen des geladenen Models}
+    \label{fig:plansysterminal}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{simple_plan}
+    \caption{Ausgabe eines Plans in \ac{PlanSys2} Terminal}
+    \label{fig:terminalplan}
+\end{figure}
