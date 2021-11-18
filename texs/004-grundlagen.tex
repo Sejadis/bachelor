@@ -150,6 +150,29 @@ Die \ac{PDDL} ist eine Sprache zur Modellierung von Planungs...
 - Nutzung / Ausführung\\
 - Pfad zur popf executable im foxy ordner\\
 - Screenshot mit Bsp. für Planausgabe und Visualisierung\\
+Im Marketplace von Visual Studio Code ist ein PDDL-Plugin von Jan Dolejsi verfügbar.
+Dieses vereinfacht die Entwicklung und das Testen von Domänen und Problemen im PDDL Format.
+Es beinhaltet Syntax-Highlighting und Snippets, sowie die Möglichkeit direkt Pläne zu suchen und zu visualisieren.
+Um Pläne mit \ac{POPF} zu suchen, muss der Planer in der Overview-Page des Plugins hinzugefügt werden.
+Der Pfad zum \ac{POPF}-Planer ist: \emph{/opt/ros/foxy/lib/popf/popf}.\\
+Über das Kontext-Menü einer Domänen- oder Problemdatei lässt sich der Planer starten und es erfolgt eine Ausgabe in der Konsole (s. Abbildung~\ref{fig:pluginplan}) sowie eine Visualisierung wenn ein Plan gefunden wurde (s. Abbildung~\ref{fig:pluginvis}).
+Die Visualisierung erfolgt dabei zeitlich von links nach rechts.
+Alle Aktionen werden farblich markiert, wobei eine Aktion auch bei mehrfacher Ausführung die gleiche Farbe hat.
+Im oberen Abschnitt gibt es eine einfache Übersicht des Plans: welche Aktionen wurden wann ausgeführt und mit welchen Parametern.
+Im unteren Abschnitt wird dargestellt, welche Instanzen, zu welchem Zeitpunkt, als Teil welcher Aktion genutzt wurden.
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{plugin_plan}
+    \caption{Konsolenausgabe nach Ausführung des Planers über das PDDL-Plugin}
+    \label{fig:pluginplan}
+\end{figure}
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{plugin_vis}
+    \caption{Visualisierung eines Plans mit dem PDDL-Plugin}
+    \label{fig:pluginvis}
+\end{figure}
 \subsubsection{Partial Order Planning}
 \subsubsection{Forward Chaining Partial Order Planning}
 \subsubsection{Partial Order Planning Forward}
