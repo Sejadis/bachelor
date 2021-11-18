@@ -62,14 +62,34 @@ ros2 launch open_manipulator_x_controller
      open_manipulator_x_controller.launch.py
 \end{verbatim}
 gestartet werden.
-
-
-
+\subsubsection{Joint und Task Space}
+Der OMX kann in den zwei verschiedenen Arbeitsräumen \emph{Joint Space} und \emph{Task Space} betrachtet werden.\\
+Im \emph{Joint Space} werden die Gelenke und ihre aktuellen Winkel betrachtet.\\
+Der \emph{Task Space} entspricht einer Betrachtung in einem kartesischen Koordinatensystem, mit dem Motor mit der ID 11 als Ursprung.
+Zusätzlich zur Position gibt es eine Orientierung für jede Achse (Roll-Nick-Gier, engl\. roll-pitch-yaw).
 \subsubsection{Topics}
-
-
+Der OMX-Controller veröffentlicht drei Topics, die Informationen über den aktuellen Status geben:
+\begin{itemize}
+    \item /states
+    \item /joint\_states
+    \item /kinematics\_pose
+\end{itemize}
+\emph{/states} stellt allgemeine Informationen über die Motoren und die Bewegung des OMX zur Verfügung.
+Ob die Motoren aktiviert sind, wird über das Feld \emph{open\_manipulator\_actuator\_state} mit den möglichen Werten \emph{ACTUATOR\_ENABLE} und \emph{ACTUATOR\_DISABLE} angegeben.
+Der Bewegungsstatus, mit den möglichen Werten \emph{IS\_MOVING} und \emph{STOPPED}, steht im Feld \emph{open\_manipulator\_moving\_state}.\\
+\emph{/joint\_states} stellt Informationen über alle Gelenke zur Verfügung.
+Dies umfasst den Namen, den aktuell verbrauchten Strom, die Position (der Winkel des Motors) sowie die Geschwindigkeit.\\
+\emph{/kinematics\_pose} stellt Informationen über die Pose im Task Space zur Verfügung.
+Eine Pose besteht dabei aus einer Position und einer Orientierung und bezieht sich auf den Greifer.
+Die Position enthält die Koordinaten der Mitte des Greifers.
+Die Orientierung gibt die Rotation als Quaternion an.
 
 \subsubsection{Kinematik}
+Der OMX lässt sich über zwei Formen der Kinematik steuern.
+Zum eine über die direkte Kinematik (auch Vorwärtskinematik, engl.\ forward kinematics, FK), was einer Steuerung im Joint Space entspricht und zum anderen über die inverse Kinematik (engl.\ inverse kinematics, IK), was einer Steuerung im Task Space entspricht.\\
+Die komplette kinematische Steuerung erfolgt über Services, die sich dementsprechend darin unterscheiden, ob Winkel für die Gelenke oder Posen für den Greifer angegeben werden.
+Bei der Steuerung über Posen besteht wiederum die Möglichkeit Position und Orientierung oder nur eines der beiden zu steuern und den aktuellen Wert des anderen beizubehalten.\\
+Die komplette Liste der Services ist in der Anleitung des OMX\footnote{\url{https://emanual.robotis.com/docs/en/platform/openmanipulator_x/ros_controller_msg/#message-list}} zu finden.
 
 
 \subsubsection{Teleop} \label{teleop}
