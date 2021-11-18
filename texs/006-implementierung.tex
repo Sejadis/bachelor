@@ -213,7 +213,7 @@ Während der Ausführung eines Plans wird im Terminal die aktuelle Aktion sowie 
 \subsubsection{Abstürze und Fehlersuche}
 Während der Ausführung eines Plans kam es wiederholt zu Abstürzen der \ac{PlanSys2} Node.
 Diese Abstürze verhinderten eine vollständige Ausführung des Plans und erforderten einen Neustart des \ac{PlanSys2}-Systems.
-Der Absturz erfolgte immer mit einem Exit Code 11, der auf ein SEGMANTATION FAULT hinweist.
+Der Absturz erfolgte immer mit einem Exit Code 11, der auf ein SEGMENTATION FAULT hinweist.
 Um die Stelle des Absturzes zu finden wurde \ac{PlanSys2} zunächst in der distributed anstelle der Monolithic Version gestartet.
 Hierdurch werden alle Nodes in eigenen Prozessen gestartet.
 Dies ermöglichte ein Eingrenzen auf die Executor Node.\\
