@@ -113,7 +113,7 @@ Dies ist aufgeteilt in 4DOF für den Arm sowie 1DOF für den Greifer.
 Es kann eine Last bis 500g getragen werden
 \subsection {Planung}
 Planung (auch Handlungsplanung) ist ein Bereich der Künstlichen Intelligenz, welcher sich mit der Lösung von Planungs- und Schedulingproblem befasst~\cite{aiplanning}.
-\subsubsection{Stanford Research Institute Problem Solver}
+\subsubsection{Stanford Research Institute Problem Solver}{\label{chap:strips}}
 Der \ac{STRIPS} ist ein automatischer Planer, welcher von Richard Fikes und Nils Nilsson 1971 entwickelt wurde~\cite{FIKES1971189}.
 Mit dem gleichen Namen wird auch die Sprache bezeichnet, welche als Eingabe für diesen Planer genutzt wird.
 In diesem Abschnitt wird nur auf die Sprache eingegangen, welche die Grundlage vieler weiterer Sprachen zur Darstellung von Planungsdomänen und -problemen ist.\\
@@ -143,7 +143,57 @@ Aktionen sind 4-Tupel, bei dem jedes Element eine Menge von Bedingungen sind.
 Die ersten zwei Mengen beschreiben die Vorbedingungen: Bedingungen die wahr sein müssen sowie Bedingungen, die falsch sein müssen.
 Die letzten beiden Mengen beschreiben den Effekt, den die Aktion nach ihrer Ausführung auf einen Zustand hat: Bedingungen die wahr werden und Bedingungen die falsch werden.
 \subsubsection{Planning Domain Definition Language}
-Die \ac{PDDL} ist eine Sprache zur Modellierung von Planungs...
+Die \ac{PDDL} ist eine Sprache zur Modellierung von Planungsaufgaben.
+Im Rahmen dieser Arbeit wird nicht auf alle Aspekte von \ac{PDDL} eingegangen.
+Es wird sich auf einige grundlegende Teile sowie auf die genutzten Erweiterungen beschränkt.\\
+Die Beschreibung des Problems setzt sich aus folgenden grundlegenden Komponenten zusammen:
+\begin{itemize}
+    \item Objekt
+    \item Prädikat
+    \item Startzustand
+    \item Aktion
+    \item Ziel
+\end{itemize}
+Objekte sind Dinge in der Welt die für die Planung relevant sind.
+Dies können bspw. Orte oder Personen sein und werden in \ac{PDDL} entsprechend Listing~\ref{code:pddlobjects} beschrieben.
+\begin{lstlisting}[caption={Objektbeschreibung in PDDL},language=pddl,label=code:pddlobjects]
+(:objects kitchen supermarket
+          fabian)
+\end{lstlisting}
+Prädikate sind Eigenschaften, die Objekte haben können.
+Eine Person kann sich an einem Ort befinden oder eine bestimmte Größe haben (s. Listing~\ref{code:pddlpredicates}).
+\begin{lstlisting}[caption={Prädikatbeschreibung in PDDL},language=pddl,label=code:pddlpredicates]
+(:predicates (person_at ?person ?location)
+            (tall ?person))
+\end{lstlisting}
+Der Startzustand ist die Beschreibung der Welt zu Beginn der Planungsaufgabe.
+Er besteht aus einer Menge von Instanzen von Prädikaten, also Prädikate die an Objekte gebunden sind (s. Listing~\ref{code:pddlinit}).
+\begin{lstlisting}[caption={Startzustand in PDDL},language=pddl,label=code:pddlinit]
+(:init (person_at fabian kitchen))
+\end{lstlisting}
+Aktionen sind die vorhandenen Möglichkeiten, den Zustand der Welt zu verändern.
+Diese entsprechen den in Abschnitt~\ref{chap:strips} beschriebenen Aktionen mit einer Menge von Vorbedingungen und einer Menge von Effekten (s. Listing \ref{code:pddlaction}).
+\begin{lstlisting}[caption={Aktion um eine Person von einem Ort zum anderen zu bewegen in PDDL},language=pddl,label=code:pddlaction]
+(:action move
+    :parameters (?p ?loc_from ?loc_to)
+    :precondition (and (person_at ?p ?loc_from))
+    :effect (and (person_at ?p ?loc_to)
+                (not (person_at ?p ?loc_from))))
+\end{lstlisting}
+Ein Ziel ist eine Menge von Instanzen, die am Ende der Planung Teil des Zustands der Welt sein soll (s. Listing~\ref{code:pddlgoal}).
+\begin{lstlisting}[caption={Ziel in PDDL},language=pddl,label=code:pddlgoal]
+(:goal (and (person_at fabian supermarket))
+\end{lstlisting}
+Diese Komponenten werden aufgeteilt:
+\begin{itemize}
+    \item Domäne
+    \item Problem
+\end{itemize}
+Die Domäne enthält die allgemeinen Rahmenbedingungen für das Problem: Prädikate und Aktionen.
+Die Datei beginnt mit \verb|(define (domain name_der_domäne)|.\\
+Das Problem enthält die Informationen zu einem spezifischen Problem: Objekte, den Startzustand und das Ziel.
+Die Datei beginnt mit\\\verb|(define (problem name_des_problems) (:domain name_der_domäne)|.\\
+
 \subsubsection{PDDL-Plugin für VS Code}
 - nach Implementierung verschieben?\\
 - Installation\\
@@ -157,7 +207,7 @@ Um Pläne mit \ac{POPF} zu suchen, muss der Planer in der Overview-Page des Plug
 Der Pfad zum \ac{POPF}-Planer ist: \emph{/opt/ros/foxy/lib/popf/popf}.\\
 Über das Kontext-Menü einer Domänen- oder Problemdatei lässt sich der Planer starten und es erfolgt eine Ausgabe in der Konsole (s. Abbildung~\ref{fig:pluginplan}) sowie eine Visualisierung wenn ein Plan gefunden wurde (s. Abbildung~\ref{fig:pluginvis}).
 Die Visualisierung erfolgt dabei zeitlich von links nach rechts.
-Alle Aktionen werden farblich markiert, wobei eine Aktion auch bei mehrfacher Ausführung die gleiche Farbe hat.
+Alle Aktionen werden farblich markiert, wobei eine Aktion auch bei mehrfacher Ausführung die gleiche Farbe erhält.
 Im oberen Abschnitt gibt es eine einfache Übersicht des Plans: welche Aktionen wurden wann ausgeführt und mit welchen Parametern.
 Im unteren Abschnitt wird dargestellt, welche Instanzen, zu welchem Zeitpunkt, als Teil welcher Aktion genutzt wurden.
 \begin{figure}[ht!]
