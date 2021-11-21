@@ -193,6 +193,33 @@ Die Domäne enthält die allgemeinen Rahmenbedingungen für das Problem: Prädik
 Die Datei beginnt mit \verb|(define (domain name_der_domäne)|.\\
 Das Problem enthält die Informationen zu einem spezifischen Problem: Objekte, den Startzustand und das Ziel.
 Die Datei beginnt mit\\\verb|(define (problem name_des_problems) (:domain name_der_domäne)|.\\
+Um sicherzustellen, dass nur bestimmte Objekte für bestimmte Parameter in Frage kommen (es kann mit der \emph{move} Aktion nur eine Person bewegt werden und der Start und das Ziel sind Orte) wurden ursprünglich weitere Prädikate genutzt um Objekte zu typisieren.
+Für das aktuelle Beispiel wären das die Prädikate \emph{location(x)} und \emph{person(x)}.
+Die Aktion \emph{move} wird dann um entsprechende Vorbedingungen erweitert (s. Listing~\ref{code:pddlactiontypepredicates}).
+\begin{lstlisting}[caption={Move Aktion mit Prädikaten zur Typisierung},language=pddl,label=code:pddlactiontypepredicates]
+(:action move
+    :parameters (?p ?loc_from ?loc_to)
+    :precondition (and (person ?p)
+                        (location ?loc_from)
+                        (location ?loc_to)
+                        (person_at ?p ?loc_from))
+    :effect (and (person_at ?p ?loc_to)
+                (not (person_at ?p ?loc_from))))
+\end{lstlisting}
+Um dies zu vereinfachen, wurde mit \ac{PDDL} 2.1 unter anderem direkte Typisierung eingeführt.
+In der Domäne werden die möglichen Typen deklariert, Objekte werden mit einem Typ initialisert und Aktionen können Parameter auf einen Typ beschränken (s. Listing~\ref{code:pddltypes})
+\begin{lstlisting}[caption={Typ Unterstützung in \ac{PDDL} 2.1},language=pddl,label=code:pddltypes]
+(:types person
+        location)
+(:objects kitchen supermarket - location
+          fabian - person)
+(:action move
+    :parameters (?p - person ?loc_from - location ?loc_to - location)
+    :precondition (and (person_at ?p ?loc_from))
+    :effect (and (person_at ?p ?loc_to)
+                (not (person_at ?p ?loc_from))))
+\end{lstlisting}
+Eine weitere Neuerung in \ac{PDDL} ist die \emph{durative action} zur Modellierung von Aktionen mit einer Dauer für das temporale Planen.\\
 
 \subsubsection{PDDL-Plugin für VS Code}
 - nach Implementierung verschieben?\\
