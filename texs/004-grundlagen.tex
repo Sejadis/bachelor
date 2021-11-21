@@ -155,25 +155,25 @@ Die Beschreibung des Problems setzt sich aus folgenden grundlegenden Komponenten
     \item Ziel
 \end{itemize}
 Objekte sind Dinge in der Welt die für die Planung relevant sind.
-Dies können bspw. Orte oder Personen sein und werden in \ac{PDDL} entsprechend Listing~\ref{code:pddlobjects} beschrieben.
-\begin{lstlisting}[caption={Objektbeschreibung in PDDL},language=pddl,label=code:pddlobjects]
+Dies können bspw.\ Orte oder Personen sein und werden in \ac{PDDL} entsprechend Listing~\ref{lst:pddlobjects} beschrieben.
+\begin{lstlisting}[caption={Objektbeschreibung in PDDL},language=pddl,label={lst:pddlobjects}]
 (:objects kitchen supermarket
           fabian)
 \end{lstlisting}
 Prädikate sind Eigenschaften, die Objekte haben können.
-Eine Person kann sich an einem Ort befinden oder eine bestimmte Größe haben (s. Listing~\ref{code:pddlpredicates}).
-\begin{lstlisting}[caption={Prädikatbeschreibung in PDDL},language=pddl,label=code:pddlpredicates]
+Eine Person kann sich an einem Ort befinden oder eine bestimmte Größe haben (s. Listing~\ref{lst:pddlpredicates}).
+\begin{lstlisting}[caption={Prädikatbeschreibung in PDDL},language=pddl,label={lst:pddlpredicates}]
 (:predicates (person_at ?person ?location)
             (tall ?person))
 \end{lstlisting}
 Der Startzustand ist die Beschreibung der Welt zu Beginn der Planungsaufgabe.
-Er besteht aus einer Menge von Instanzen von Prädikaten, also Prädikate die an Objekte gebunden sind (s. Listing~\ref{code:pddlinit}).
-\begin{lstlisting}[caption={Startzustand in PDDL},language=pddl,label=code:pddlinit]
+Er besteht aus einer Menge von Instanzen von Prädikaten, also Prädikate die an Objekte gebunden sind (s. Listing~\ref{lst:pddlinit}).
+\begin{lstlisting}[caption={Startzustand in PDDL},language=pddl,label={lst:pddlinit}]
 (:init (person_at fabian kitchen))
 \end{lstlisting}
 Aktionen sind die vorhandenen Möglichkeiten, den Zustand der Welt zu verändern.
-Diese entsprechen den in Abschnitt~\ref{chap:strips} beschriebenen Aktionen mit einer Menge von Vorbedingungen und einer Menge von Effekten (s. Listing \ref{code:pddlaction}).
-\begin{lstlisting}[caption={Aktion um eine Person von einem Ort zum anderen zu bewegen in PDDL},language=pddl,label=code:pddlaction]
+Diese entsprechen den in Abschnitt~\ref{chap:strips} beschriebenen Aktionen mit einer Menge von Vorbedingungen und einer Menge von Effekten (s. Listing \ref{lst:pddlaction}).
+\begin{lstlisting}[caption={Aktion um eine Person von einem Ort zum anderen zu bewegen in PDDL},language=pddl,label={lst:pddlaction}]
 (:action move
     :parameters (?p ?loc_from ?loc_to)
     :precondition (and (person_at ?p ?loc_from))
@@ -195,8 +195,8 @@ Das Problem enthält die Informationen zu einem spezifischen Problem: Objekte, d
 Die Datei beginnt mit\\\verb|(define (problem name_des_problems) (:domain name_der_domäne)|.\\
 Um sicherzustellen, dass nur bestimmte Objekte für bestimmte Parameter in Frage kommen (es kann mit der \emph{move} Aktion nur eine Person bewegt werden und der Start und das Ziel sind Orte) wurden ursprünglich weitere Prädikate genutzt um Objekte zu typisieren.
 Für das aktuelle Beispiel wären das die Prädikate \emph{location(x)} und \emph{person(x)}.
-Die Aktion \emph{move} wird dann um entsprechende Vorbedingungen erweitert (s. Listing~\ref{code:pddlactiontypepredicates}).
-\begin{lstlisting}[caption={Move Aktion mit Prädikaten zur Typisierung},language=pddl,label=code:pddlactiontypepredicates]
+Die Aktion \emph{move} wird dann um entsprechende Vorbedingungen erweitert (s. Listing~\ref{lst:pddlactiontypepredicates}).
+\begin{lstlisting}[caption={Move Aktion mit Prädikaten zur Typisierung},language=pddl,label={lst:pddlactiontypepredicates}]
 (:action move
     :parameters (?p ?loc_from ?loc_to)
     :precondition (and (person ?p)
@@ -207,8 +207,8 @@ Die Aktion \emph{move} wird dann um entsprechende Vorbedingungen erweitert (s. L
                 (not (person_at ?p ?loc_from))))
 \end{lstlisting}
 Um dies zu vereinfachen, wurde mit \ac{PDDL} 2.1 unter anderem direkte Typisierung eingeführt.
-In der Domäne werden die möglichen Typen deklariert, Objekte werden mit einem Typ initialisert und Aktionen können Parameter auf einen Typ beschränken (s. Listing~\ref{code:pddltypes})
-\begin{lstlisting}[caption={Typ Unterstützung in \ac{PDDL} 2.1},language=pddl,label=code:pddltypes]
+In der Domäne werden die möglichen Typen deklariert, Objekte werden mit einem Typ initialisert und Aktionen können Parameter auf einen Typ beschränken (s. Listing~\ref{lst:pddltypes})
+\begin{lstlisting}[caption={Typ Unterstützung in \ac{PDDL} 2.1},language=pddl,label={lst:pddltypes}]
 (:types person
         location)
 (:objects kitchen supermarket - location
