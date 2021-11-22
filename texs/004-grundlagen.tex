@@ -116,7 +116,8 @@ Planung (auch Handlungsplanung) ist ein Bereich der Künstlichen Intelligenz, we
 \subsubsection{Stanford Research Institute Problem Solver}{\label{chap:strips}}
 Der \ac{STRIPS} ist ein automatischer Planer, welcher von Richard Fikes und Nils Nilsson 1971 entwickelt wurde~\cite{FIKES1971189}.
 Mit dem gleichen Namen wird auch die Sprache bezeichnet, welche als Eingabe für diesen Planer genutzt wird.
-In diesem Abschnitt wird nur auf die Sprache eingegangen, welche die Grundlage vieler weiterer Sprachen zur Darstellung von Planungsdomänen und -problemen ist.\\
+In diesem Abschnitt wird zunächst auf die Sprache eingegangen, welche die Grundlage vieler weiterer Sprachen zur Darstellung von Planungsdomänen und -problemen ist.
+Anschließend wird der von \ac{STRIPS} genutzte Algorithmus beschrieben.\\
 Ein \ac{STRIPS}-Modell besteht aus 3 Teilen:
 \begin{itemize}
     \item Startzustand
@@ -223,10 +224,6 @@ Eine weitere Neuerung in \ac{PDDL} ist die \emph{durative action} zur Modellieru
 
 \subsubsection{PDDL-Plugin für VS Code}
 - nach Implementierung verschieben?\\
-- Installation\\
-- Nutzung / Ausführung\\
-- Pfad zur popf executable im foxy ordner\\
-- Screenshot mit Bsp. für Planausgabe und Visualisierung\\
 Im Marketplace von Visual Studio Code ist ein PDDL-Plugin von Jan Dolejsi verfügbar.
 Dieses vereinfacht die Entwicklung und das Testen von Domänen und Problemen im PDDL Format.
 Es beinhaltet Syntax-Highlighting und Snippets, sowie die Möglichkeit direkt Pläne zu suchen und zu visualisieren.
@@ -251,6 +248,36 @@ Im unteren Abschnitt wird dargestellt, welche Instanzen, zu welchem Zeitpunkt, a
     \label{fig:pluginvis}
 \end{figure}
 \subsubsection{Partial Order Planning}
+\ac{POP} ist eine Form des Planens, in dem die Aktionen eines Plans nur soweit geordnet sind, wie es notwendig ist \cite{dyer_2003}.
+Dies steht im Gegensatz zu Total-Order Planern wie \ac{STRIPS}.\\
+Es wird nach dem Principle Of Least Commitment verfahren.
+Das bedeutet, dass Entscheidungen soweit wie möglich aufgeschoben und erst getroffen werden, wenn es absolut nötig ist.
+Dies umfasst nicht nur die Reihenfolge von Aktionen, sondern auch die Bindung von Variablen.\\
+Ein Partial-Order Plan kann als 4-Tupel \cite{grastien} beschrieben werden.
+\begin{itemize}
+    \item eine Menge von Aktionen
+    \item eine Menge von Einschränkungen der Reihenfolge
+    \item eine Menge von kausalen Zusammenhängen
+    \item eine Menge offener Vorbedingungen (Vorbedingungen einer Aktion, die nicht durch eine andere Aktion erfüllt werden)
+\end{itemize}
+Die Menge der Aktionen enthält Instanzen von Aktionen der Domäne.
+Eine Aktion der Domäne kann daher mehrfach vorkommen.
+Einschränkungen der Reihenfolge $A < B$ bilden ab, dass Aktion $A$ vor Aktion $B$ ausgeführt werden muss.
+Zyklische Einschränkungen sind nicht erlaubt.
+Ein kausaler Zusammenhang $A \xrightarrow{\alpha} B$ beschreibt, das die Aktion $A$ die Vorbedingung $\alpha$ der Aktion $B$ erfüllt.\\
+Die Suche erfolgt im Plan Space.
+Jeder Knoten im Graph entspricht einem Teilplan und jede Kante einer Änderung des einen zum anderen Plan.
+Dies kann durch das Hinzufügen eines weiteren Schrittes oder einer Einschränkung sowie der Bindung einer Variable geschehen.
+Die Wurzel des Graphen besteht aus einem Plan mit zwei Schritten, die den Startzustand und das Ziel darstellen.
+Der Startzustand wird durch eine Aktion repräsentiert, die keine Vorbedingungen und alle Fakten als Effekt hat.
+Das Ziel erhält alle Zielfakten als Vorbedingung und hat keinen Effekt.
+Zusätzlich enthält der Plan die Einschränkung, dass die Aktion für den Start vor der für das Ziel ausgeführt werden muss ($start < ziel$).\\
+Ein Plan ist eine Lösung, wenn \cite{grastien}:
+\begin{itemize}
+    \item keine Aktion des Plans eine offene Vorbedingung hat
+    \item und wenn keine Threats existieren
+\end{itemize}
+
 \subsubsection{Forward Chaining Partial Order Planning}
 \subsubsection{Partial Order Planning Forward}
 ~\citep{popf}
