@@ -282,6 +282,8 @@ Ein Plan ist eine Lösung, wenn \cite{grastien}:
 \subsubsection{Partial Order Planning Forward}
 ~\citep{popf}
 \subsubsection{Behavior Tree}
+\acp{BT} sind ein modulares System, das in der Videospieleindustrie entwickelt wurde~\cite{bt_book}.
+Sie ermöglichen aus simplen Aktionen komplexe Verhaltensmuster zu modelieren ohne das Aktionen Kenntnis über andere Aktionen haben müssen~\cite{bt_robotics}.
 Ein \ac{BT} ist ein gerichteter azyklischer Graph $G(V,E)$ mit $|V|$ Knoten und $|E|$ Kanten.
 Ein Eltern Knoten von einem Paar verbundener Knoten ist der, von dem die Kante ausgeht.
 Der Knoten mit der eingehenden Kante ist ein Kind Knoten.
@@ -290,9 +292,9 @@ Ein Knoten ohne Eltern heißt Wurzel.
 In einem \ac{BT} gibt es genau eine Wurzel mit genau einem Kind~\cite{bt_1}.\\
 Die Ausführung eines \ac{BT} beginnt bei der Wurzel, die in einem bestimmten Intervall ein Signal erzeugt, dass die Ausführung eines Knoten erlaubt (''tick'').
 Dieses Signal wird an das Kind der Wurzel gesendet.
-Ein Knoten wird ausgeführt, wenn es dieses Signal erhält und auch nur dann.
-Wird ein Knoten ausgeführt, gibt es einen Status zurück.
-Der Status ist einer von drei möglichen~\cite{bt_book}:
+Ein Knoten wird ausgeführt, wenn es dieses Signal erhält und auch nur dann.~\cite{bt_book}
+Wird ein Knoten ausgeführt, gibt er einen Status zurück.
+Der Status ist einer von drei möglichen~\cite{bt_uav}:
 \begin{itemize}
     \item Running: die Ausführung läuft noch
     \item Success: die Ausführung war erfolgreich
@@ -330,3 +332,9 @@ Beispiele für Dekoratoren sind:
     \item Invertierung/Negation: der \emph{Success} und \emph{Failure} Status des Kinds wird invertiert
     \item Zeitbeschränkung: gibt das Kind den Status \emph{Running} für länger als eine benutzerdefinierter Zeitspanne $T$ zurück, wird \emph{Failure} zurückgegeben und das Kind nicht mehr ausgeführt
 \end{itemize}\cite{bt_book}
+- Visualisierungs bsp.\\
+\subsubsection*{PlanSys2}
+- Theoretischen/Grundlagen-Teil von Impl. hierher verschieben\\
+- Aufbau\\
+- Funktionsweise BT\\
+- config für andere Planer\\
