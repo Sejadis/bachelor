@@ -282,3 +282,51 @@ Ein Plan ist eine Lösung, wenn \cite{grastien}:
 \subsubsection{Partial Order Planning Forward}
 ~\citep{popf}
 \subsubsection{Behavior Tree}
+Ein \ac{BT} ist ein gerichteter azyklischer Graph $G(V,E)$ mit $|V|$ Knoten und $|E|$ Kanten.
+Ein Eltern Knoten von einem Paar verbundener Knoten ist der, von dem die Kante ausgeht.
+Der Knoten mit der eingehenden Kante ist ein Kind Knoten.
+Knoten ohne Kinder heißen Blätter.
+Ein Knoten ohne Eltern heißt Wurzel.
+In einem \ac{BT} gibt es genau eine Wurzel mit genau einem Kind~\cite{bt_1}.\\
+Die Ausführung eines \ac{BT} beginnt bei der Wurzel, die in einem bestimmten Intervall ein Signal erzeugt, dass die Ausführung eines Knoten erlaubt (''tick'').
+Dieses Signal wird an das Kind der Wurzel gesendet.
+Ein Knoten wird ausgeführt, wenn es dieses Signal erhält und auch nur dann.
+Wird ein Knoten ausgeführt, gibt es einen Status zurück.
+Der Status ist einer von drei möglichen~\cite{bt_book}:
+\begin{itemize}
+    \item Running: die Ausführung läuft noch
+    \item Success: die Ausführung war erfolgreich
+    \item Failure: die Ausführung ist fehlgeschlagen
+\end{itemize}
+Blätter sind Ausführungsknoten und haben einen der folgenden Typen:
+\begin{itemize}
+    \item Aktion
+    \item Bedingung
+\end{itemize}
+Knoten mit Kindern, mit Ausnahme der Wurzel, sind Kontrollfluss Knoten und haben einen der folgenden Typen~\cite{bt_1}:
+\begin{itemize}
+    \item Selektor
+    \item Sequenz
+    \item Parallel
+    \item Dekorator
+\end{itemize}
+Ein Selektor Knoten führt seine Kinder der Reihe nach aus bis das erste einen Status \emph{Running} oder \emph{Success} zurückgibt.
+Nachfolgende Kinder werden dann nicht mehr ausgeführt und der Selektor gibt den entsprechenden Status zurück.
+Wurden alle Kinder ausgeführt und keins hat einen Status \emph{Running} oder \emph{Success} zurückgegeben, gibt der Selektor den Status \emph{Failure} zurück.\\
+Ein Sequenz Knoten führt seine Kinder der Reihe nach aus, bis das erste einen Status \emph{Running} oder \emph{Failure} zurückgibt.
+Nachfolgende Kinder werden dann nicht mehr ausgeführt und die Sequenz gibt den entsprechenden Status zurück.
+Wurden alle Kinder ausgeführt und keins hat einen Status \emph{Running} oder \emph{Failure} zurückgegeben, gibt die Sequenz den Status \emph{Success} zurück.\\
+Ein Parallel Knoten führt alle Kinder aus, ohne auf den Status des vorherigen zu warten.
+Überschreitet die Anzahl der Kinder die \emph{Success} zurückgeben einen benutzerdefinierten Wert $S$ gibt der Knoten \emph{Success} zurück.
+Haben $N-M+1$ Kinder \emph{Failure} zurückgegeben, wobei $N$ die Anzahl der Kinder ist, wird \emph{Failure} zurückgeben, da der Wert $S$ nicht mehr erreicht werden kann~\cite{bt_book}.
+Alternativ kann ein zweiter benutzerdefinierter Wert $F$ eingeführt werden.
+Überschreitet die Anzahl der Kinder die \emph{Failure} zurückgeben diesen Wert $F$ wird direkt \emph{Failure} zurückgegeben~\cite{bt_1}.
+$S$ und $F$ müssen $\leq M$ sein.
+Wird keiner dieser beiden Werte überschritten, wird \emph{Running} zurückgegeben.\\
+Ein Dekorator Knoten hat genau ein Kind.
+Er kann durch eine Bedingung entscheiden ob das Kind ausgeführt wird und kann einen modifizierten Status zurück geben.
+Beispiele für Dekoratoren sind:
+\begin{itemize}
+    \item Invertierung/Negation: der \emph{Success} und \emph{Failure} Status des Kinds wird invertiert
+    \item Zeitbeschränkung: gibt das Kind den Status \emph{Running} für länger als eine benutzerdefinierter Zeitspanne $T$ zurück, wird \emph{Failure} zurückgegeben und das Kind nicht mehr ausgeführt
+\end{itemize}\cite{bt_book}
