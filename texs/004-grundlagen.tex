@@ -271,15 +271,31 @@ Dies kann durch das Hinzufügen eines weiteren Schrittes oder einer Einschränku
 Die Wurzel des Graphen besteht aus einem Plan mit zwei Schritten, die den Startzustand und das Ziel darstellen.
 Der Startzustand wird durch eine Aktion repräsentiert, die keine Vorbedingungen und alle Fakten als Effekt hat.
 Das Ziel erhält alle Zielfakten als Vorbedingung und hat keinen Effekt.
-Zusätzlich enthält der Plan die Einschränkung, dass die Aktion für den Start vor der für das Ziel ausgeführt werden muss ($start < ziel$).\\
+Zusätzlich enthält der Plan die Einschränkung, dass die Aktion für den Start vor der für das Ziel ausgeführt werden muss ($Start < Ziel$).\\
 Ein Plan ist eine Lösung, wenn \cite{grastien}:
 \begin{itemize}
     \item keine Aktion des Plans eine offene Vorbedingung hat
     \item und wenn keine Threats existieren
 \end{itemize}
+Ist der aktuelle Plan keine Lösung werden folgende Schritte vorgenommen~\cite{grastien}:
+\begin{itemize}
+    \item eine offene Vorbedingung $p$ einer Aktion $B$ wählen
+    \item eine existierende Aktion $A$, die die Vorbedingung $p$ erfüllt wählen oder eine neue Aktion $A$ erzeugen
+    \item den kausalen Zusammenhang $A \xrightarrow{p} B$ und die Reihenfolge $A < B$ hinzufügen
+    \item wenn $A$ eine neue Aktion ist, die Reihenfolge $Start < A$ hinzufügen
+    \item Probleme zwischen dem neuen kausalen Zusammenhang und den existierenden Aktionen lösen sowie zwischen den existierenden kausalen Zusammenhang und $A$, wenn $A$ eine neue Aktion ist.
+    \item entsteht durch das Hinzufügen der Reihenfolgen ein Zyklus kann der Plan keine Lösung mehr werden
+\end{itemize}
+Ein Problem ist eine Beziehung zwischen einer Aktion $C$ und einem kausalen Zusammenhang  $A \xrightarrow{p} B$, bei der die Aktion $C$ einen Effekt $~p$ hat.
+Sollte $C$ nach $A$ aber vor $B$ ausgeführt werden, ist die Vorbedingung $p$ für $B$ nicht mehr gegeben.
+Probleme können durch \emph{Promotion} oder \emph{Demotion} gelöst werden~\cite{dyer_2003}.
+Bei \emph{Promotion} wird der problematische Schritt $C$ nach dem kausalen Zusammenhang ausgeführt: die Reihenfolge $B < C$ wird hinzugefügt.
+Bei \emph{Demotion} wird der problematische Schritt $C$ vor dem kausalen Zusammenhang ausgeführt: die Reihenfolge $C < A$ wird hinzugefügt.
 
 \subsubsection{Forward Chaining Partial Order Planning}
+- Unterschiede mit vorwärtsverkettung
 \subsubsection{Partial Order Planning Forward}
+- Umsetzung des alg im planer
 ~\citep{popf}
 \subsubsection{Behavior Tree}
 \acp{BT} sind ein modulares System, das in der Videospieleindustrie entwickelt wurde~\cite{bt_book}.
