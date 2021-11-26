@@ -293,7 +293,36 @@ Bei \emph{Promotion} wird der problematische Schritt $C$ nach dem kausalen Zusam
 Bei \emph{Demotion} wird der problematische Schritt $C$ vor dem kausalen Zusammenhang ausgeführt: die Reihenfolge $C < A$ wird hinzugefügt.
 
 \subsubsection{Forward Chaining Partial Order Planning}
-- Unterschiede mit vorwärtsverkettung
+Die Prinzipien des \ac{POP} sollen nun mit Vorwärtsverkettung kombiniert werden.
+Speziell soll das temporale Planen mit Metriken optimiert werden.
+Für Vorwärtsverkettung mit einem Total-Order Plan können Zustände als Tupel $(F,V,Q,P,C)$ beschrieben werden~\citep{popf}:
+\begin{itemize}
+    \item F ist eine Menge von Fakten die im Zustand gelten
+    \item V enthält die Werte numerischer Variablen
+    \item Q ist eine List von Aktionen die begonnen haben aber noch nicht beendet sind
+    \item P ist der Plan um den Zustant zu erreichen
+    \item C ist eine Liste aller zeitlichen Einschänkungen der Schritte in $P$
+\end{itemize}
+Um eine Aktion zum Plan hinzuzufügen müssen deren Start- und Endpunkte hinzugefügt werdern.
+Dies muss nicht in aufeinander folgenden Schritten geschehen.
+Wird eine Aktion hinugefügt werden $F$ und $V$ entsprechend der Effekte angepasst.
+Die Vorraussetzung um eine Aktion hinzufügen zu können ist, dass Q keine Aktion enthält, zu der die Effekte der neuen Aktion einen Konflikt darstellen würden.\\
+Vorwärtsverkettung im Zustandsraum hat, durch den Total-Order Plan, den Vorteil, dass nicht explizit nach Problemen gesucht werden muss.
+Neue Aktionen werden immer am Ende hinzugefügt, wodurch sie kein Problem für die Vorbedingungen und Effekt früherer Aktionen darstellen können.
+Gleichzeitig kann keine folgende Aktion ein Problem für diese darstellen.
+Dieser Vorteil kommt mit dem Nachteil der frühen Bindung und einer festgelegten Reihenfolge zwischen Aktion, zwischen denen kein Zusammenhang besteht.\\
+Es soll ein Kompromiss zwischen den Vorteil von Total- und Partial-Order Planung gefunden werden.
+Dem Tupel werden weitere Elemente hinzugefügt:
+\begin{itemize}
+    \item $F^+(F^-)$, wobei $F^+(p)(F^-(p))$ den Index eines Schrittes $a$ angeben, indem der Fakt $p$ als letztes hinzugefügt (oder gelöscht) wurde
+    \item $FP$, wobei $FP(p)$ eine Menge von Paaren $\langle i,d \rangle \in (\mathbb{N}_0 \times \{0,\epsilon\})$:\\
+    \begin{itemize}
+        \item $\langle i,0 \rangle \in FP(p)$ beschreibt, dass Schritt $i$ am Ende eines offenen Intervalls liegt, in dem $p$ wahr sein muss.\\
+        In \ac{PDDL} gibt es diese für Aktionen mit der \emph{over all} Bedingung $p$, wobei $i$ der Endpunkt dieser Aktion ist.
+        \item $\langle i,\epsilon \rangle \in FP(p)$ beschreibt, dass Schritt $i$ der Start eines Intervalls ist, indem $p$ wahr sein muss.\\
+        Dies entspricht \emph{at start} oder \emph{at end} Bedingungen in \ac{PDDL} die relevant für den Schritt $i$ sind.
+    \end{itemize}
+\end{itemize}
 \subsubsection{Partial Order Planning Forward}
 - Umsetzung des alg im planer
 ~\citep{popf}
