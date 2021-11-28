@@ -121,7 +121,7 @@ Anschließend wird der von \ac{STRIPS} genutzte Algorithmus beschrieben.\\
 Ein \ac{STRIPS}-Modell besteht aus 3 Teilen:
 \begin{itemize}
     \item Startzustand
-    \item Zielzustand
+    \item Ziele
     \item Aktionen
 \end{itemize}
 Aktionen bestehen wiederum aus:
@@ -129,20 +129,38 @@ Aktionen bestehen wiederum aus:
     \item Vorbedingungen
     \item Effekten
 \end{itemize}
-Ein \ac{STRIPS}-Modell kann mathematisch als 4-Tupel \((P,I,O,G)\) beschrieben werden \cite{stripsdef}:
+Ein \ac{STRIPS}-Modell kann mathematisch als 4-Tupel \((P,O,I,G)\) beschrieben werden \cite{stripsdef}:
 \begin{enumerate}
-    \item \(P\): eine Menge von Bedingungen
-    \item \(I\):
-    \item \(O\): der Startzustand, eine Menge von Bedingungen, die wahr sind
-    \item \(G\): der Zielzustand, ein Paar \((N,M)\)
+    \item \(P\): eine endliche Menge von Bedingungen
+    \item \(O\): eine endliche Menge von Aktionen (auch Operatoren) mit der Form $Pre \Rightarrow Post$:
+    \item \(I\): der Startzustand und $I\subseteq P$
+    \item \(G\): die Ziele
 \end{enumerate}
-Es gilt die \emph{Closed World Assumption (CWA)}: alles was nicht explizit als wahr beschrieben ist, gilt als falsch.
-
-%Bedingungen werden als Prädikate dargestellt: \verb|Geöffnet(Baumarkt)| beschreibt die Bedingung, dass ein Subjekt \emph{Baumarkt} die Eigenschaft \emph{Geöffnet} hat.
-Ein Plan besteht aus mehreren Aktionen, welche, in der gegebenen Reihenfolge ausgeführt, vom Startzustand zu einem Zustand führen, von dem der Zielzustand eine Teilmenge ist.\\
+Es gilt die \emph{Closed World Assumption (CWA)}: alles was nicht explizit als wahr beschrieben ist, gilt als falsch.\\
+$P$ ist die Menge aller Bedingungen, die relevant sind.
+Jeder Zustand ist eine Teilmenge $S\subseteq P$.\\
+$O$ ist die Menge der Aktionen die einen Zustand in einen anderen ändern können.
 Aktionen sind 4-Tupel, bei dem jedes Element eine Menge von Bedingungen sind.
-Die ersten zwei Mengen beschreiben die Vorbedingungen: Bedingungen die wahr sein müssen sowie Bedingungen, die falsch sein müssen.
-Die letzten beiden Mengen beschreiben den Effekt, den die Aktion nach ihrer Ausführung auf einen Zustand hat: Bedingungen die wahr werden und Bedingungen die falsch werden.
+Die ersten zwei Mengen beschreiben die Vorbedingungen ($Pre$): Bedingungen die wahr sein müssen ($o^+$) sowie Bedingungen, die falsch sein müssen ($o^-$).
+Die letzten beiden Mengen beschreiben den Effekt, den die Aktion nach ihrer Ausführung auf einen Zustand hat ($Post$): Bedingungen die wahr werden ($o_+$) und Bedingungen die falsch werden ($o_-$).\\
+$I$ beschreibt, welche Bedingungen anfangs wahr oder falsch sind.
+Eine Bedingung $p\in P$ ist anfangs wahr, wenn $p\in I$ und sonst falsch.\\
+$G$ ist die Menge der Bedingungen die erreicht werden soll, bestehend aus den Zielen die wahr sein sollen ($G_+$) und denen die falsch sein sollen ($G_-$).
+Ein Zustand $S\subseteq P$  ist ein Zielzustand, wenn $G_+\subseteq S$ und $G_-\cap S =\emptyset$.\\
+Ein Plan besteht aus einer Menge von Aktionen,die vom Startzustand zu einem Zielzustand führen.
+Dieser Plan ist ein \emph{Total-Order} Plan: alle Aktionen haben eine feste Reihenfolge innerhalb des Plans.
+Um einen Plan zu finden wird ein Suchbaum erstellt.
+Die Suche findet im Zustandsraum statt.
+Jeder Knoten ist ein Zustand.
+Jede Kante ist die Aktion um den Zustand bzw. Knoten von der die Kante ausgeht zu dem Zustand zu überführen, zu dem die Kante geht.
+Es wird die GPS Strategie angewandt, um Unterschiede zwischen dem aktuellen Zustand und dem Ziel zu extrahieren und relevante Aktionen für diese Unterschiede zu finden~\cite{FIKES1971189}.\\
+\ac{STRIPS} beginnt damit, das Ziel $G_0$ für den Startzustand $M_0$ zu beweisen.
+Gelingt dies, ist das Ziel bereits erreicht und kein Plan notwendig.
+Ist das Ziel nicht beweisbar, wird der Unterschied zwischen $M_0$ und $G_0$ ermittelt und von diesem aus weiter gesucht.
+Es wird eine Aktion gesucht, die diesen Unterschied weiter verringern kann.
+Vorbedingungen dieser Aktion werden als Unterziel genutzt.
+Kann ein (Unter)Ziel für den Zustand $M_0$ bewiesen werden, werden die Effekte der Aktion auf $M_0$ angewandt und es entsteht ein Zustand $M_1$.
+Dieses Verfahren wiederholt sich bis ein Zustand ensteht, in dem das Ziel $G_0$ bewiesen werden kann.
 \subsubsection{Planning Domain Definition Language}
 Die \ac{PDDL} ist eine Sprache zur Modellierung von Planungsaufgaben.
 Im Rahmen dieser Arbeit wird nicht auf alle Aspekte von \ac{PDDL} eingegangen.
@@ -286,7 +304,7 @@ Ist der aktuelle Plan keine Lösung werden folgende Schritte vorgenommen~\cite{g
     \item Probleme zwischen dem neuen kausalen Zusammenhang und den existierenden Aktionen lösen sowie zwischen den existierenden kausalen Zusammenhang und $A$, wenn $A$ eine neue Aktion ist.
     \item entsteht durch das Hinzufügen der Reihenfolgen ein Zyklus kann der Plan keine Lösung mehr werden
 \end{itemize}
-Ein Problem ist eine Beziehung zwischen einer Aktion $C$ und einem kausalen Zusammenhang  $A \xrightarrow{p} B$, bei der die Aktion $C$ einen Effekt $~p$ hat.
+Ein Problem ist eine Beziehung zwischen einer Aktion $C$ und einem kausalen Zusammenhang  $A \xrightarrow{p} B$, bei der die Aktion $C$ einen Effekt $\neg p$ hat.
 Sollte $C$ nach $A$ aber vor $B$ ausgeführt werden, ist die Vorbedingung $p$ für $B$ nicht mehr gegeben.
 Probleme können durch \emph{Promotion} oder \emph{Demotion} gelöst werden~\cite{dyer_2003}.
 Bei \emph{Promotion} wird der problematische Schritt $C$ nach dem kausalen Zusammenhang ausgeführt: die Reihenfolge $B < C$ wird hinzugefügt.
@@ -300,13 +318,13 @@ Für Vorwärtsverkettung mit einem Total-Order Plan können Zustände als Tupel 
     \item F ist eine Menge von Fakten die im Zustand gelten
     \item V enthält die Werte numerischer Variablen
     \item Q ist eine List von Aktionen die begonnen haben aber noch nicht beendet sind
-    \item P ist der Plan um den Zustant zu erreichen
-    \item C ist eine Liste aller zeitlichen Einschänkungen der Schritte in $P$
+    \item P ist der Plan um den Zustand zu erreichen
+    \item C ist eine Liste aller zeitlichen Einschränkungen der Schritte in $P$
 \end{itemize}
-Um eine Aktion zum Plan hinzuzufügen müssen deren Start- und Endpunkte hinzugefügt werdern.
+Um eine Aktion zum Plan hinzuzufügen müssen deren Start- und Endpunkte hinzugefügt werden.
 Dies muss nicht in aufeinander folgenden Schritten geschehen.
-Wird eine Aktion hinugefügt werden $F$ und $V$ entsprechend der Effekte angepasst.
-Die Vorraussetzung um eine Aktion hinzufügen zu können ist, dass Q keine Aktion enthält, zu der die Effekte der neuen Aktion einen Konflikt darstellen würden.\\
+Wird eine Aktion hinzugefügt werden $F$ und $V$ entsprechend der Effekte angepasst.
+Die Voraussetzung um eine Aktion hinzufügen zu können ist, dass Q keine Aktion enthält, zu der die Effekte der neuen Aktion einen Konflikt darstellen würden.\\
 Vorwärtsverkettung im Zustandsraum hat, durch den Total-Order Plan, den Vorteil, dass nicht explizit nach Problemen gesucht werden muss.
 Neue Aktionen werden immer am Ende hinzugefügt, wodurch sie kein Problem für die Vorbedingungen und Effekt früherer Aktionen darstellen können.
 Gleichzeitig kann keine folgende Aktion ein Problem für diese darstellen.
