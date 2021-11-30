@@ -265,7 +265,7 @@ Im unteren Abschnitt wird dargestellt, welche Instanzen, zu welchem Zeitpunkt, a
     \caption{Visualisierung eines Plans mit dem PDDL-Plugin}
     \label{fig:pluginvis}
 \end{figure}
-\subsubsection{Partial Order Planning}
+\subsubsection{Partial Order Planning}{\label{section:pop}}
 \ac{POP} ist eine Form des Planens, in dem die Aktionen eines Plans nur soweit geordnet sind, wie es notwendig ist \cite{dyer_2003}.
 Dies steht im Gegensatz zu Total-Order Planern wie \ac{STRIPS}.\\
 Es wird nach dem Principle Of Least Commitment verfahren.
@@ -312,7 +312,7 @@ Bei \emph{Demotion} wird der problematische Schritt $C$ vor dem kausalen Zusamme
 
 \subsubsection{Forward Chaining Partial Order Planning}
 Die Prinzipien des \ac{POP} sollen nun mit Vorwärtsverkettung kombiniert werden.
-Speziell soll das temporale Planen mit Metriken optimiert werden.
+%Speziell soll das temporale Planen mit Metriken optimiert werden.
 Für Vorwärtsverkettung mit einem Total-Order Plan können Zustände als Tupel $(F,V,Q,P,C)$ beschrieben werden~\citep{popf}:
 \begin{itemize}
     \item F ist eine Menge von Fakten die im Zustand gelten
@@ -324,12 +324,12 @@ Für Vorwärtsverkettung mit einem Total-Order Plan können Zustände als Tupel 
 Um eine Aktion zum Plan hinzuzufügen müssen deren Start- und Endpunkte hinzugefügt werden.
 Dies muss nicht in aufeinander folgenden Schritten geschehen.
 Wird eine Aktion hinzugefügt werden $F$ und $V$ entsprechend der Effekte angepasst.
-Die Voraussetzung um eine Aktion hinzufügen zu können ist, dass Q keine Aktion enthält, zu der die Effekte der neuen Aktion einen Konflikt darstellen würden.\\
+Die Voraussetzung um eine Aktion hinzufügen zu können ist, dass $Q$ keine Aktion enthält, zu der die Effekte der neuen Aktion einen Konflikt darstellen würden.\\
 Vorwärtsverkettung im Zustandsraum hat, durch den Total-Order Plan, den Vorteil, dass nicht explizit nach Problemen gesucht werden muss.
 Neue Aktionen werden immer am Ende hinzugefügt, wodurch sie kein Problem für die Vorbedingungen und Effekt früherer Aktionen darstellen können.
 Gleichzeitig kann keine folgende Aktion ein Problem für diese darstellen.
 Dieser Vorteil kommt mit dem Nachteil der frühen Bindung und einer festgelegten Reihenfolge zwischen Aktion, zwischen denen kein Zusammenhang besteht.\\
-Es soll ein Kompromiss zwischen den Vorteil von Total- und Partial-Order Planung gefunden werden.
+Es soll ein Kompromiss zwischen den Vorteilen von Total- und Partial-Order Planung gefunden werden.
 Dem Tupel werden weitere Elemente hinzugefügt:
 \begin{itemize}
     \item $F^+(F^-)$, wobei $F^+(p)(F^-(p))$ den Index eines Schrittes $a$ angeben, indem der Fakt $p$ als letztes hinzugefügt (oder gelöscht) wurde
@@ -341,9 +341,14 @@ Dem Tupel werden weitere Elemente hinzugefügt:
         Dies entspricht \emph{at start} oder \emph{at end} Bedingungen in \ac{PDDL} die relevant für den Schritt $i$ sind.
     \end{itemize}
 \end{itemize}
-\subsubsection{Partial Order Planning Forward}
-- Umsetzung des alg im planer
-~\citep{popf}
+Diese Methodik wird in dem am King’s College London entwickelten Planer \ac{POPF} implementiert.
+%\subsubsection{Partial Order Planning Forward}
+%\ac{POPF} ist ein am King’s College London entwickelter Planer, der die in Abschnitt~\ref{section:pop} genannten Methoden implementiert~\citep{popf}.
+%Es wird ein temporaler \ac{RPG} genutzt.
+%Ein \ac{RPG} ist ein Planungsgraph, in dem negative Effekte von Aktionen ignoriert werden.
+%Der Graph besteht aus Aktions- und Faktenschichten, die sich abwechseln.
+%Die Wurzel des Graphen ist eine Faktenschicht, die den aktuellen Zustand abbildet.
+
 \subsubsection{Behavior Tree}
 \acp{BT} sind ein modulares System, das in der Videospieleindustrie entwickelt wurde~\cite{bt_book}.
 Sie ermöglichen aus simplen Aktionen komplexe Verhaltensmuster zu modelieren ohne das Aktionen Kenntnis über andere Aktionen haben müssen~\cite{bt_robotics}.
@@ -396,8 +401,23 @@ Beispiele für Dekoratoren sind:
     \item Zeitbeschränkung: gibt das Kind den Status \emph{Running} für länger als eine benutzerdefinierter Zeitspanne $T$ zurück, wird \emph{Failure} zurückgegeben und das Kind nicht mehr ausgeführt
 \end{itemize}\cite{bt_book}
 - Visualisierungs bsp.\\
-\subsubsection*{PlanSys2}
+\subsubsection{PlanSys2}
 - Theoretischen/Grundlagen-Teil von Impl. hierher verschieben\\
-- Aufbau\\
-- Funktionsweise BT\\
 - config für andere Planer\\
+\ac{PlanSys2} ist ein modulares Planungsframework für \ac{ROS2}.
+Ursprünglich als Nachfolger für ROSPlan~\cite{rosplan} geplant, bietet es viel umfangreichere Funktionen~\cite{plansys}.
+Hierfür werden unter anderem neue Funktionen von \ac{ROS2} wie LifeCycle Knoten oder Multicast Kommunikation genutzt.\\
+Eins der Designprinzipien bei der Entwicklung von \ac{PlanSys2} ist Modularität und Erweiterbarkeit.
+Alle Komponenten haben klar definierte Schnittstellen, wodurch sie einfach erweitert oder ausgetauscht werden können.\\
+Die Hauptkomponente ist der \emph{Planner} Knoten, der den tatsächlichen Planer aufruft.
+Verschiedene Planer können über Plugins aufgerufen werden, die beschreiben, wie der Planer aufzurufen ist und wie der generierte Plan zu verstehen ist.
+Standardmäßig sind \ac{POPF} sowie TFD (Temporal Fast Downward)~\cite{tfd} verfügbar und konfiguriert.\\
+Der \emph{Domain Expert} Knoten liest die Domäne im \ac{PDDL} Format ein.
+Er kann mehrere verschiedene Domänen zu einer kombinieren.
+Dies ermöglicht es mehrere modulare Packages zu nutzen, die jeweils nur den für sie relevanten Teil einer Domäne beinhalten sowie deren Aktionen  implementieren.
+Der Knoten dient zur Validierung (z.B. ob ein Prädikat, dass hinzugefügt werden soll mit den gegeben Objekten gültig ist) und dem Planer die Domäne zur Verfügung zu stellen.\\
+Der \emph{Problem Expert} Knoten enthält alle Informationen zum gegebenen Problem: Objekte, Prädikate, Funktionen und Ziele.
+Diese werden immer über den \emph{Domain Expert} validiert.
+Wenn ein Plan angefordert wird, werden die gespeicherten Informationen zu einem Problem im \ac{PDDL} Format konvertiert und dem \emph{Planner} Knoten zur Verfügung gestellt.\\
+Der \emph{Executor} Knoten ist dafür zuständig einen generierten Plan auszuführen.
+Der Plan wird in einen \ac{BT} konvertiert, der diesen ausführt.
