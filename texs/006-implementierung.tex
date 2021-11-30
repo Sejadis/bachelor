@@ -187,7 +187,20 @@ Hierbei werden die aktuellen Koordinaten auf 2 Dezimalstellen gerundet.\\
 Für alle benötigten Positionen wird ein Request erzeugt und einer Queue hinzugefügt.
 Der Auslöser, den nächsten Request zu senden ist jeweils das Ende der vorherigen Bewegung.\\
 Um Zugriff auf die aktuelle Position des OMX zu erhalten wird ein weiterer Subscriber für das Topic \verb|kinematics_pose| benötigt, welches eine Message vom Typ\\
-\verb|open_manipulator_msgs::msg::KinematicsPose| veröffentlicht.
+\verb|open_manipulator_msgs::msg::KinematicsPose| veröffentlicht.\\
+Um eine Beschädigung der Motoren zu vermeiden, soll die Bewegung bei einer Kollision abgebrochen werden.
+Hierfür sind zwei Teile nötig: die Kollisionserkennung sowie das Abbrechen der Bewegung.
+Für die Kollisionserkennung wird der Stromverbrauch der einzelnen Motoren genutzt.
+Dieser steigt, wenn der Motor mehr Leistung bringen muss, wenn versucht wird sich gegen ein Hindernis zu bewegen.\\
+Dieser ist in der Message des Topics \emph{joint\_states} als \emph{effort} enthalten.
+Die letzten $x$ Werte (konfigurierbar über die Variable \emph{EFFORT\_COUNT}, standardmäßig 10) werden für jeden Motor gespeichert (s. Zeile~\ref{code:line:effortsaving} in \ref{code:moveaction}) und ausgewertet (s. Zeile~\ref{code:line:efforteval} in \ref{code:moveaction}).
+Die Werte jedes Motors werden einzeln ausgewertet.
+Es wird das Maximum und das Minimum der Werte genommen und geprüft ob die absolute Differenz größer als der festgelegte Grenzwert (konfigurierbar über die Variable \emph{EFFORT\_THRESHOLD}, standardmäßig 500) ist.
+Ist dies für mindestens einen Motor der Fall gilt die Aktion als fehlgeschlagen und der entsprechende Status wird zurückgegeben (s. Zeile~\ref{code:line:effortfail} in \ref{code:moveaction}).
+Eine fehlgeschlagene Aktion resultiert gleichzeitig in einem fehlgeschlagenen Plan.
+Ein Abbrechen der Aktion verhindert jedoch nicht, dass der OMX versucht das aktuelle Bewegungsziel zu erreichen.
+Es wird ein neues Bewegungsziel erstellt, das sich an der aktuellen Position befindet.
+
 
 \subsubsection{Package}
 - pkg build config\\
