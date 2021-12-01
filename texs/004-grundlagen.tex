@@ -402,7 +402,6 @@ Beispiele für Dekoratoren sind:
 \end{itemize}\cite{bt_book}
 - Visualisierungs bsp.\\
 \subsubsection{PlanSys2}
-- Theoretischen/Grundlagen-Teil von Impl. hierher verschieben\\
 - config für andere Planer\\
 \ac{PlanSys2} ist ein modulares Planungsframework für \ac{ROS2}.
 Ursprünglich als Nachfolger für ROSPlan~\cite{rosplan} geplant, bietet es viel umfangreichere Funktionen~\cite{plansys}.
@@ -420,4 +419,19 @@ Der \emph{Problem Expert} Knoten enthält alle Informationen zum gegebenen Probl
 Diese werden immer über den \emph{Domain Expert} validiert.
 Wenn ein Plan angefordert wird, werden die gespeicherten Informationen zu einem Problem im \ac{PDDL} Format konvertiert und dem \emph{Planner} Knoten zur Verfügung gestellt.\\
 Der \emph{Executor} Knoten ist dafür zuständig einen generierten Plan auszuführen.
-Der Plan wird in einen \ac{BT} konvertiert, der diesen ausführt.
+Der Plan wird in einen \ac{BT} konvertiert, der diesen ausführt.\\
+Ein weiteres Konzept ist die Unterstützung für mehrere Roboter sowie eine Spezialisierung bei der Ausführung von Aktionen.
+Alle Knoten im gleichen Netzwerk können miteinander kommunizieren.
+Es kann mehrere Knoten geben die die selbe Domänenaktion ausführen, sich aber auf bestimmte Parameter spezialisieren.
+Mehrere Roboter können einen Knoten für die gleiche Aktion \emph{(move roboter start ziel)} ausführen, wobei sich jede darauf spezialisiert, die Aktion auszuführen deren erster Parameter mit dem entsprechenden Roboter übereinstimmt.
+Die gleiche Aktion kann je nach vorhandenen Parametern von verschiedenen Knoten ausgeführt werden.\\
+\acp{BT} eignen sich für die Ausführung eines Plans, da sich mit ihnen sehr gut sequentielle und parallele Vorgänge beschreiben lassen.
+Zunächst wird von einem Plan ein Ausführungs-Graph erstellt, der die Abhängigkeiten zwischen Aktionen zeigt.
+Von diesen lässt sich ableiten welche Aktionen parallel ausgeführt werden können und welche sequentiell ausgeführt werden müssen.
+Semantisch entspricht jedes Blatt im Graphen einer Aktion.
+In der Praxis ist jedes Blatt ein eigenständiger \ac{BT}, der nicht nur die selbst Aktion ausführt, sondern auch die Bedingungen überprüft und die Effekte ausführt.\\
+\ac{PlanSys2} hat drei große Limitationen.
+\ac{PDDL} Unterstützung beschränkt sich aktuell auf \ac{PDDL} 2.1, mit dem Ziel zukünftig die aktuellste Version zu untersützen.
+Wird eine Aktion und damit ein Plan abgebrochen, gibt es keine Garantie, das der Zustand der Welt konsistent bleibt.
+Die Fähigkeit von Planern, die zunächst einen allgemeinen Plan liefern und diesen während der Ausführung verbessern, wird nicht genutzt.
+Es wird jedoch daran gearbeitet Übergänge von der Ausführunge eines Plans zu einem anderen zu ermöglichen.
