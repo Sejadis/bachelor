@@ -4,14 +4,18 @@
 Der OMX wird als Bausatz geliefert.
 Für die Inbetriebnahme ist daher der Zusammenbau und die Installation der entsprechenden Software nötig.
 \subsubsection{Zusammenbau}
-Der Bausatz des OMX besteht aus ca.\ 60 Teilen (ohne Schrauben, s.\ Abbildung~\ref{fig:omxparts}).Einige der mit den Servomotoren mitgelieferten Teile werden dabei nicht benötigt, da der Bausatz des OMX diese auch enthält oder ersetzt (z.B.\ längere Kabel).
+Der Bausatz des OMX besteht aus ca.\ 60 Teilen (ohne Schrauben, s.\ Abbildung~\ref{fig:omxparts}).
+Einige der mit den Servomotoren mitgelieferten Teile werden dabei nicht benötigt, da der Bausatz des OMX diese auch enthält oder ersetzt (z.B.\ längere Kabel).
 Von allen Schrauben wurde außerdem Ersatz mitgeliefert.\\
-Der Zusammenbau erfolgte nach der auf der Webseite verfügbaren Bauanleitung VERWEIS ANLEITUNG. Zu beachten ist, dass hier vorausgesetzt wird, dass den Servos bereits die IDs 11 (Basis des Greifarms) bis 15 (Greifer) zugewiesen wurden.
+Der Zusammenbau erfolgte nach der auf der Webseite verfügbaren Bauanleitung VERWEIS ANLEITUNG.
+Zu beachten ist, dass hier vorausgesetzt wird, dass den Servos bereits die IDs 11 (Basis des Greifarms) bis 15 (Greifer) zugewiesen wurden.
 Dies kann über die Software DYNAMIXEL Wizard{\footnote{VERWEIS ODER LINK}} gemacht werden: die Servos einzeln über das U2D2 (s. Abschnitt {\ref{u2d2}}) an den PC anschließen, die ID setzen und den Servo entsprechend markieren oder die ID merken.
 Weiterhin müssen bei den Abdeckungen der Servos 12 und 14 die vorgestanzten Abdeckungen herausgebrochen werden.
 Dies ist in der Anleitung leicht zu übersehen.
 Weiterhin wird angenommen, dass das Horn der Servos bereits angebracht ist.
-Hierbei ist darauf zu achten, dass die Einkerbung an Horn und Servo übereinstimmen.
+Hierbei ist darauf zu achten, dass die Einkerbung an Horn und Servo übereinstimmen.\\
+Der komplette Zusammenbau erfolgte in ca. 2,5 Stunden.
+
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=\textwidth]{parts}
@@ -21,14 +25,15 @@ Hierbei ist darauf zu achten, dass die Einkerbung an Horn und Servo übereinstim
 \subsubsection{Virtuelle Maschine}
 Zur Nutzung des Greifarms wurde eine \ac{VM} mit VirtualBox {\footnote{https://www.virtualbox.org}} von Oracle aufgesetzt.
 Als Betriebssystem der \ac{VM} wurde das für ROS2 Foxy empfohlene~\citep{foxyreq} Ubuntu 20.04 {\footnote{\url{https://releases.ubuntu.com/20.04/}}} gewählt.
-Danach wurde entsprechend der Anleitung für den OpenMANIPULATOR-X~\citep{foxyinstall} zuerst ROS 2 Foxy über das Installations-Script von ROBOTIS und im Anschluss die für den Greifarm benötigten Packages installiert.
+Danach wurde entsprechend der Anleitung für den OpenMANIPULATOR-X~\citep{foxyinstall} zuerst ROS 2 Foxy über das Installations-Skript von ROBOTIS und im Anschluss die für den Greifarm benötigten Packages installiert.
 
 \subsection{Steuerung OMX}
 Die Steuerung des OMX erfolgt über die vom \emph{open\_manipulator\_x\_controller}\\ \verb|open_manipulator_x_controller| zur Verfügung gestellten Topics und Services.
 
 \subsubsection{Anschluss über U2D2}{\label{u2d2}}
 Der OMX wird über das U2D2 und das U2D2 Power Hub Board (s. Abbildung~\ref{fig:u2d2}) per USB an den PC angeschlossen.\\
-Das U2D2 konvertiert die Signale der DYNAMIXEL und ermöglicht die Kontrolle über den PC. Zur Nutzung des U2D2 in der \ac{VM} muss das Gerät \emph{FTDI USB <-> Serial Converter} über das Geräte-Menü der \ac{VM} an diese gebunden werden (s. Abbildung~\ref{fig:ftdivm}).
+Das U2D2 konvertiert die Signale der DYNAMIXEL und ermöglicht die Kontrolle über den PC.
+Zur Nutzung des U2D2 in der \ac{VM} muss das Gerät \emph{FTDI USB <-> Serial Converter} über das Geräte-Menü der \ac{VM} an diese gebunden werden (s. Abbildung~\ref{fig:ftdivm}).
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=\textwidth]{u2d2}
@@ -50,7 +55,8 @@ Er kann über die entsprechende Launch-Datei mit dem Befehl
 ros2 launch open_manipulator_x_controller 
      open_manipulator_x_controller.launch.py
 \end{verbatim}
-gestartet werden.
+gestartet werden.\\
+Für eine Nutzung des OMX ist dieses Package zwangsläufig nötig, da es alle Steuerungsmöglichkeiten sowie Informationen über den OMX zur Verfügung stellt.
 \subsubsection{Joint und Task Space}
 Der OMX kann in den zwei verschiedenen Arbeitsräumen \emph{Joint Space} und \emph{Task Space} betrachtet werden.\\
 Im \emph{Joint Space} werden die Gelenke und ihre aktuellen Winkel betrachtet.\\
@@ -214,7 +220,7 @@ Weiterhin wurden mehrere Problemszenarien erstellt, die sowohl als \ac{PDDL} Dat
 
 \subsection{Praktische Anwendung}
 Um das System praktisch anwenden zu können wurden mehrere farbige Würfel aus LEGO gebaut (s. Abbildung~\ref{fig:legocubes}).
-Auf der Basisplatte des OMX wurden die Positionen der 3 Stapel markiert.
+Auf der Basisplatte des OMX wurden die Positionen für drei Stapel markiert.
 Es werden mehrere Szenarien getestet um die allgemeine Anwendbarkeit zu überprüfen.
 \subsubsection{PlanSys2 Terminal}
 Das \ac{PlanSys2} Terminal ist eine separate Node, welche es ermöglicht, das System durch Eingabe über die Konsole zu steuern.
@@ -257,15 +263,20 @@ Um das Ziel $A$ auf $B$ zu erfüllen muss dieser Schritt nun wieder rückgängig
     \begin{tikzpicture}
         \draw (-1,0) -- (2,0);
         \draw[black, thick] (0,0) rectangle (1,1) node[pos=.5] {A};
-        \draw[black, thick] (0,1) rectangle (1,2) node[pos=.5] {B};
-        \draw[black, thick] (0,2) rectangle (1,3) node[pos=.5] {C};
+        \draw[black, thick] (0,1) rectangle (1,2) node[pos=.5] {C};
+        \draw[black, thick] (0,2) rectangle (1,3) node[pos=.5] {B};
     \end{tikzpicture}
     \caption{Lösung des Teilziels $B$ auf $C$}\label{fig:sussmanbc}
     \endminipage
 \end{figure}\\
 Um diese Anomalie zu handhaben müssen Planer beide Ziele und deren Schritte kombinieren.
 \ac{POPF} generiert für dieses Ziel den in Abbildung~\ref{fig:sussmanpopf} gezeigten Plan, der in Abbildung~\ref{fig:sussmanpopfvis} visualisiert wird.
-Der grün hervorgehobene Block ist jeweils der, der in diesem Schritt bewegt wurde.\\
+Der grün hervorgehobene Block ist jeweils der, der in diesem Schritt bewegt wurde.
+\begin{figure}[!htb]
+    \includegraphics{sussmanpopfplan}
+    \caption{Durch \ac{POPF} generierter Plan für die Sussman Anomalie}
+    \label{fig:sussmanpopf}
+\end{figure}
 \begin{figure}[!htb]
     \begin{tikzpicture}
         \begin{scope}
@@ -296,9 +307,39 @@ Der grün hervorgehobene Block ist jeweils der, der in diesem Schritt bewegt wur
             \filldraw[color=black, fill=green!10, thick] (0,2) rectangle (1,3) node[pos=.5] {A};
         \end{scope}
     \end{tikzpicture}
-    \caption{Lösung der Sussman Anomalie durch \ac{POPF}}
+    \caption{Visualisierte Lösung der Sussman Anomalie durch \ac{POPF}}
     \label{fig:sussmanpopfvis}
 \end{figure}
+\subsubsection{Mehr Blöcke, mehr Positionen}
+\newpage
+- evtl sinnvolle Auswertung der maximalwerte inkl. graphen\\
+Die Anzahl der möglichen Blöcke und Positionen soll ausgereizt werden.
+Bei einem Szenario mit drei Stapeln mit jeweils drei Positionen kann ein maximum von 9 Blöcken platziert werden.
+Dies verhindert jedoch das Bewegen von Blöcken, da die einzige freie Position zu der ein aufgenommener Block bewegt werden kann, seine Ursprungsposition ist.
+Um mehr Blöcke verwenden zu können müssen also die Anzahl der Stapel und/oder die maximale Höhe der Stapel erweitert werden.\\
+Für beide Varianten gibt es Einschränkungen, die zu beachten sind.
+Für höhere Stapel ist der Bewegungsraum des OMX zu beachten.
+Über dem äußeren Rand der Grundplatte beträgt die maximale Höhe ca 25cm.
+Da sich der Greifarm mit einem gegriffenem Block frei oberhalb der Stapel bewegen können muss, muss die maximale Höhe eines Stapels unterhalb dieses Werts liegen.
+Die exakte Maximalhöhe ist von der Größe der Blöcke abhängig.\\
+Für weitere Stapel nehmen wir als Vorraussetzung, dass alle Stapel sich nebeneinander befinden sollen.
+Stapel die sich hinter einem anderen befinden, können vom OMX nicht garantiert frei angesteuert werden.
+Je näher sich die Stapel am OMX befinden, desto größer ist der Winkel zwischen ihnen.
+Aufgrund der größe des Greifers muss der Abstand zwischen mehreren Stapeln umso größer sein, je näher sie sich am OMX befinden.
+Stapel sollen sich daher am äußeren Rand der Grundplatte befinden.\\
+Da sowohl ein erhöhen der Anzahl der Stapel als auch deren Höhe durch die Größe der Blöcke behindert wird, wurden kleinere Blöcke gebaut.
+Dies ermöglicht bis zu 5 Stapel mit einer maximalen Höhe von 5 Blöcken.
+Das theoretische Limit an Blöcken wird damit auf 25, bzw. 24 um Bewegungen zu ermöglichen, erhöht.\\
+Bereits Tests mit Zielen, deren Plan aus nur wenigen Schritten besteht, zeigen, das dies den Suchraum so stark erweitert, dass Pläne nicht oder erst nach langer Zeit gefunden werden.
+Ein Testfall mit 20 Blöcken und dem Ziel den obersten Block eines Stapels auf den eines anderen zu legen (optimale Planlänge: 4) führte dazu, dass der Planer ca 13 Minuten lief.
+Obwohl laut Konsolenausgabe ein Plan gefunden wurde, wird dieser nicht ausgegeben (s. Abbildung~\ref{fig:longplan}).\\
+\emph{Hier sollten jetzt evtl Graphen und eine Auswertung stehen}\\
+Während bei den wenigen, größeren Blöcken eine Namensgebung entsprechend der Farbe ausreichend war, wurden die kleineren Blöcke durchnummeriert.
+Das \ac{PlanSys2} Terminal erlaubt zwar die Erstellung von Objekten und Prädikaten, die diese nutzen, mit rein numerischen Namen, stürzt jedoch beim Versuch ein Ziel mit diesen zu erstellen ohne aussagekräftige Fehlermeldung ab.
+Ein weiteres Problem, das sich bei der Nutzung der kleinen Blöcke zeigt, ist das diese, aufgrund des geringeren Gewichts, beim Öffnen des Greifers an einer Seite kleben bleiben.
+Obwohl die Präzision des OMX selbst hoch genug ist, ist die Position der platzierten Blöcke dadurch nicht mehr genau.
+Durch die Größe des Greifers sowie der Blöcke lässt sich der jeweils unterste Block eines Stapels nicht mehr korrekt greifen.
+Dieser Block kann zwar normal und sicher bewegt werden, benötigt beim Abblegen jedoch eine angepasste Position.
 \subsubsection{Abstürze und Fehlersuche}
 Während der Ausführung eines Plans kam es wiederholt zu Abstürzen der \ac{PlanSys2} Node.
 Diese Abstürze verhinderten eine vollständige Ausführung des Plans und erforderten einen Neustart des \ac{PlanSys2}-Systems.
