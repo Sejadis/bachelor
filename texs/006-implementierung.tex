@@ -316,6 +316,8 @@ Der grün hervorgehobene Block ist jeweils der, der in diesem Schritt bewegt wur
 Die Anzahl der möglichen Blöcke und Positionen soll ausgereizt werden.
 Bei einem Szenario mit drei Stapeln mit jeweils drei Positionen kann ein maximum von 9 Blöcken platziert werden.
 Dies verhindert jedoch das Bewegen von Blöcken, da die einzige freie Position zu der ein aufgenommener Block bewegt werden kann, seine Ursprungsposition ist.
+Damit alle Blöcke bewegt werden können, muss die Anzahl der freien Positionen mindestens der Höhe der Stapel entsprechen.
+Gibt es bei einer Stapelhöhe von drei und drei Stapeln nur zwei freie Positionen tritt das gleiche Problem für alle untersten Blöcke der Stapel auf: die einzige gültige Position nach dem greifen ist ihre Ausgangsposition (s. Abbildung~\ref{fig:emptypos})
 Um mehr Blöcke verwenden zu können müssen also die Anzahl der Stapel und/oder die maximale Höhe der Stapel erweitert werden.\\
 Für beide Varianten gibt es Einschränkungen, die zu beachten sind.
 Für höhere Stapel ist der Bewegungsraum des OMX zu beachten.
@@ -329,7 +331,7 @@ Aufgrund der größe des Greifers muss der Abstand zwischen mehreren Stapeln ums
 Stapel sollen sich daher am äußeren Rand der Grundplatte befinden.\\
 Da sowohl ein erhöhen der Anzahl der Stapel als auch deren Höhe durch die Größe der Blöcke behindert wird, wurden kleinere Blöcke gebaut.
 Dies ermöglicht bis zu 5 Stapel mit einer maximalen Höhe von 5 Blöcken.
-Das theoretische Limit an Blöcken wird damit auf 25, bzw. 24 um Bewegungen zu ermöglichen, erhöht.\\
+Das theoretische Limit an Blöcken wird damit auf 25, bzw. 20 um Bewegungen zu ermöglichen, erhöht.\\
 Bereits Tests mit Zielen, deren Plan aus nur wenigen Schritten besteht, zeigen, das dies den Suchraum so stark erweitert, dass Pläne nicht oder erst nach langer Zeit gefunden werden.
 Ein Testfall mit 20 Blöcken und dem Ziel den obersten Block eines Stapels auf den eines anderen zu legen (optimale Planlänge: 4) führte dazu, dass der Planer ca 13 Minuten lief.
 Obwohl laut Konsolenausgabe ein Plan gefunden wurde, wird dieser nicht ausgegeben (s. Abbildung~\ref{fig:longplan}).\\
