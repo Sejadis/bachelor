@@ -341,14 +341,47 @@ Dem Tupel werden weitere Elemente hinzugefügt:
         Dies entspricht \emph{at start} oder \emph{at end} Bedingungen in \ac{PDDL} die relevant für den Schritt $i$ sind.
     \end{itemize}
 \end{itemize}
-Diese Methodik wird in dem am King’s College London entwickelten Planer \ac{POPF} implementiert.
-%\subsubsection{Partial Order Planning Forward}
-%\ac{POPF} ist ein am King’s College London entwickelter Planer, der die in Abschnitt~\ref{section:pop} genannten Methoden implementiert~\citep{popf}.
-%Es wird ein temporaler \ac{RPG} genutzt.
-%Ein \ac{RPG} ist ein Planungsgraph, in dem negative Effekte von Aktionen ignoriert werden.
-%Der Graph besteht aus Aktions- und Faktenschichten, die sich abwechseln.
-%Die Wurzel des Graphen ist eine Faktenschicht, die den aktuellen Zustand abbildet.
 
+\subsubsection{Partial Order Planning Forward}
+\ac{POPF} ist ein am King’s College London entwickelter Planer, der die in Abschnitt~\ref{section:pop} genannten Methoden implementiert~\citep{popf}.
+Als Heuristik wird ein temporaler \ac{RPG} genutzt.
+Ein \ac{RPG} ist ein Planungsgraph, in dem versucht wird ein vereinfachtes Problem zu lösen.
+Die Vereinfachung besteht daraus, alle negativen Effekte von Aktionen zu ignorieren.\\
+Der Graph besteht aus Aktions- und Faktenschichten, die sich abwechseln.
+Die Wurzel des Graphen ist eine Faktenschicht, die den aktuellen Zustand abbildet.
+Eine Aktionsschicht enthält alle Aktionen, die in der vorhergehenden Faktenschicht anwendbar sind.
+Eine Faktenschicht enthält alle Fakten, die durch alle Aktionen der vorhergehenden Aktionsschicht hinzugefügt werden.
+Da nur positive Effekte betrachtet werden, enthält eine Faktenschicht auch alle Fakten der vorherigen Faktenschicht und eine Aktionsschicht alle Aktionen der vorherigen Aktionsschicht.\\
+Die Erstellung des Graphen wird gestoppt wenn eine Faktenschicht alle Ziele erfüllt oder wenn eine Faktenschicht der vorherigen entspricht.
+Werden zwischen zwei Faktenschichten keine neuen Fakten hinzugefügt, können auch in zukünftigen Faktenschichten keine neuen Fakten mehr hinzugefügt werden.
+Endet ein Graph auf diese Weise ist das vereinfachte Problem nicht lösbar und der Zustand erhält einen Heuristikwert von unendlich.
+Andernfalls wird ein vereinfachter Plan aus dem Graphen extrahiert.
+Die Länge des optimalen vereinfachten Plans ist eine zulässige Heuristik.
+Der optimale Plan lässt sich jedoch nicht effizient extrahieren~\cite{(Hoffmann & Nebel2001)}.
+Daher wird ein suboptimaler Plan extrahiert, wodurch die Heuristik nicht mehr zulässig ist.\\
+Als Suchverfahren wird zunächst \ac{EHC} versucht.
+Der in Abbildung~\ref{fig:ehc_algo} beschriebene Algorithmus beginnt im Startzustand $S$.
+\begin{figure}[h!]
+           \centering
+           \includegraphics{ehc_algo}
+           \caption{\ac{EHC} Algorithmus~\cite{(Hoffmann & Nebel2001)}}
+           \label{fig:ehc_algo}
+\end{figure}
+Von diesem aus wird wird eine \emph{breadth first} Suche gestartet.
+Diese findet den nächstbesten Nachfolger, also den nächsten Zustand $S'$, dessen Heuristik besser als die des aktuellen Zustands ist.
+Gelingt dies, wird der Weg von $S$ nach $S'$ zum Plan hinzugefügt.
+Die Suche wird gestoppt, wenn ein Zustand mit der Heuristik 0 gefunden wird.
+Ist die Heuristik des aktuellen Zustands $\neq 0$ und wird kein Zustand mit einer besseren Heuristik gefunden, schlägt der Algorithmus fehl.
+Zustände werden in einer \emph{Queue} gespeichert und für eine Iteration der Suche wird der erste Zustand $S'$ von dieser entfernt und und die Heuristik berechnet.
+Die Suche ist erfolgreich, wenn die Heuristik für diesen Zustand $S'$ besser als die von $S$ ist.
+Andernfalls werden die Nachfolger von $S'$ zum Ende der \emph{Queue} hinzugefügt.
+Wiederholte Zustände werden durch ein \emph{HashTable} der bereits besuchten Zustände vermieden.
+Die Suche schlägt fehl, wenn keine weiteren Zustände erreicht werden können.\\
+Wird in einer Iteration kein besserer Zustand gefunden, stoppt \ac{EHC} ohne eine Lösung zu finden.
+Dies geschieht, da \ac{EHC} Entscheidungen, eine Aktion in den Plan aufzunehmen, nie rückgängig macht.
+Der Algorithmus ist daher nur vollständig, für Planungsaufgaben die keine \emph{"dead ends"} enthalten.
+Ein \emph{Dead End} für eine Planungsaufgabe $(O,I,G)$ ist definiert, als ein Zustand $S$, der erreichbar ist und von diesem aus keine Plan das Ziel erreichen kann:\\
+$\exists P: S = Result(I,P)$  und  $\neg\exists P': G\subseteq Result(S,P')$\\
 \subsubsection{Behavior Tree}
 \acp{BT} sind ein modulares System, das in der Videospieleindustrie entwickelt wurde~\cite{bt_book}.
 Sie ermöglichen aus simplen Aktionen komplexe Verhaltensmuster zu modelieren ohne das Aktionen Kenntnis über andere Aktionen haben müssen~\cite{bt_robotics}.
@@ -401,10 +434,13 @@ Beispiele für Dekoratoren sind:
     \item Zeitbeschränkung: gibt das Kind den Status \emph{Running} für länger als eine benutzerdefinierter Zeitspanne $T$ zurück, wird \emph{Failure} zurückgegeben und das Kind nicht mehr ausgeführt
 \end{itemize}\cite{bt_book}
 - Visualisierungs bsp.\\
-\subsubsection{PlanSys2}
+\subsection{Planung in \ac{ROS2}}
 - config für andere Planer\\
-\ac{PlanSys2} ist ein modulares Planungsframework für \ac{ROS2}.
-Ursprünglich als Nachfolger für ROSPlan~\cite{rosplan} geplant, bietet es viel umfangreichere Funktionen~\cite{plansys}.
+Für die Planung in \ac{ROS2} wird \ac{PlanSys2} genutzt.
+In diesem Abschnitt wird das in~\cite{plansys} beschriebene System zusammenfassend beschrieben.
+Es wird dabei jedoch nur auf die für diese Arbeit relevanten Teile eingegangen.\\
+\ac{PlanSys2} ist ein modulares OpenSource Planungsframework.
+Ursprünglich als Nachfolger für ROSPlan~\cite{rosplan} geplant, bietet es viel umfangreichere Funktionen.
 Hierfür werden unter anderem neue Funktionen von \ac{ROS2} wie LifeCycle Knoten oder Multicast Kommunikation genutzt.\\
 Eins der Designprinzipien bei der Entwicklung von \ac{PlanSys2} ist Modularität und Erweiterbarkeit.
 Alle Komponenten haben klar definierte Schnittstellen, wodurch sie einfach erweitert oder ausgetauscht werden können.\\
