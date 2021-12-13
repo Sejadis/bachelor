@@ -312,7 +312,6 @@ Bei \emph{Demotion} wird der problematische Schritt $C$ vor dem kausalen Zusamme
 
 \subsubsection{Forward Chaining Partial Order Planning}
 Die Prinzipien des \ac{POP} sollen nun mit Vorwärtsverkettung kombiniert werden.
-%Speziell soll das temporale Planen mit Metriken optimiert werden.
 Für Vorwärtsverkettung mit einem Total-Order Plan können Zustände als Tupel $(F,V,Q,P,C)$ beschrieben werden~\citep{popf}:
 \begin{itemize}
     \item F ist eine Menge von Fakten die im Zustand gelten
@@ -347,11 +346,99 @@ Dem Tupel werden weitere Elemente hinzugefügt:
 Als Heuristik wird ein temporaler \ac{RPG} genutzt.
 Ein \ac{RPG} ist ein Planungsgraph, in dem versucht wird ein vereinfachtes Problem zu lösen.
 Die Vereinfachung besteht daraus, alle negativen Effekte von Aktionen zu ignorieren.\\
-Der Graph besteht aus Aktions- und Faktenschichten, die sich abwechseln.
+Der Graph besteht aus einer Sequenz $F_0, A_0, ..., F_{t-1}, A_{t-1}, F_t, A_t$: Aktions- und Faktenschichten, die sich abwechseln.
 Die Wurzel des Graphen ist eine Faktenschicht, die den aktuellen Zustand abbildet.
 Eine Aktionsschicht enthält alle Aktionen, die in der vorhergehenden Faktenschicht anwendbar sind.
 Eine Faktenschicht enthält alle Fakten, die durch alle Aktionen der vorhergehenden Aktionsschicht hinzugefügt werden.
 Da nur positive Effekte betrachtet werden, enthält eine Faktenschicht auch alle Fakten der vorherigen Faktenschicht und eine Aktionsschicht alle Aktionen der vorherigen Aktionsschicht.\\
+Ein Beispiel eines \ac{RPG} ist in Abbildung~\ref{fig:rpg} dargestellt.
+Im Startzustand gelten die Fakten $at(Home)$ und $has(Money)$, dargestellt in $F_0$.
+Die einzige Aktion, deren Vorbedingungen erfüllt ist, ist $move(Home, Shop)$ und wird der Aktionsschicht $A_0$ hinzugefügt.
+Pfeile, die zu Aktionen gehen, zeigen die Fakten, die als Vorbedingung gelten.
+Pfeile, die zu Fakten gehen, zeigen die Aktionen durch deren Effekt sie hinzugefügt wurden.
+In $F_1$ wird als Effekt der Aktion $move(Home, Shop)$ der Fakt $at(Shop)$ hinzugefügt.
+Da negative Effekte ignoriert werden, gilt $at(Home)$ weiterhin.
+Da in $F_1$ nun $at(Shop)$ und $has(Money)$ gelten, kann in $A_1$ die Aktion $buy(Product, Money)$ angewendet werden, was in dem Fakt $has(Product)$ in $F_2$ resultiert.\\
+Angenommen, das Ziel ist $has(Product)$, so ist dieses Ziel in $F_2$ erfüllt.
+Mit $t = 2$ als Wert der Heuristik, wissen wir, dass mindestens zwei Aktionen nötig sind um vom Startzustand zum Ziel zu gelangen.
+Da $at(Home)$ vom Startzustand aus durchgängig gilt, erhält jedoch auch das Ziel $\{at(Home),has(Product)\}$ den Heuristikwert 2.\\
+\begin{figure}[ht!]
+    \centering
+    \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
+
+    \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
+%uncomment if require: \path (0,355); %set diagram left start at 0, and has height of 355
+
+%Shape: Rectangle [id:dp564712349225938]
+        \draw  [fill={rgb, 255:red, 228; green, 250; blue, 206 }  ,fill opacity=1 ] (104,8) -- (546,8) -- (546,48) -- (104,48) -- cycle ;
+%Rounded Rect [id:dp5993299884546457]
+        \draw   (101,88) .. controls (101,83.58) and (104.58,80) .. (109,80) -- (540,80) .. controls (544.42,80) and (548,83.58) .. (548,88) -- (548,112) .. controls (548,116.42) and (544.42,120) .. (540,120) -- (109,120) .. controls (104.58,120) and (101,116.42) .. (101,112) -- cycle ;
+%Shape: Rectangle [id:dp4448475604191735]
+        \draw  [fill={rgb, 255:red, 228; green, 250; blue, 206 }  ,fill opacity=1 ] (105,152) -- (547,152) -- (547,192) -- (105,192) -- cycle ;
+%Rounded Rect [id:dp06633752127787629]
+        \draw   (102,228) .. controls (102,223.58) and (105.58,220) .. (110,220) -- (541,220) .. controls (545.42,220) and (549,223.58) .. (549,228) -- (549,252) .. controls (549,256.42) and (545.42,260) .. (541,260) -- (110,260) .. controls (105.58,260) and (102,256.42) .. (102,252) -- cycle ;
+%Shape: Rectangle [id:dp8200443828072568]
+        \draw  [fill={rgb, 255:red, 228; green, 250; blue, 206 }  ,fill opacity=1 ] (104,290) -- (546,290) -- (546,330) -- (104,330) -- cycle ;
+
+% Text Node
+        \draw (184,17) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Home)};
+% Text Node
+        \draw (255,90) node [anchor=north west][inner sep=0.75pt]   [align=left] {move(Home, Shop)};
+% Text Node
+        \draw (189,163) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Home)};
+% Text Node
+        \draw (329,161) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Shop)};
+% Text Node
+        \draw (115,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {move(Home, Shop)};
+% Text Node
+        \draw (394,17) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
+% Text Node
+        \draw (450,163) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
+% Text Node
+        \draw (399,232) node [anchor=north west][inner sep=0.75pt]   [align=left] {buy(Product, Money)};
+% Text Node
+        \draw (119,302) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Home)};
+% Text Node
+        \draw (361,303) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Shop)};
+% Text Node
+        \draw (233,302) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
+% Text Node
+        \draw (447,303) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Product)};
+% Text Node
+        \draw (258,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {move(Shop, Home)};
+% Text Node
+        \draw (30,20.4) node [anchor=north west][inner sep=0.75pt]    {$F_{0}$};
+% Text Node
+        \draw (30,93.4) node [anchor=north west][inner sep=0.75pt]    {$A_{0}$};
+% Text Node
+        \draw (30,163.4) node [anchor=north west][inner sep=0.75pt]    {$F_{1}$};
+% Text Node
+        \draw (30,231.4) node [anchor=north west][inner sep=0.75pt]    {$A_{1}$};
+% Text Node
+        \draw (30,301.4) node [anchor=north west][inner sep=0.75pt]    {$F_{2}$};
+% Connection
+        \draw    (234.39,38) -- (301.47,84.85) ;
+        \draw [shift={(303.11,86)}, rotate = 214.94] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (327.69,111) -- (351.37,155.24) ;
+        \draw [shift={(352.31,157)}, rotate = 241.84] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (486.7,184) -- (473.89,226.09) ;
+        \draw [shift={(473.3,228)}, rotate = 286.93] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (378.45,182) -- (448.36,226.92) ;
+        \draw [shift={(450.05,228)}, rotate = 212.72] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (473.29,253) -- (486.64,297.09) ;
+        \draw [shift={(487.21,299)}, rotate = 253.15] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+% Connection
+        \draw    (352.66,182) -- (331.25,224.22) ;
+        \draw [shift={(330.34,226)}, rotate = 296.9] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+
+    \end{tikzpicture}
+    \caption{\ac{RPG} für das Ziel $\{at(Home), has(Product)\}$}
+    \label{fig:rpg}
+\end{figure}
 Die Erstellung des Graphen wird gestoppt wenn eine Faktenschicht alle Ziele erfüllt oder wenn eine Faktenschicht der vorherigen entspricht.
 Werden zwischen zwei Faktenschichten keine neuen Fakten hinzugefügt, können auch in zukünftigen Faktenschichten keine neuen Fakten mehr hinzugefügt werden.
 Endet ein Graph auf diese Weise ist das vereinfachte Problem nicht lösbar und der Zustand erhält einen Heuristikwert von unendlich.
