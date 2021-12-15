@@ -261,8 +261,16 @@ Im unteren Abschnitt wird dargestellt, welche Instanzen, zu welchem Zeitpunkt, a
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=\textwidth]{plugin_vis}
-    \caption{Visualisierung eines Plans mit dem PDDL-Plugin}
+    \begin{minipage}[t]{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth,keepaspectratio]{plugin_vis1}
+    \end{minipage}% <- sonst wird hier ein Leerzeichen eingefügt
+    \hfill
+    \begin{minipage}[t]{0.45\linewidth}
+        \centering
+        \includegraphics[width=.66\linewidth,keepaspectratio,valign=c]{plugin_vis3}
+    \end{minipage}
+    \caption{Visualisierung eines Plans mit dem PDDL-Plugin mit Fokus auf die Aktionen (links) und Fokus auf die relevanten Objekte (rechts)}
     \label{fig:pluginvis}
 \end{figure}
 \subsubsection{Partial Order Planning}{\label{section:pop}}
@@ -325,7 +333,7 @@ Dies muss nicht in aufeinander folgenden Schritten geschehen.
 Wird eine Aktion hinzugefügt werden $F$ und $V$ entsprechend der Effekte angepasst.
 Die Voraussetzung um eine Aktion hinzufügen zu können ist, dass $Q$ keine Aktion enthält, zu der die Effekte der neuen Aktion einen Konflikt darstellen würden.\\
 Vorwärtsverkettung im Zustandsraum hat, durch den Total-Order Plan, den Vorteil, dass nicht explizit nach Problemen gesucht werden muss.
-Neue Aktionen werden immer am Ende hinzugefügt, wodurch sie kein Problem für die Vorbedingungen und Effekt früherer Aktionen darstellen können.
+Neue Aktionen werden immer am Ende hinzugefügt, wodurch sie kein Problem für die Vorbedingungen und Effekte früherer Aktionen darstellen können.
 Gleichzeitig kann keine folgende Aktion ein Problem für diese darstellen.
 Dieser Vorteil kommt mit dem Nachteil der frühen Bindung und einer festgelegten Reihenfolge zwischen Aktion, zwischen denen kein Zusammenhang besteht.\\
 Es soll ein Kompromiss zwischen den Vorteilen von Total- und Partial-Order Planung gefunden werden.
@@ -385,25 +393,25 @@ Da $at(Home)$ vom Startzustand aus durchgängig gilt, erhält jedoch auch das Zi
 % Text Node
         \draw (255,90) node [anchor=north west][inner sep=0.75pt]   [align=left] {move(Home, Shop)};
 % Text Node
-        \draw (189,163) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Home)};
+        \draw (189,160) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Home)};
 % Text Node
-        \draw (329,161) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Shop)};
+        \draw (329,160) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Shop)};
 % Text Node
         \draw (115,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {move(Home, Shop)};
 % Text Node
         \draw (394,17) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
 % Text Node
-        \draw (450,163) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
+        \draw (450,160) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
 % Text Node
-        \draw (399,232) node [anchor=north west][inner sep=0.75pt]   [align=left] {buy(Product, Money)};
+        \draw (399,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {buy(Product, Money)};
 % Text Node
-        \draw (119,302) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Home)};
+        \draw (119,300) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Home)};
 % Text Node
-        \draw (361,303) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Shop)};
+        \draw (361,300) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Shop)};
 % Text Node
-        \draw (233,302) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
+        \draw (233,300) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
 % Text Node
-        \draw (447,303) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Product)};
+        \draw (447,300) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Product)};
 % Text Node
         \draw (258,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {move(Shop, Home)};
 % Text Node
@@ -411,11 +419,11 @@ Da $at(Home)$ vom Startzustand aus durchgängig gilt, erhält jedoch auch das Zi
 % Text Node
         \draw (30,93.4) node [anchor=north west][inner sep=0.75pt]    {$A_{0}$};
 % Text Node
-        \draw (30,163.4) node [anchor=north west][inner sep=0.75pt]    {$F_{1}$};
+        \draw (30,160) node [anchor=north west][inner sep=0.75pt]    {$F_{1}$};
 % Text Node
-        \draw (30,231.4) node [anchor=north west][inner sep=0.75pt]    {$A_{1}$};
+        \draw (30,230) node [anchor=north west][inner sep=0.75pt]    {$A_{1}$};
 % Text Node
-        \draw (30,301.4) node [anchor=north west][inner sep=0.75pt]    {$F_{2}$};
+        \draw (30,300) node [anchor=north west][inner sep=0.75pt]    {$F_{2}$};
 % Connection
         \draw    (234.39,38) -- (301.47,84.85) ;
         \draw [shift={(303.11,86)}, rotate = 214.94] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
@@ -444,17 +452,19 @@ Werden zwischen zwei Faktenschichten keine neuen Fakten hinzugefügt, können au
 Endet ein Graph auf diese Weise ist das vereinfachte Problem nicht lösbar und der Zustand erhält einen Heuristikwert von unendlich.
 Andernfalls wird ein vereinfachter Plan aus dem Graphen extrahiert.
 Die Länge des optimalen vereinfachten Plans ist eine zulässige Heuristik.
-Der optimale Plan lässt sich jedoch nicht effizient extrahieren~\cite{(Hoffmann & Nebel2001)}.
+Der optimale Plan lässt sich jedoch nicht effizient extrahieren~\cite{hoffmannnebel2001}.
 Daher wird ein suboptimaler Plan extrahiert, wodurch die Heuristik nicht mehr zulässig ist.\\
+Um einen \ac{RPG} für temporales Planen zu erweitern, werden Aktionen in Startaktionen $A_\vdash$ und Endaktionen $A_\dashv$ aufgeteilt.
+Der Index $t$ einer Schicht entspricht nun einer Zeitmarke.\\
 Als Suchverfahren wird zunächst \ac{EHC} versucht.
 Der in Abbildung~\ref{fig:ehc_algo} beschriebene Algorithmus beginnt im Startzustand $S$.
 \begin{figure}[h!]
            \centering
            \includegraphics{ehc_algo}
-           \caption{\ac{EHC} Algorithmus~\cite{(Hoffmann & Nebel2001)}}
+           \caption{\ac{EHC} Algorithmus~\cite{hoffmannnebel2001}}
            \label{fig:ehc_algo}
 \end{figure}
-Von diesem aus wird wird eine \emph{breadth first} Suche gestartet.
+Von diesem aus wird wird eine \emph{breadth-first} Suche gestartet.
 Diese findet den nächstbesten Nachfolger, also den nächsten Zustand $S'$, dessen Heuristik besser als die des aktuellen Zustands ist.
 Gelingt dies, wird der Weg von $S$ nach $S'$ zum Plan hinzugefügt.
 Die Suche wird gestoppt, wenn ein Zustand mit der Heuristik 0 gefunden wird.
@@ -469,31 +479,33 @@ Dies geschieht, da \ac{EHC} Entscheidungen, eine Aktion in den Plan aufzunehmen,
 Der Algorithmus ist daher nur vollständig, für Planungsaufgaben die keine \emph{"dead ends"} enthalten.
 Ein \emph{Dead End} für eine Planungsaufgabe $(O,I,G)$ ist definiert, als ein Zustand $S$, der erreichbar ist und von diesem aus keine Plan das Ziel erreichen kann:\\
 $\exists P: S = Result(I,P)$  und  $\neg\exists P': G\subseteq Result(S,P')$\\
+Schlägt die Suche mit \ac{EHC} fehl, wird eine neue \emph{best-first} Suche ausgehend vom ursprünglichen Startzustand gestartet.
 \subsubsection{Behavior Tree}
 \acp{BT} sind ein modulares System, das in der Videospieleindustrie entwickelt wurde~\cite{bt_book}.
 Sie ermöglichen aus simplen Aktionen komplexe Verhaltensmuster zu modelieren ohne das Aktionen Kenntnis über andere Aktionen haben müssen~\cite{bt_robotics}.
-Ein \ac{BT} ist ein gerichteter azyklischer Graph $G(V,E)$ mit $|V|$ Knoten und $|E|$ Kanten.
+Entsprechend~\cite{bt_1} ist ein \ac{BT} ist ein gerichteter azyklischer Graph $G(V,E)$ mit $|V|$ Knoten und $|E|$ Kanten.
 Ein Eltern Knoten von einem Paar verbundener Knoten ist der, von dem die Kante ausgeht.
 Der Knoten mit der eingehenden Kante ist ein Kind Knoten.
 Knoten ohne Kinder heißen Blätter.
 Ein Knoten ohne Eltern heißt Wurzel.
-In einem \ac{BT} gibt es genau eine Wurzel mit genau einem Kind~\cite{bt_1}.\\
-Die Ausführung eines \ac{BT} beginnt bei der Wurzel, die in einem bestimmten Intervall ein Signal erzeugt, dass die Ausführung eines Knoten erlaubt (''tick'').
+In einem \ac{BT} gibt es genau eine Wurzel mit genau einem Kind.\\
+Nach~\cite{bt_book} beginnt die Ausführung eines \ac{BT} bei der Wurzel, die in einem bestimmten Intervall ein Signal erzeugt, dass die Ausführung eines Knoten erlaubt (''tick'').
 Dieses Signal wird an das Kind der Wurzel gesendet.
-Ein Knoten wird ausgeführt, wenn es dieses Signal erhält und auch nur dann.~\cite{bt_book}
+Ein Knoten wird ausgeführt, wenn es dieses Signal erhält und auch nur dann.
 Wird ein Knoten ausgeführt, gibt er einen Status zurück.
 Der Status ist einer von drei möglichen~\cite{bt_uav}:
 \begin{itemize}
     \item Running: die Ausführung läuft noch
     \item Success: die Ausführung war erfolgreich
     \item Failure: die Ausführung ist fehlgeschlagen
-\end{itemize}
+\end{itemize}\\
+Wie in~\cite{bt_1} beschrieben, werden verschiedene Arten von Knoten auf verschiedene Typen beschränkt.
 Blätter sind Ausführungsknoten und haben einen der folgenden Typen:
 \begin{itemize}
     \item Aktion
     \item Bedingung
 \end{itemize}
-Knoten mit Kindern, mit Ausnahme der Wurzel, sind Kontrollfluss Knoten und haben einen der folgenden Typen~\cite{bt_1}:
+Knoten mit Kindern, mit Ausnahme der Wurzel, sind Kontrollfluss Knoten und haben einen der folgenden Typen:
 \begin{itemize}
     \item Selektor
     \item Sequenz
@@ -520,6 +532,54 @@ Beispiele für Dekoratoren sind:
     \item Invertierung/Negation: der \emph{Success} und \emph{Failure} Status des Kinds wird invertiert
     \item Zeitbeschränkung: gibt das Kind den Status \emph{Running} für länger als eine benutzerdefinierter Zeitspanne $T$ zurück, wird \emph{Failure} zurückgegeben und das Kind nicht mehr ausgeführt
 \end{itemize}\cite{bt_book}
+
+\begin{table}[]
+    \resizebox{\textwidth}{!}{%
+        \begin{tabular}{|l|l|lll|}
+            \hline
+            \multicolumn{1}{|c|}{\multirow{2}{*}{\textbf{Knoten}}} &
+            \multirow{2}{*}{\textbf{Symbol}} &
+            \multicolumn{3}{c|}{\textbf{Rückgabewert}} \\ \cline{3-5}
+            \multicolumn{1}{|c|}{} &
+            &
+            \multicolumn{1}{l|}{\textbf{Success}} &
+            \multicolumn{1}{l|}{\textbf{Failure}} &
+            \textbf{Running} \\ \hline
+            Selektor &
+            &
+            \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Wenn 1 Kind ''Success'' \\ zurückgibt\end{tabular}} &
+            \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Wenn alle Kinder ''Failure''\\ zurückgeben\end{tabular}} &
+            \begin{tabular}[c]{@{}l@{}}Wenn 1 Kind ''Running''\\ zurückgibt\end{tabular} \\ \hline
+            Sequenz &
+            &
+            \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Wenn alle Kinder ''Success''\\  zurückgeben\end{tabular}} &
+            \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Wenn 1 Kind ''Failure''\\ zurückgibt\end{tabular}} &
+            \begin{tabular}[c]{@{}l@{}}Wenn 1 Kind ''Running''\\ zurückgibt\end{tabular} \\ \hline
+            Parallel &
+            &
+            \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Wenn $\geq M$ Kinder ''Success''\\  zurückgeben\end{tabular}} &
+            \multicolumn{1}{l|}{} &
+            \begin{tabular}[c]{@{}l@{}}Wenn keine der Bedingungen\\  für ''Success'' oder ''Failure'' \\ erfüllt sind\end{tabular} \\ \hline
+            Dekorator &
+            &
+            \multicolumn{1}{l|}{benutzerdefiniert} &
+            \multicolumn{1}{l|}{benutzerdefiniert} &
+            benutzerdefiniert \\ \hline
+            Bedingung &
+            &
+            \multicolumn{1}{l|}{Wenn wahr} &
+            \multicolumn{1}{l|}{Wenn falsch} &
+            Nie \\ \hline
+            Aktion &
+            &
+            \multicolumn{1}{l|}{Bei vollständiger Ausführung} &
+            \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Wenn vollständige Ausführung\\ nicht möglich ist\end{tabular}} &
+            Während der Ausführung \\ \hline
+        \end{tabular}%
+    }
+    \caption{Übersicht der \ac{BT} Knoten, nach~\cite{bt_book}}
+    \label{tab:btoverview}
+\end{table}
 - Visualisierungs bsp.\\
 \subsection{Planung in \ac{ROS2}}
 - config für andere Planer\\
@@ -552,7 +612,13 @@ Die gleiche Aktion kann je nach vorhandenen Parametern von verschiedenen Knoten 
 Zunächst wird von einem Plan ein Ausführungs-Graph erstellt, der die Abhängigkeiten zwischen Aktionen zeigt.
 Von diesen lässt sich ableiten welche Aktionen parallel ausgeführt werden können und welche sequentiell ausgeführt werden müssen.
 Semantisch entspricht jedes Blatt im Graphen einer Aktion.
-In der Praxis ist jedes Blatt ein eigenständiger \ac{BT}, der nicht nur die selbst Aktion ausführt, sondern auch die Bedingungen überprüft und die Effekte ausführt.\\
+In der Praxis ist jedes Blatt ein eigenständiger \ac{BT}, der nicht nur die selbst Aktion ausführt, sondern auch die Bedingungen überprüft und die Effekte ausführt (s. Abbildung~\ref{fig:plansysbtaction}).\\
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{plansys2btaction}
+    \caption{\ac{BT} zur Ausführung einer spezifischen Aktion~\cite{plansys}}
+    \label{fig:plansysbtaction}
+    \end{figure}
 \ac{PlanSys2} hat drei große Limitationen.
 \ac{PDDL} Unterstützung beschränkt sich aktuell auf \ac{PDDL} 2.1, mit dem Ziel zukünftig die aktuellste Version zu untersützen.
 Wird eine Aktion und damit ein Plan abgebrochen, gibt es keine Garantie, das der Zustand der Welt konsistent bleibt.
