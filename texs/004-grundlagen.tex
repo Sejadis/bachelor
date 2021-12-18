@@ -1,31 +1,41 @@
 \section {Grundlagen}
+In diesem Abschnitt wird zunächst der Greifarm OpenMANIPULATOR-X vorgestellt.
+Anschließend wird eine Übersicht über die wichtigsten Komponenten des Betriebssystems gegeben, mit dem dieser Greifarm läuft.
+Weiterhin werden die theoretischen Grundlagen der Planung dargestellt, die zur Steuerung des Greifarms genutzt werden sollen.
+Abschließend wird das System erklärt, das Planung und Roboter kombiniert.
+\subsection{OpenMANIPULATOR-X}
+Der OpenMANIPULATOR-X ist ein von der Firma ROBOTIS{\footnote{http://en.robotis.com}} nach den Prinzipien ``OpenSoftware`` und ``OpenHardware`` hergestellter Greifarm.
+OpenSoftware steht hierbei dafür, dass es ein OpenSource Projekt ist und auf dem OpenSource Projekt \ac{ROS2} basiert.
+OpenHardware steht dafür, dass die meisten Komponenten als STL-Dateien zur Verfügung stehen und als Ersatzteile oder zum Anpassen des Greifarms mittels eines 3D-Druckers selbst hergestellt werden können.\\
+Der OMX(Greifarm?,Abk?) ist eine 5DOF (5 Degrees of Freedom) Plattform, welche mittels 5 Servomotoren{\footnote{Modelbezeichnung: DYNAMIXEL XM430-W350-T}} gesteuert wird.
+Dies ist aufgeteilt in 4DOF für den Arm sowie 1DOF für den Greifer.
+Es kann eine Last bis 500g getragen werden
 \subsection{ROS2}
 \ac{ROS2} ist eine Sammlung von Bibliotheken und Werkzeugen für Robotik-Applikationen welche alle OpenSource sind.
 Die erste \ac{ROS2} Release-Version erschien im Dezember 2017 unter dem Namen Ardent Apalon \citet{ros2docs}.\\
 Es werden  mehrere \acp{RCL}  zur Verfügung gestellt, welche den Zugriff auf die \ac{ROS2}-API ermöglichen.
 Die \acp{RCL} für die Sprachen C++ und Python (rclcpp und rclpy) werden dabei direkt vom \ac{ROS2}-Team verwaltet.
 Von der Community wurden weitere \acp{RCL}, unter anderem für die Sprachen C\#, Swift und Rust, entwickelt.\\
-Um die Entwicklung der \acp{RCL} zu vereinfachen und die Logik sprachen unabhängig zu machen werden Funktionalitäten als C Interfaces zugänglich gemacht, für welche in den \acp{RCL} Wrapper geschrieben werden.
-\subsubsection{Node}
-Nodes sind die grundlegenden Komponenten, aus welchen eine \ac{ROS2} Anwendung besteht.
+Um die Entwicklung der \acp{RCL} zu vereinfachen und die Logik sprachen unabhängig zu machen werden Funktionalitäten als C Interfaces zugänglich gemacht, für welche in den \acp{RCL} Wrapper geschrieben werden.\\
+Die grundlegende Komponente einer \ac{ROS2} Anwendung ist die Node.
 Typischerweise besteht eine Anwendung aus mehreren Nodes.
 Entsprechend dem Prinzip Separation of Concerns (Trennung der Zuständigkeiten) sollen Nodes so implementiert werden, dass sie jeweils nur eine spezifische Aufgabe haben.
-\subsection{ROS2 Interfaces}
-In diesem Abschnitt werden die verschiedenen Arten von Interfaces beschrieben, welche für die im folgenden Abschnitt~\ref{rosnodecomm} erklärten Methoden zur Kommunikation zwischen mehreren Nodes genutzt werden.\\
-\ac{ROS2} Interfaces sind Definitionen, welche Daten mit welchen Typen gesendet werden.
+\subsubsection{Interfaces}
+In diesem Abschnitt werden die verschiedenen Arten von Interfaces beschrieben, die für die im folgenden Abschnitt~\ref{rosnodecomm} erklärten Methoden zur Kommunikation zwischen mehreren Nodes genutzt werden.\\
+\ac{ROS2}-Interfaces definieren, welche Daten gesendet werden und welchen Datentyp diese haben.
 Sie werden in der \ac{IDL} geschrieben, welche es ermöglicht automatisch Source Code in verschiedenen Sprachen für diese zu generieren.\\
-- Erklären was für den build nötig ist?
-\subsubsection{Message}
-Eine Message ist der einfachste Typ der \ac{ROS2} Interfaces, welcher gleichzeitig auch ein Baustein für die folgenden Interfaces sein wird.\\
+
+\textbf{Message} Eine Message ist die einfachste Art der \ac{ROS2}-Interfaces, welche gleichzeitig auch ein Baustein für die anderen Interfaces sein wird.\\
 Message Definitionen haben die Dateiendung \verb|.msg| und werden per Konvention in einem Ordner \verb|msg/| gespeichert.
 Jede \verb|.msg| Datei besteht aus den folgenden Teilen:
 \begin{itemize}
 \item Felder
 \item Konstanten
 \end{itemize}
-Jedes Feld besteht aus einem Typ und einem durch ein Leerzeichen getrennten Namen: \verb|typ name|, z.B. \verb|bool isDone|.
-Als Typ können dabei die integrierten Typen (s. Tabelle~\ref{tab:builtintypes}) oder der Name anderer Messages genutzt werden.
-Zusätzlich kann jeder integrierte Typ als Array definiert werden (s. Tabelle~\ref{tab:arraytypes}).\\
+Konstanten sind optional und es gibt mindestens ein Feld.
+Jedes Feld besteht aus einem Datentyp und einem durch ein Leerzeichen getrennten Namen: \verb|typ name|, z.B. \verb|bool isDone|.
+Als Datentyp können dabei die integrierten Datentypen (s. Tabelle~\ref{tab:builtintypes}) oder der Name anderer Messages genutzt werden.
+Zusätzlich kann jeder integrierte Datentyp als Array definiert werden (s. Tabelle~\ref{tab:arraytypes}).\\
 Feldnamen müssen kleingeschrieben sein.
 Es können alphanumerische Zeichen sowie der Unterstrich zur Trennung von Wörtern genutzt werden.
 Das erste Zeichen muss ein Buchstabe sein und der Name darf nicht mit einem Unterstrich enden.
@@ -33,7 +43,7 @@ Zusätzlich darf es keine aufeinander folgenden Unterstriche geben.\\
 Konstanten behalten das Format der Felder bei.
 Der Name der Konstante wird komplett in Großbuchstaben geschrieben.
 Zusätzlich bekommen Konstanten einen Wert zugewiesen, welcher nicht innerhalb des Programms geändert werden kann.
-Die Zuweisung des Wertes erfolgt mit dem \verb|=| Zeichen: \verb|string EXAMPLE="test"|.
+Die Zuweisung des Wertes erfolgt mit dem ''\verb|=|'' Zeichen: \verb|string EXAMPLE="test"|.
 \begin{table}[ht]
     \centering
     \caption{Integrierte Datentypen für Interfaces und deren C++ Equivalent}
@@ -71,12 +81,12 @@ bounded string             & std::string        \\ \hline
 \end{tabular}
     \label{tab:arraytypes}
 \end{table}
-\subsubsection{Service}
-Service Definitionen beschreiben eine Anfrage und eine Antwort.
+
+\textbf{Service} Service-Definitionen beschreiben eine Anfrage und eine Antwort.
 Die Definition hat die Dateiendung \verb|.srv| und wird im Ordner \verb|srv/| gespeichert.
-Anfrage und Antwort werden innerhalb der Datei durch \verb|-| getrennt.
-Für beide Teile gilt, dass sie gültig sind, wenn sie einer gültigen Message Definition entsprechen.
-Ein Beispiel einer einfachen Servicedefinition ist in Listing~\ref{lst:serviceexample} zu sehen.\\
+Anfrage und Antwort werden innerhalb der Datei durch ''\verb|-|'' getrennt.
+Für beide Teile gilt, dass sie gültig sind, wenn sie einer gültigen Message-Definition entsprechen.
+Ein Beispiel einer einfachen Service-Definition ist in Listing~\ref{lst:serviceexample} gegeben.\\
 \begin{minipage}{\linewidth}%minipage to prevent page break
 \begin{lstlisting}[caption={Beispiel einer Service Definition}, label={lst:serviceexample}]
 int32 request_int
@@ -85,32 +95,70 @@ string request_string
 float32 response_float
 \end{lstlisting}
 \end{minipage}
-\subsubsection{Action}
-Action Definitionen bestehen aus den 3 Teilen Anfrage, Ergebnis und Feedback, in dieser Reihenfolge.
-Wie auch für Service Definitionen gilt, das die Teile durch \verb|-| getrennt sind und jeder einzelne Teil gültig ist, wenn er einer gültigen Message Definition entspricht.
-\subsection{ROS2 Node Kommunikation}{\label{rosnodecomm}}
-Damit verschiedene Nodes untereinander kommunizieren können, gibt es verschieden Mechanismen, welche sich primär darin unterscheiden, in welche Richtungen Nachrichten gesendet werden und ob es eine direkte Reaktion gibt.
-Für alle Mechanismen gilt, das sie von einer Node unter einem bestimmten Namen sowie einem Typ zur Verfügung gestellt werden und von anderen Nodes durch eben diese genutzt werden können.
-\subsubsection{Topic}
-Topics entsprechen in etwa einem Newsletter System: eine Node veröffentlicht Daten, welche von allen anderen Nodes empfangen wird, die sich für diese registriert haben.
-Das Format der Daten entspricht einer gewählten Message Definition.
-\subsubsection{Service und Client}
-Services werden für Prozesse genutzt, in denen eine Anfrage gesendet und eine Antwort erwartet wird.
-Als Typ wird eine Servicedefinition genutzt.
-\subsubsection{Action Server und Client}
-Actions sind für länger andauernde Prozesse gedacht.
+
+\textbf{Action} Action-Definitionen bestehen aus den 3 Teilen Anfrage, Antwort und Feedback, in dieser Reihenfolge.
+Wie auch für Service-Definitionen gilt, das die Teile durch ''\verb|-|'' getrennt sind und jeder einzelne Teil gültig ist, wenn er einer gültigen Message-Definition entspricht.
+
+\subsubsection{Node-Kommunikation}{\label{rosnodecomm}}
+Damit verschiedene Nodes untereinander kommunizieren können, gibt es verschiedene Methoden, welche sich darin unterscheiden, in welche Richtungen Nachrichten gesendet werden und ob es eine direkte Reaktion gibt.
+Für alle Methoden gilt, das sie von einer Node unter einem bestimmten Namen sowie einem Typ zur Verfügung gestellt werden und von anderen Nodes durch eben diese genutzt werden können.\\
+
+\textbf{Topic} Topics entsprechen in etwa einem Newsletter System: eine Node veröffentlicht Daten (Publisher), welche von allen anderen Nodes (Subscriber) empfangen wird, die sich für diese registriert haben (s. Abbildung~\ref{fig:topic}).
+Das Format der Daten entspricht einer gewählten Message Definition.\\
+
+\begin{figure}[ht!]
+    \centering
+    \begin{tikzpicture}[node distance=5cm,every node/.style={circle, draw, minimum size=1.5cm}]
+
+    \node (1) at (0,0) [text width=2cm,align=center,circle,draw] {Publisher};
+    \node (2) at (10,0) [text width=2cm,align=center,circle,draw,right of=1] {Subscriber};
+
+    \path[-{latex},every node/.style={font=\sffamily\small}]
+    (1) edge[bend left] node [midway,above] {Nachricht (Message)} (2)
+    \end{tikzpicture}
+    \caption{Nachrichtenfluss eines Topic}
+    \label{fig:topic}
+\end{figure}
+\textbf{Service und Client} Services werden für Prozesse genutzt, in denen eine Anfrage gesendet und eine Antwort erwartet wird.
+Ein Client sendet die Anfrage an den Service, der eine Antwort zurückgibt (s. Abbildung~\ref{fig:service}).
+Als Typ wird eine Servicedefinition genutzt.\\
+
+\begin{figure}[ht!]
+    \centering
+    \begin{tikzpicture}[node distance=5cm,every node/.style={circle, draw, minimum size=2cm}]
+
+        \node (1) at (0,0) [text width=2cm,align=center,circle,draw] {Client};
+        \node (2) at (10,0) [text width=2cm,align=center,circle,draw,right of=1] {Service};
+
+        \path[-{latex},every node/.style={font=\sffamily\small}]
+        (1) edge[bend left] node [midway,above] {Anfrage (Request)} (2)
+        (2) edge[bend left] node [midway,below] {Antwort (Response)} (1)
+    \end{tikzpicture}
+    \caption{Nachrichtenfluss eines Service}
+    \label{fig:service}
+\end{figure}
+\textbf{Action Server und Client} Actions sind für länger andauernde Prozesse gedacht.
 Eine Node erstellt einen Action Server über welchen eine Action zur Verfügung gestellt wird.
 Andere Nodes können über einen Action Client eine Anfrage senden.
 Der Server bearbeitet die Anfrage und sendet bei Beendigung eine Antwort mit einem Ergebnis an den Client.
-Während der Dauer der Action kann der Server den Client optional mit Feedback Nachrichten über den aktuellen Status informieren.\\
-Als Typ wird eine Action Definition genutzt. 
-\subsection{OpenMANIPULATOR-X}
-Der OpenMANIPULATOR-X ist ein von der Firma ROBOTIS{\footnote{http://en.robotis.com}} nach den Prinzipien ``OpenSoftware`` und ``OpenHardware`` hergestellter Greifarm.
-OpenSoftware steht hierbei dafür, dass es ein OpenSource Projekt ist und auf dem OpenSource Projekt \ac{ROS2} basiert.
-OpenHardware steht dafür, dass die meisten Komponenten als STL-Dateien zur Verfügung stehen und als Ersatzteile oder zum Anpassen des Greifarms mittels eines 3D-Druckers selbst hergestellt werden können.\\
-Der OMX(Greifarm?,Abk?) ist eine 5DOF (5 Degrees of Freedom) Plattform, welche mittels 5 Servomotoren{\footnote{DYNAMIXEL XM430-W350-T}} gesteuert wird.
-Dies ist aufgeteilt in 4DOF für den Arm sowie 1DOF für den Greifer.
-Es kann eine Last bis 500g getragen werden
+Während der Dauer der Action kann der Server den Client optional mit Feedback-Nachrichten über den aktuellen Status informieren.
+Dieser Nachrichtenfluss wird in Abbildung~\ref{fig:action} gezeigt.\\
+Als Typ wird eine Action Definition genutzt.\\
+\begin{figure}[ht!]
+    \centering
+    \begin{tikzpicture}[node distance=5cm,every node/.style={circle, draw, minimum size=2cm}]
+
+        \node (1) at (0,0) [text width=2cm,align=center,circle,draw] {Action Client};
+        \node (2) at (10,0) [text width=2cm,align=center,circle,draw,right of=1] {Action Server};
+
+        \path[-{latex},every node/.style={font=\sffamily\small}]
+        (1) edge[bend left] node [midway,above] {Anfrage (Request)} (2)
+        (2) edge[bend left] node [midway,below] {Antwort (Response)} (1)
+        (2) edge[bend left=10] node [midway,below] {Feedback} (1)
+    \end{tikzpicture}
+    \caption{Nachrichtenfluss einer Action}
+    \label{fig:action}
+\end{figure}
 \subsection {Planung}
 Planung (auch Handlungsplanung) ist ein Bereich der Künstlichen Intelligenz, welcher sich mit der Lösung von Planungs- und Schedulingproblem befasst~\cite{aiplanning}.
 \subsubsection{Stanford Research Institute Problem Solver}{\label{chap:strips}}
@@ -133,21 +181,21 @@ Ein \ac{STRIPS}-Modell kann mathematisch als 4-Tupel \((P,O,I,G)\) beschrieben w
 \begin{enumerate}
     \item \(P\): eine endliche Menge von Bedingungen
     \item \(O\): eine endliche Menge von Aktionen (auch Operatoren) mit der Form $Pre \Rightarrow Post$:
-    \item \(I\): der Startzustand und $I\subseteq P$
-    \item \(G\): die Ziele
+    \item \(I\): der Startzustand, $I\subseteq P$
+    \item \(G\): eine endliche Menge von Zielen
 \end{enumerate}
 Es gilt die \emph{Closed World Assumption (CWA)}: alles was nicht explizit als wahr beschrieben ist, gilt als falsch.\\
 $P$ ist die Menge aller Bedingungen, die relevant sind.
 Jeder Zustand ist eine Teilmenge $S\subseteq P$.\\
 $O$ ist die Menge der Aktionen die einen Zustand in einen anderen ändern können.
-Aktionen sind 4-Tupel, bei dem jedes Element eine Menge von Bedingungen sind.
+Aktionen sind 4-Tupel \((o^+,o^-,o_+,o_-)\), bei dem jedes Element eine Menge von Bedingungen sind.
 Die ersten zwei Mengen beschreiben die Vorbedingungen ($Pre$): Bedingungen die wahr sein müssen ($o^+$) sowie Bedingungen, die falsch sein müssen ($o^-$).
 Die letzten beiden Mengen beschreiben den Effekt, den die Aktion nach ihrer Ausführung auf einen Zustand hat ($Post$): Bedingungen die wahr werden ($o_+$) und Bedingungen die falsch werden ($o_-$).\\
 $I$ beschreibt, welche Bedingungen anfangs wahr oder falsch sind.
 Eine Bedingung $p\in P$ ist anfangs wahr, wenn $p\in I$ und sonst falsch.\\
 $G$ ist die Menge der Bedingungen die erreicht werden soll, bestehend aus den Zielen die wahr sein sollen ($G_+$) und denen die falsch sein sollen ($G_-$).
 Ein Zustand $S\subseteq P$  ist ein Zielzustand, wenn $G_+\subseteq S$ und $G_-\cap S =\emptyset$.\\
-Ein Plan besteht aus einer Menge von Aktionen,die vom Startzustand zu einem Zielzustand führen.
+Ein Plan besteht aus einer Menge von Aktionen, die vom Startzustand zu einem Zielzustand führen.
 Dieser Plan ist ein \emph{Total-Order} Plan: alle Aktionen haben eine feste Reihenfolge innerhalb des Plans.
 Um einen Plan zu finden wird ein Suchbaum erstellt.
 Die Suche findet im Zustandsraum statt.
@@ -270,6 +318,7 @@ Im unteren Abschnitt wird dargestellt, welche Instanzen, zu welchem Zeitpunkt, a
         \centering
         \includegraphics[width=.66\linewidth,keepaspectratio,valign=c]{plugin_vis3}
     \end{minipage}
+    \title{Visualisierung eines Plans mit dem PDDL-Plugin}
     \caption{Visualisierung eines Plans mit dem PDDL-Plugin mit Fokus auf die Aktionen (links) und Fokus auf die relevanten Objekte (rechts)}
     \label{fig:pluginvis}
 \end{figure}
@@ -454,8 +503,8 @@ Andernfalls wird ein vereinfachter Plan aus dem Graphen extrahiert.
 Die Länge des optimalen vereinfachten Plans ist eine zulässige Heuristik.
 Der optimale Plan lässt sich jedoch nicht effizient extrahieren~\cite{hoffmannnebel2001}.
 Daher wird ein suboptimaler Plan extrahiert, wodurch die Heuristik nicht mehr zulässig ist.\\
-Um einen \ac{RPG} für temporales Planen zu erweitern, werden Aktionen in Startaktionen $A_\vdash$ und Endaktionen $A_\dashv$ aufgeteilt.
-Der Index $t$ einer Schicht entspricht nun einer Zeitmarke.\\
+Um einen \ac{RPG} für temporales Planen zu erweitern, werden Aktionen in Startaktionen $A_\vdash$ und Endaktionen $A_\dashv$ aufgeteilt, die jeweils nur \emph{at start} und \emph{at end} Effekte enthalten.
+Der Index $t$ einer Schicht entspricht nun einem Zeitstempel.\\
 Als Suchverfahren wird zunächst \ac{EHC} versucht.
 Der in Abbildung~\ref{fig:ehc_algo} beschriebene Algorithmus beginnt im Startzustand $S$.
 \begin{figure}[h!]
