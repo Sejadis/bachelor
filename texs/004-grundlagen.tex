@@ -11,7 +11,7 @@ Der OpenMANIPULATOR-X ist eine 5DOF (5 Degrees of Freedom) Plattform, die mittel
 Dies ist aufgeteilt in 4DOF für den Arm sowie 1DOF für den Greifer.
 Es kann eine Last bis 500g getragen werden.
 \subsection{ROS2}
-\ac{ROS2} ist eine Sammlung von Bibliotheken und Werkzeugen für Robotik-Applikationen, die alle OpenSource sind.
+\acf{ROS2} ist eine Sammlung von Bibliotheken und Werkzeugen für Robotik-Applikationen, die alle OpenSource sind.
 Die erste \ac{ROS2} Release-Version erschien im Dezember 2017 unter dem Namen ''Ardent Apalon''.\\
 Es werden  mehrere \acp{RCL}  zur Verfügung gestellt, die den Zugriff auf die \ac{ROS2}-API ermöglichen.
 Die \acp{RCL} für die Sprachen C++ und Python (rclcpp und rclpy) werden dabei direkt vom \ac{ROS2}-Team verwaltet.
@@ -23,7 +23,7 @@ Entsprechend dem Prinzip \emph{Separation of Concerns} (Trennung der Zuständigk
 \subsubsection{Interfaces}
 In diesem Abschnitt werden die verschiedenen Arten von Interfaces beschrieben, die für die im folgenden Abschnitt~\ref{rosnodecomm} erklärten Methoden zur Kommunikation zwischen mehreren Nodes genutzt werden.\\
 \ac{ROS2}-Interfaces definieren, welche Daten gesendet werden und welchen Datentyp diese haben.
-Sie werden in der \ac{IDL} geschrieben, die es ermöglicht automatisch Source Code in verschiedenen Sprachen für diese zu generieren.\\
+Sie werden in der \ac{IDL} geschrieben, die es ermöglicht automatisch Quellcode in verschiedenen Sprachen für diese zu generieren.\\
 
 \textbf{Message} Eine Message ist die einfachste Art der \ac{ROS2}-Interfaces, die gleichzeitig auch ein Baustein für die anderen Interfaces sein wird.\\
 Message-Definitionen haben die Dateiendung \verb|.msg| und werden per Konvention in einem Ordner \verb|msg/| gespeichert.
@@ -89,10 +89,10 @@ Für beide Teile gilt, dass sie gültig sind, wenn sie einer gültigen Message-D
 Ein Beispiel einer einfachen Service-Definition ist in Listing~\ref{lst:serviceexample} gegeben.\\
 \begin{minipage}{\linewidth}%minipage to prevent page break
 \begin{lstlisting}[caption={Beispiel einer Service-Definition}, label={lst:serviceexample}]
-int32 request_int
-string request_string
+int32 request_int_name
+string request_string_name
 ---
-float32 response_float
+float32 response_float_name
 \end{lstlisting}
 \end{minipage}
 
@@ -113,7 +113,7 @@ Das Format der Daten entspricht einer gewählten Message-Definition.\\
     \node (1) at (0,0) [text width=2cm,align=center,circle,draw] {Publisher};
     \node (2) at (10,0) [text width=2cm,align=center,circle,draw,right of=1] {Subscriber};
 
-    \path[-{latex},every node/.style={font=\sffamily\small}]
+    \path[-{Latex[length=3mm]},every node/.style={font=\sffamily\small}]
     (1) edge[bend left] node [midway,above] {Nachricht (Message)} (2)
     \end{tikzpicture}
     \caption{Nachrichtenfluss eines Topic}
@@ -130,7 +130,7 @@ Als Typ wird eine Servicedefinition genutzt.\\
         \node (1) at (0,0) [text width=2cm,align=center,circle,draw] {Client};
         \node (2) at (10,0) [text width=2cm,align=center,circle,draw,right of=1] {Service};
 
-        \path[-{latex},every node/.style={font=\sffamily\small}]
+        \path[-{Latex[length=3mm]},every node/.style={font=\sffamily\small}]
         (1) edge[bend left] node [midway,above] {Anfrage (Request)} (2)
         (2) edge[bend left] node [midway,below] {Antwort (Response)} (1)
     \end{tikzpicture}
@@ -151,7 +151,7 @@ Als Typ wird eine Action Definition genutzt.\\
         \node (1) at (0,0) [text width=2cm,align=center,circle,draw] {Action Client};
         \node (2) at (10,0) [text width=2cm,align=center,circle,draw,right of=1] {Action Server};
 
-        \path[-{latex},every node/.style={font=\sffamily\small}]
+        \path[-{Latex[length=3mm]},every node/.style={font=\sffamily\small}]
         (1) edge[bend left] node [midway,above] {Anfrage (Request)} (2)
         (2) edge[bend left] node [midway,below] {Antwort (Response)} (1)
         (2) edge[bend left=10] node [midway,below] {Feedback} (1)
@@ -223,24 +223,24 @@ Die Beschreibung des Problems setzt sich aus folgenden grundlegenden Komponenten
 \end{itemize}
 Objekte sind Dinge in der Welt, die für die Planung relevant sind.
 Dies können bspw.\ Orte oder Personen sein und werden in \ac{PDDL} entsprechend Listing~\ref{lst:pddlobjects} beschrieben.
-\begin{lstlisting}[caption={Objektbeschreibung in PDDL},language=pddl,label={lst:pddlobjects}]
+\begin{lstlisting}[caption={Objektbeschreibung in \acs{PDDL}},language=pddl,label={lst:pddlobjects}]
 (:objects kitchen supermarket
           fabian)
 \end{lstlisting}
 Prädikate sind Eigenschaften, die Objekte haben können.
 Eine Person kann sich an einem Ort befinden oder eine bestimmte Größe haben (s. Listing~\ref{lst:pddlpredicates}).
-\begin{lstlisting}[caption={Prädikatbeschreibung in PDDL},language=pddl,label={lst:pddlpredicates}]
+\begin{lstlisting}[caption={Prädikatbeschreibung in \acs{PDDL}},language=pddl,label={lst:pddlpredicates}]
 (:predicates (person_at ?person ?location)
             (tall ?person))
 \end{lstlisting}
 Der Startzustand ist die Beschreibung der Welt zu Beginn der Planungsaufgabe.
 Er besteht aus einer Menge von Instanzen von Prädikaten, also Prädikate, die an Objekte gebunden sind (s. Listing~\ref{lst:pddlinit}).
-\begin{lstlisting}[caption={Startzustand in PDDL},language=pddl,label={lst:pddlinit}]
+\begin{lstlisting}[caption={Startzustand in \acs{PDDL}},language=pddl,label={lst:pddlinit}]
 (:init (person_at fabian kitchen))
 \end{lstlisting}
 Aktionen sind die vorhandenen Möglichkeiten, den Zustand der Welt zu verändern.
 Diese entsprechen den in Abschnitt~\ref{chap:strips} beschriebenen Aktionen mit einer Menge von Vorbedingungen und einer Menge von Effekten (s. Listing \ref{lst:pddlaction}).
-\begin{lstlisting}[caption={Aktion, um eine Person von einem Ort zum anderen zu bewegen in PDDL},language=pddl,label={lst:pddlaction}]
+\begin{lstlisting}[caption={Aktion, um eine Person von einem Ort zum anderen zu bewegen in \acs{PDDL}},language=pddl,label={lst:pddlaction}]
 (:action move
     :parameters (?p ?loc_from ?loc_to)
     :precondition (and (person_at ?p ?loc_from))
@@ -248,7 +248,7 @@ Diese entsprechen den in Abschnitt~\ref{chap:strips} beschriebenen Aktionen mit 
                 (not (person_at ?p ?loc_from))))
 \end{lstlisting}
 Ein Ziel ist eine Menge von Instanzen, die am Ende der Planung Teil des Zustands der Welt sein soll (s. Listing~\ref{code:pddlgoal}).
-\begin{lstlisting}[caption={Ziel in PDDL},language=pddl,label=code:pddlgoal]
+\begin{lstlisting}[caption={Ziel in \acs{PDDL}},language=pddl,label=code:pddlgoal]
 (:goal (and (person_at fabian supermarket))
 \end{lstlisting}
 Diese Komponenten werden aufgeteilt:
@@ -273,9 +273,9 @@ Die Aktion \emph{move} wird dann um entsprechende Vorbedingungen erweitert (s. L
     :effect (and (person_at ?p ?loc_to)
                 (not (person_at ?p ?loc_from))))
 \end{lstlisting}
-Um dies zu vereinfachen, wurde mit \ac{PDDL} 2.1 unter anderem direkte Typisierung eingeführt.
+Um dies zu vereinfachen, wurde mit \acs{PDDL} 2.1 unter anderem direkte Typisierung eingeführt.
 In der Domäne werden die möglichen Typen deklariert, Objekte werden mit einem Typ initialisert und Aktionen können Parameter auf einen Typ beschränken (s. Listing~\ref{lst:pddltypes})
-\begin{lstlisting}[caption={Typ Unterstützung in \ac{PDDL} 2.1},language=pddl,label={lst:pddltypes}]
+\begin{lstlisting}[caption={Typ Unterstützung in \acs{PDDL} 2.1},language=pddl,label={lst:pddltypes}]
 (:types person
         location)
 (:objects kitchen supermarket - location
@@ -288,10 +288,9 @@ In der Domäne werden die möglichen Typen deklariert, Objekte werden mit einem 
 \end{lstlisting}
 Eine weitere Neuerung in \ac{PDDL} ist die \emph{durative action} zur Modellierung von Aktionen mit einer Dauer für das temporale Planen.\\
 
-\subsubsection{PDDL-Plugin für VS Code}
-- nach Implementierung verschieben?\\
+\subsubsection{\acs{PDDL}-Plugin für VS Code}
 Im Marketplace von Visual Studio Code ist ein PDDL-Plugin von Jan Dolejsi verfügbar.
-Dieses vereinfacht die Entwicklung und das Testen von Domänen und Problemen im PDDL Format.
+Dieses vereinfacht die Entwicklung und das Testen von Domänen und Problemen im \ac{PDDL}-Format.
 Es beinhaltet Syntax-Highlighting und Snippets, sowie die Möglichkeit direkt Pläne zu suchen und zu visualisieren.
 Um Pläne mit \ac{POPF} zu suchen, muss der Planer in der Overview-Page des Plugins hinzugefügt werden.
 Der Pfad zum \ac{POPF}-Planer ist: \emph{/opt/ros/foxy/lib/popf/popf}.\\
@@ -303,7 +302,7 @@ Im unteren Abschnitt wird dargestellt, welche Instanzen zu welchem Zeitpunkt als
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth]{plugin_plan}
-    \caption{Konsolenausgabe nach Ausführung des Planers über das PDDL-Plugin}
+    \caption{Konsolenausgabe nach Ausführung des Planers über das \acs{PDDL}-Plugin}
     \label{fig:pluginplan}
 \end{figure}
 
@@ -319,11 +318,11 @@ Im unteren Abschnitt wird dargestellt, welche Instanzen zu welchem Zeitpunkt als
         \includegraphics[width=.66\linewidth,keepaspectratio,valign=c]{plugin_vis3}
     \end{minipage}
     \title{Visualisierung eines Plans mit dem PDDL-Plugin}
-    \caption{Visualisierung eines Plans mit dem PDDL-Plugin mit Fokus auf die Aktionen (links) und Fokus auf die relevanten Objekte (rechts)}
+    \caption{Visualisierung eines Plans mit dem \acs{PDDL}-Plugin mit Fokus auf die Aktionen (links) und relevante Objekte (rechts)}
     \label{fig:pluginvis}
 \end{figure}
 \subsubsection{Partial Order Planning}{\label{section:pop}}
-\emph{\ac{POP}} ist eine Form des Planens, in dem die Aktionen eines Plans nur soweit geordnet sind, wie es notwendig ist \cite{dyer_2003}.
+\emph{\acf{POP}} ist eine Form des Planens, in dem die Aktionen eines Plans nur soweit geordnet sind, wie es notwendig ist \cite{dyer_2003}.
 Dies steht im Gegensatz zu \emph{Total-Order} Planern wie \ac{STRIPS}.\\
 Es wird nach dem emph{Principle Of Least Commitment} verfahren.
 Das bedeutet, dass Entscheidungen soweit wie möglich aufgeschoben und erst getroffen werden, wenn es absolut nötig ist.
@@ -385,7 +384,7 @@ Vorwärtsverkettung im Zustandsraum hat, durch den \emph{Total-Order} Plan, den 
 Neue Aktionen werden immer am Ende hinzugefügt, wodurch sie kein Problem für die Vorbedingungen und Effekte früherer Aktionen darstellen können.
 Gleichzeitig kann keine folgende Aktion ein Problem für diese darstellen.
 Dieser Vorteil kommt mit dem Nachteil der frühen Bindung und einer festgelegten Reihenfolge zwischen Aktion, zwischen denen kein Zusammenhang besteht.\\
-Es soll ein Kompromiss zwischen den Vorteilen von Total- und Partial-Order Planung gefunden werden.
+Es soll ein Kompromiss zwischen den Vorteilen von \emph{Total-} und \emph{Partial-Order} Planung gefunden werden.
 Dem Tupel werden weitere Elemente hinzugefügt:
 \begin{itemize}
     \item $F^+(F^-)$, wobei $F^+(p)(F^-(p))$ den Index eines Schrittes $a$ angeben, indem der Fakt $p$ als letztes hinzugefügt (oder gelöscht) wurde
@@ -401,7 +400,7 @@ Dem Tupel werden weitere Elemente hinzugefügt:
 \subsubsection{Partial Order Planning Forward}
 \ac{POPF} ist ein am King’s College London entwickelter Planer, der die in Abschnitt~\ref{section:pop} genannten Methoden implementiert~\citep{popf}.
 Als Heuristik wird ein temporaler \ac{RPG} genutzt.
-Ein \ac{RPG} ist ein Planungsgraph, in dem versucht wird, ein vereinfachtes Problem zu lösen.
+Ein \acf{RPG} ist ein Planungsgraph, in dem versucht wird, ein vereinfachtes Problem zu lösen.
 Die Vereinfachung besteht darin, alle negativen Effekte von Aktionen zu ignorieren.\\
 Der Graph besteht aus einer Sequenz $F_0, A_0, ..., F_{t-1}, A_{t-1}, F_t, A_t$: Aktions- und Faktenschichten, die sich abwechseln.
 Die Wurzel des Graphen ist eine Faktenschicht, die den aktuellen Zustand abbildet.
@@ -423,47 +422,47 @@ Da $at(Home)$ vom Startzustand aus durchgängig gilt, erhält jedoch auch das Zi
 \begin{figure}[ht!]
     \centering
     \tikzset{every picture/.style={line width=0.75pt}} %set default line width to 0.75pt
-
+    %\usetikzlibrary{arrows.meta}
     \begin{tikzpicture}[x=0.75pt,y=0.75pt,yscale=-1,xscale=1]
 %uncomment if require: \path (0,355); %set diagram left start at 0, and has height of 355
 
 %Shape: Rectangle [id:dp564712349225938]
-        \draw  [fill={rgb, 255:red, 228; green, 250; blue, 206 }  ,fill opacity=1 ] (104,8) -- (546,8) -- (546,48) -- (104,48) -- cycle ;
+        \draw  [fill={rgb, 255:red, 228; green, 250; blue, 206 }  ,fill opacity=1 ] (105,5) -- (550,5) -- (550,45) -- (105,45) -- cycle ;
 %Rounded Rect [id:dp5993299884546457]
         \draw   (101,88) .. controls (101,83.58) and (104.58,80) .. (109,80) -- (540,80) .. controls (544.42,80) and (548,83.58) .. (548,88) -- (548,112) .. controls (548,116.42) and (544.42,120) .. (540,120) -- (109,120) .. controls (104.58,120) and (101,116.42) .. (101,112) -- cycle ;
 %Shape: Rectangle [id:dp4448475604191735]
-        \draw  [fill={rgb, 255:red, 228; green, 250; blue, 206 }  ,fill opacity=1 ] (105,152) -- (547,152) -- (547,192) -- (105,192) -- cycle ;
+        \draw  [fill={rgb, 255:red, 228; green, 250; blue, 206 }  ,fill opacity=1 ] (105,150) -- (550,150) -- (550,190) -- (105,190) -- cycle ;
 %Rounded Rect [id:dp06633752127787629]
         \draw   (102,228) .. controls (102,223.58) and (105.58,220) .. (110,220) -- (541,220) .. controls (545.42,220) and (549,223.58) .. (549,228) -- (549,252) .. controls (549,256.42) and (545.42,260) .. (541,260) -- (110,260) .. controls (105.58,260) and (102,256.42) .. (102,252) -- cycle ;
 %Shape: Rectangle [id:dp8200443828072568]
-        \draw  [fill={rgb, 255:red, 228; green, 250; blue, 206 }  ,fill opacity=1 ] (104,290) -- (546,290) -- (546,330) -- (104,330) -- cycle ;
+        \draw  [fill={rgb, 255:red, 228; green, 250; blue, 206 }  ,fill opacity=1 ] (105,290) -- (550,290) -- (550,330) -- (105,330) -- cycle ;
 
 % Text Node
-        \draw (184,17) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Home)};
+        \draw (185,15) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Home)};
 % Text Node
-        \draw (255,90) node [anchor=north west][inner sep=0.75pt]   [align=left] {move(Home, Shop)};
+        \draw (395,15) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
 % Text Node
-        \draw (189,160) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Home)};
+        \draw (255,90) node [anchor=north west][inner sep=0.75pt]   [align=left] {move(Home,Shop)};
 % Text Node
-        \draw (329,160) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Shop)};
+        \draw (175,160) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Home)};
 % Text Node
-        \draw (115,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {move(Home, Shop)};
+        \draw (300,160) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Shop)};
 % Text Node
-        \draw (394,17) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
+        \draw (425,160) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
 % Text Node
-        \draw (450,160) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
+        \draw (105,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {move(Home,Shop)};
 % Text Node
-        \draw (399,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {buy(Product, Money)};
+        \draw (250,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {move(Shop,Home)};
 % Text Node
-        \draw (119,300) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Home)};
+        \draw (394,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {buy(Product,Money)};
 % Text Node
-        \draw (361,300) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Shop)};
+        \draw (120,300) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Home)};
 % Text Node
-        \draw (233,300) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
+        \draw (235,300) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Money)};
 % Text Node
-        \draw (447,300) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Product)};
+        \draw (360,300) node [anchor=north west][inner sep=0.75pt]   [align=left] {at(Shop)};
 % Text Node
-        \draw (258,230) node [anchor=north west][inner sep=0.75pt]   [align=left] {move(Shop, Home)};
+        \draw (450,300) node [anchor=north west][inner sep=0.75pt]   [align=left] {has(Product)};
 % Text Node
         \draw (30,20.4) node [anchor=north west][inner sep=0.75pt]    {$F_{0}$};
 % Text Node
@@ -475,26 +474,26 @@ Da $at(Home)$ vom Startzustand aus durchgängig gilt, erhält jedoch auch das Zi
 % Text Node
         \draw (30,300) node [anchor=north west][inner sep=0.75pt]    {$F_{2}$};
 % Connection
-        \draw    (234.39,38) -- (301.47,84.85) ;
-        \draw [shift={(303.11,86)}, rotate = 214.94] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+        \draw[-{Latex[length=3mm]}]    (234.39,38) -- (301.47,84.85) ;
+        %\draw [shift={(303.11,86)}, rotate = 214.94] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
 % Connection
-        \draw    (327.69,111) -- (351.37,155.24) ;
-        \draw [shift={(352.31,157)}, rotate = 241.84] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+        \draw[-{Latex[length=3mm]}]    (330,111) -- (330,156) ;
+        %\draw [shift={(352.31,157)}, rotate = 241.84] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
 % Connection
-        \draw    (486.7,184) -- (473.89,226.09) ;
-        \draw [shift={(473.3,228)}, rotate = 286.93] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+        \draw[-{Latex[length=3mm]}]    (335,182) -- (331.25,227) ;
+        %\draw [shift={(330.34,226)}, rotate = 296.9] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
 % Connection
-        \draw    (378.45,182) -- (448.36,226.92) ;
-        \draw [shift={(450.05,228)}, rotate = 212.72] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+        \draw[-{Latex[length=3mm]}]    (340,182) -- (455,227) ;
+        %\draw [shift={(450.05,228)}, rotate = 212.72] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
 % Connection
-        \draw    (473.29,253) -- (486.64,297.09) ;
-        \draw [shift={(487.21,299)}, rotate = 253.15] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+        \draw[-{Latex[length=3mm]}]    (470.7,182) -- (470,227) ;
+        %\draw [shift={(473.3,228)}, rotate = 286.93] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
 % Connection
-        \draw    (352.66,182) -- (331.25,224.22) ;
-        \draw [shift={(330.34,226)}, rotate = 296.9] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
+        \draw[-{Latex[length=3mm]}]    (474,253) -- (487,298) ;
+        %\draw [shift={(487.21,299)}, rotate = 253.15] [color={rgb, 255:red, 0; green, 0; blue, 0 }  ][line width=0.75]    (10.93,-3.29) .. controls (6.95,-1.4) and (3.31,-0.3) .. (0,0) .. controls (3.31,0.3) and (6.95,1.4) .. (10.93,3.29)   ;
 
     \end{tikzpicture}
-    \caption{\ac{RPG} für das Ziel $\{at(Home), has(Product)\}$}
+    \caption{\acl{RPG} für das Ziel $\{at(Home), has(Product)\}$}
     \label{fig:rpg}
 \end{figure}
 Die Erstellung des Graphen wird gestoppt, wenn eine Faktenschicht alle Ziele erfüllt oder wenn eine Faktenschicht der vorherigen entspricht.
@@ -511,7 +510,7 @@ Der in Abbildung~\ref{fig:ehc_algo} beschriebene Algorithmus beginnt im Startzus
 \begin{figure}[h!]
            \centering
            \includegraphics{ehc_algo}
-           \caption{\ac{EHC} Algorithmus~\cite{hoffmannnebel2001}}
+           \caption{\acl{EHC} Algorithmus~\cite{hoffmannnebel2001}}
            \label{fig:ehc_algo}
 \end{figure}
 Von diesem aus wird wird eine \emph{breadth-first} Suche gestartet.
@@ -529,10 +528,10 @@ Dies geschieht, da \ac{EHC} Entscheidungen, eine Aktion in den Plan aufzunehmen,
 Der Algorithmus ist daher nur vollständig für Planungsaufgaben, die keine \emph{"dead ends"} enthalten.
 Ein \emph{Dead End} für eine Planungsaufgabe $(O,I,G)$ ist definiert als ein Zustand $S$, der erreichbar ist und von diesem aus keine Plan das Ziel erreichen kann:\\
 $\exists P: S = Result(I,P)$  und  $\neg\exists P': G\subseteq Result(S,P')$\\
-Schlägt die Suche mit \ac{EHC} fehl, wird eine neue \emph{best-first} Suche ausgehend vom ursprünglichen Startzustand gestartet.
+Um die Vollständigkeit der Planung zu gewährleisten wird, im Fall eines Fehlschlags von \ac{EHC}, eine neue \emph{best-first} Suche ausgehend vom ursprünglichen Startzustand gestartet.
 \subsubsection{Behavior Tree}
 \acp{BT} sind ein modulares System, das in der Videospieleindustrie entwickelt wurde~\cite{bt_book}.
-Sie ermöglichen aus simplen Aktionen komplexe Verhaltensmuster zu modelieren ohne das Aktionen Kenntnis über andere Aktionen haben müssen~\cite{bt_robotics}.
+Sie ermöglichen aus simplen Aktionen komplexe Verhaltensmuster zu modellieren ohne das Aktionen Kenntnis über andere Aktionen haben müssen~\cite{bt_robotics}.
 Entsprechend~\cite{bt_1} ist ein \ac{BT} ein gerichteter azyklischer Graph $G(V,E)$ mit $|V|$ Knoten und $|E|$ Kanten.
 Ein Elternknoten von einem Paar verbundener Knoten ist der, von dem die Kante ausgeht.
 Der Knoten mit der eingehenden Kante ist ein Kindknoten.
@@ -577,11 +576,11 @@ $S$ und $F$ müssen $\leq M$ sein.
 Wird keiner dieser beiden Werte überschritten, wird \emph{Running} zurückgegeben.\\
 Ein Dekorator-Knoten hat genau ein Kind.
 Er kann durch eine Bedingung entscheiden, ob das Kind ausgeführt wird und kann einen modifizierten Status zurückgeben.
-Beispiele für Dekoratoren sind:
+Beispiele für Dekoratoren sind~\cite{bt_book}:
 \begin{itemize}
     \item Invertierung/Negation: der \emph{Success} und \emph{Failure} Status des Kinds wird invertiert
     \item Zeitbeschränkung: gibt das Kind den Status \emph{Running} für länger als eine benutzerdefinierter Zeitspanne $T$ zurück, wird \emph{Failure} zurückgegeben und das Kind nicht mehr ausgeführt
-\end{itemize}\cite{bt_book}
+\end{itemize}
 
 \begin{table}[]
     \resizebox{\textwidth}{!}{%
@@ -596,40 +595,49 @@ Beispiele für Dekoratoren sind:
             \multicolumn{1}{l|}{\textbf{Failure}} &
             \textbf{Running} \\ \hline
             Selektor &
-            &
+            \multicolumn{1}{|c|}{?} &
             \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Wenn 1 Kind ''Success'' \\ zurückgibt\end{tabular}} &
             \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Wenn alle Kinder ''Failure''\\ zurückgeben\end{tabular}} &
             \begin{tabular}[c]{@{}l@{}}Wenn 1 Kind ''Running''\\ zurückgibt\end{tabular} \\ \hline
             Sequenz &
-            &
+            \multicolumn{1}{|c|}{$\rightarrow$} &
             \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Wenn alle Kinder ''Success''\\  zurückgeben\end{tabular}} &
             \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Wenn 1 Kind ''Failure''\\ zurückgibt\end{tabular}} &
             \begin{tabular}[c]{@{}l@{}}Wenn 1 Kind ''Running''\\ zurückgibt\end{tabular} \\ \hline
             Parallel &
-            &
+            \multicolumn{1}{|c|}{$\rightrightarrows$} &
             \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Wenn $\geq M$ Kinder ''Success''\\  zurückgeben\end{tabular}} &
             \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Wenn $> N - M$ Kinder ''Failure''\\ zurückgeben\end{tabular}} &
             \begin{tabular}[c]{@{}l@{}}Wenn keine der Bedingungen\\  für ''Success'' oder ''Failure'' \\ erfüllt sind\end{tabular} \\ \hline
             Dekorator &
-            &
+            \multicolumn{1}{|c|}{$\lozenge$} &
             \multicolumn{1}{l|}{benutzerdefiniert} &
             \multicolumn{1}{l|}{benutzerdefiniert} &
             benutzerdefiniert \\ \hline
             Bedingung &
-            &
+            \multicolumn{1}{|c|}{
+                \begin{tikzpicture}
+                    \draw[black!100] (0,0) -- (1,0);
+                    \node[ellipse,draw] at (-0,-0.5) {Text};
+                \end{tikzpicture}} &
             \multicolumn{1}{l|}{Wenn wahr} &
             \multicolumn{1}{l|}{Wenn falsch} &
             Nie \\ \hline
             Aktion &
-            &
+            \multicolumn{1}{|c|}{
+                \begin{tikzpicture}
+                    \draw[white] (0,0) -- (1,0);
+                    \node[draw] at (0,-0.5) {Text};
+                \end{tikzpicture}} &
             \multicolumn{1}{l|}{Bei vollständiger Ausführung} &
             \multicolumn{1}{l|}{\begin{tabular}[c]{@{}l@{}}Wenn vollständige Ausführung\\ nicht möglich ist\end{tabular}} &
             Während der Ausführung \\ \hline
         \end{tabular}%
     }
-    \caption{Übersicht der \ac{BT} Knoten, nach~\cite{bt_book}}
+    \caption{Übersicht der \acs{BT} Knoten, nach~\cite{bt_book}}
     \label{tab:btoverview}
 \end{table}
+
 - Visualisierungs bsp.\\
 \subsection{Planung in \ac{ROS2}}
 Für die Planung in \ac{ROS2} wird \ac{PlanSys2} genutzt.
@@ -665,7 +673,7 @@ In der Praxis ist jedes Blatt ein eigenständiger \ac{BT}, der nicht nur die sel
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{plansys2btaction}
-    \caption{\ac{BT} zur Ausführung einer spezifischen Aktion~\cite{plansys}}
+    \caption{\acs{BT} zur Ausführung einer spezifischen Aktion~\cite{plansys}}
     \label{fig:plansysbtaction}
     \end{figure}
 \ac{PlanSys2} hat drei große Limitationen.
