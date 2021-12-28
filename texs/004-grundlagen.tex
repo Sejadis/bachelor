@@ -7,16 +7,16 @@ Abschließend wird das System erklärt, das Planung und Roboter kombiniert.
 Der OpenMANIPULATOR-X ist ein von der Firma ROBOTIS{\footnote{http://en.robotis.com}} nach den Prinzipien ``OpenSoftware`` und ``OpenHardware`` hergestellter Greifarm.
 OpenSoftware steht hierbei dafür, dass es ein OpenSource Projekt ist und auf dem OpenSource Projekt \ac{ROS2} basiert.
 OpenHardware steht dafür, dass die meisten Komponenten als STL-Dateien zur Verfügung stehen und als Ersatzteile oder zum Anpassen des Greifarms mittels eines 3D-Druckers selbst hergestellt werden können.\\
-Der OpenMANIPULATOR-X ist eine 5DOF (5 Degrees of Freedom) Plattform, welche mittels 5 Servomotoren{\footnote{Modelbezeichnung: DYNAMIXEL XM430-W350-T}} gesteuert wird.
+Der OpenMANIPULATOR-X ist eine 5DOF (5 Degrees of Freedom) Plattform, die mittels 5 Servomotoren{\footnote{Modelbezeichnung: DYNAMIXEL XM430-W350-T}} gesteuert wird.
 Dies ist aufgeteilt in 4DOF für den Arm sowie 1DOF für den Greifer.
 Es kann eine Last bis 500g getragen werden.
 \subsection{ROS2}
-\ac{ROS2} ist eine Sammlung von Bibliotheken und Werkzeugen für Robotik-Applikationen welche alle OpenSource sind.
+\ac{ROS2} ist eine Sammlung von Bibliotheken und Werkzeugen für Robotik-Applikationen, die alle OpenSource sind.
 Die erste \ac{ROS2} Release-Version erschien im Dezember 2017 unter dem Namen ''Ardent Apalon''.\\
-Es werden  mehrere \acp{RCL}  zur Verfügung gestellt, welche den Zugriff auf die \ac{ROS2}-API ermöglichen.
+Es werden  mehrere \acp{RCL}  zur Verfügung gestellt, die den Zugriff auf die \ac{ROS2}-API ermöglichen.
 Die \acp{RCL} für die Sprachen C++ und Python (rclcpp und rclpy) werden dabei direkt vom \ac{ROS2}-Team verwaltet.
 Von der Community wurden weitere \acp{RCL}, unter anderem für die Sprachen C\#, Swift und Rust, entwickelt.\\
-Um die Entwicklung der \acp{RCL} zu vereinfachen und die Logik sprachunabhängig zu machen werden Funktionalitäten als C Interfaces zugänglich gemacht, für welche in den \acp{RCL} Wrapper geschrieben werden.\\
+Um die Entwicklung der \acp{RCL} zu vereinfachen und die Logik sprachunabhängig zu machen werden Funktionalitäten als C Interfaces zugänglich gemacht, für die in den \acp{RCL} Wrapper geschrieben werden.\\
 Die grundlegende Komponente einer \ac{ROS2} Anwendung ist die Node.
 Typischerweise besteht eine Anwendung aus mehreren Nodes.
 Entsprechend dem Prinzip \emph{Separation of Concerns} (Trennung der Zuständigkeiten) sollen Nodes so implementiert werden, dass sie jeweils nur eine spezifische Aufgabe haben.
@@ -42,7 +42,7 @@ Das erste Zeichen muss ein Buchstabe sein und der Name darf nicht mit einem Unte
 Zusätzlich darf es keine aufeinander folgende Unterstriche geben.\\
 Konstanten behalten das Format der Felder bei.
 Der Name der Konstante wird komplett in Großbuchstaben geschrieben.
-Zusätzlich bekommen Konstanten einen Wert zugewiesen, welcher nicht innerhalb des Programms geändert werden kann.
+Zusätzlich bekommen Konstanten einen Wert zugewiesen, der nicht innerhalb des Programms geändert werden kann.
 Die Zuweisung des Wertes erfolgt mit dem ''\verb|=|'' Zeichen: \verb|string EXAMPLE="test"|.
 \begin{table}[ht]
     \centering
@@ -103,7 +103,7 @@ Wie auch für Service-Definitionen gilt, dass die Teile durch ''\verb|---|'' get
 Damit verschiedene Nodes untereinander kommunizieren können, gibt es verschiedene Methoden, die sich darin unterscheiden, in welche Richtungen Nachrichten gesendet werden und ob es eine direkte Reaktion gibt.
 Für alle Methoden gilt, dass sie von einer Node unter einem bestimmten Namen sowie einem Typ zur Verfügung gestellt werden und von anderen Nodes durch eben diese genutzt werden können.\\
 
-\textbf{Topic} Topics entsprechen in etwa einem Newsletter System: eine Node veröffentlicht Daten (Publisher), welche von allen anderen Nodes (Subscriber) empfangen werden, die sich für diese registriert haben (s. Abbildung~\ref{fig:topic}).
+\textbf{Topic} Topics entsprechen in etwa einem Newsletter System: eine Node veröffentlicht Daten (Publisher), die von allen anderen Nodes (Subscriber) empfangen werden, die sich für diese registriert haben (s. Abbildung~\ref{fig:topic}).
 Das Format der Daten entspricht einer gewählten Message-Definition.\\
 
 \begin{figure}[ht!]
@@ -138,7 +138,7 @@ Als Typ wird eine Servicedefinition genutzt.\\
     \label{fig:service}
 \end{figure}
 \textbf{Action Server und Client} Actions sind für länger andauernde Prozesse gedacht.
-Eine Node erstellt einen Action Server über welchen eine Action zur Verfügung gestellt wird.
+Eine Node erstellt einen Action Server über den eine Action zur Verfügung gestellt wird.
 Andere Nodes können über einen Action Client eine Anfrage senden.
 Der Server bearbeitet die Anfrage und sendet bei Beendigung eine Antwort mit einem Ergebnis an den Client.
 Während der Dauer der Action kann der Server den Client optional mit Feedback-Nachrichten über den aktuellen Status informieren.
@@ -160,11 +160,11 @@ Als Typ wird eine Action Definition genutzt.\\
     \label{fig:action}
 \end{figure}
 \subsection {Planung}
-Planung (auch Handlungsplanung) ist ein Bereich der Künstlichen Intelligenz, welcher sich mit der Lösung von Planungs- und Schedulingproblemen befasst~\cite{aiplanning}.
+Planung (auch Handlungsplanung) ist ein Bereich der Künstlichen Intelligenz, der sich mit der Lösung von Planungs- und Schedulingproblemen befasst~\cite{aiplanning}.
 \subsubsection{Stanford Research Institute Problem Solver}{\label{chap:strips}}
-Der \emph{\ac{STRIPS}} ist ein automatischer Planer, welcher von Richard Fikes und Nils Nilsson 1971 entwickelt wurde~\cite{FIKES1971189}.
-Mit dem gleichen Namen wird auch die Sprache bezeichnet, welche als Eingabe für diesen Planer genutzt wird.
-In diesem Abschnitt wird zunächst auf die Sprache eingegangen, welche die Grundlage vieler weiterer Sprachen zur Darstellung von Planungsdomänen und -problemen ist.
+Der \emph{\ac{STRIPS}} ist ein automatischer Planer, der von Richard Fikes und Nils Nilsson 1971 entwickelt wurde~\cite{FIKES1971189}.
+Mit dem gleichen Namen wird auch die Sprache bezeichnet, die als Eingabe für diesen Planer genutzt wird.
+In diesem Abschnitt wird zunächst auf die Sprache eingegangen, die die Grundlage vieler weiterer Sprachen zur Darstellung von Planungsdomänen und -problemen ist.
 Anschließend wird der von \ac{STRIPS} genutzte Algorithmus beschrieben.\\
 Ein \ac{STRIPS}-Modell besteht aus 3 Teilen:
 \begin{itemize}

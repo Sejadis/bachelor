@@ -77,7 +77,7 @@ Zur Nutzung des U2D2 in der \ac{VM} muss das Gerät \emph{FTDI USB <-> Serial Co
 
 
 \subsubsection{OpenMANIPULATOR-X-Controller}
-Der OpenMANIPULATOR-X-Controller ist ein Package, welches automatisch beim Installieren der für den OpenMANIPULATOR-X benötigten Software installiert wird.
+Der OpenMANIPULATOR-X-Controller ist ein Package, das automatisch beim Installieren der für den OpenMANIPULATOR-X benötigten Software installiert wird.
 Er kann über die entsprechende Launch-Datei mit dem Befehl
 \begin{verbatim}
 ros2 launch open_manipulator_x_controller 
@@ -162,7 +162,7 @@ Dies umfasst das Verhältnis von Blöcken aufeinander (\verb|(box_on ?b_above ?b
 Als Aktionen werden das Nehmen sowie Ablegen eines Blocks benötigt.
 Da in den Bedingungen und Effekten einer Aktion nur mit Parametern gearbeitet werden kann, die auch Parameter der Aktion selbst sind, wird hier weiter aufgeteilt in ''Nehmen''/''Ablegen'' eines Blocks von/auf einen anderen Block sowie von/auf einen leeren Stapel.
 Für das Bewegen von Blöcken ergeben sich die 4 Aktionen \verb|GRAB, PLACE, STACK, UNSTACK|.\\
-Während für das reine Stapeln der Blöcke die exakte Position dieser nicht wichtig ist, wird diese jedoch für den Greifer benötigt, welcher vor diesen Aktionen an die richtige Stelle bewegt werden muss.
+Während für das reine Stapeln der Blöcke die exakte Position dieser nicht wichtig ist, wird diese jedoch für den Greifer benötigt, der vor diesen Aktionen an die richtige Stelle bewegt werden muss.
 Hier werden die weiteren Typen \verb|location| und \verb|stack| sowie die Prädikate \verb|(box_at ?b - box ?l - location)|,\\ \verb|(gripper_at ?g - gripper ?l - location)|,\\ \verb|(location_above ?l_above ?l_below - location)| und\\ \verb|(is_base_loc ?l - location ?s - stack)| eingeführt.\\ \\
 Das Prädikat \verb|clear| ist notwendig, da \ac{POPF} weder existentielle noch negative Vorbedingungen unterstützt.
 Es wird genutzt, um zu überprüfen, ob ein Block der oberste eines Stapels ist, was es ermöglicht diesen zu nehmen oder einen anderen auf diesem abzulegen.
@@ -196,7 +196,7 @@ Da es vom OpenMANIPULATOR-X kein Feedback gibt, ob oder wann etwas gegriffen wur
 Um unnötige Aufrufe der Methode während des Wartens zu verhindern, wird die Wartezeit über das Zeitintervall zur Ausführung der Node gesetzt.
 Die Aktion wird hierdurch immer beim 2.\ Aufruf der Methode \verb|do_work| beendet.\\
 Zum Senden des Requests wird ein \ac{ROS2} Client für den Service \verb|goal_tool_control| mit dem Typ \verb|open_manipulator_msgs::srv::SetJointPosition| erstellt. 
-Um sowohl die Aktionen zum Öffnen sowie Schließen des Greifers mit einer Node implementieren zu können, wird ein Parameter eingeführt, welcher über den Konstruktor gesetzt wird und die Bewegung des Greifers bestimmt.
+Um sowohl die Aktionen zum Öffnen sowie Schließen des Greifers mit einer Node implementieren zu können, wird ein Parameter eingeführt, der über den Konstruktor gesetzt wird und die Bewegung des Greifers bestimmt.
 Für jede Aktion wird eine Node mit entsprechenden Parametern erzeugt.\\
 Diese Nodes werden alle einem \verb|MultiThreadedExecutor| hinzugefügt. Dadurch können alle Nodes gemeinsam gestartet werden und laufen in einem Prozess, sind durch mehrere Threads aber unabhängig voneinander.
 
@@ -207,7 +207,7 @@ Ob die Bewegung beendet ist, wird über den im Topic \verb|states| gesendeten Be
 Dieser kann die beiden Werte \verb|IS_MOVING| und \verb|STOPPED| annehmen.
 Der aktuelle Status wird mit dem letzten empfangenen verglichen: war der letzte Status \verb|IS_MOVING| und der aktuelle \verb|STOPPED|, waren der OpenMANIPULATOR-X in einer Bewegung, die jetzt beendet ist.\\
 Um die Zielkoordinaten der Bewegung zu erhalten, muss der String-Parameter der Aktion in Zahlenwerte konvertiert werden.
-Zunächst werden aus dem String, welcher im Format \verb|s<Nummer des Stapels>l<Höhe innerhalb eines Stapels>| vorliegt, die 2 Integerwerte mit Hilfe einer \emph{regular expression} extrahiert.
+Zunächst werden aus dem String, der im Format \verb|s<Nummer des Stapels>l<Höhe innerhalb eines Stapels>| vorliegt, die 2 Integerwerte mit Hilfe einer \emph{regular expression} extrahiert.
 Diese werden im 2.\ Schritt über Maps zu Y- und Z-Koordinaten konvertiert.
 Die X-Koordinate ist im Rahmen dieser Arbeit fest auf den Wert 0,25 gesetzt.\\
 Um eine kollisionsfreie Bewegung sicherzustellen, findet diese nicht direkt von der aktuellen zur Zielposition statt.
@@ -220,7 +220,7 @@ Diese Zwischenpositionen werden übersprungen, wenn die aktuelle Position des Op
 Hierbei werden die aktuellen Koordinaten auf 2 Dezimalstellen gerundet.\\
 Für alle benötigten Positionen wird ein Request erzeugt und einer Queue hinzugefügt.
 Der Auslöser, den nächsten Request zu senden, ist jeweils das Ende der vorherigen Bewegung.\\
-Um Zugriff auf die aktuelle Position des OpenMANIPULATOR-X zu erhalten, wird ein weiterer Subscriber für das Topic \verb|kinematics_pose| benötigt, welches eine Message vom Typ\\
+Um Zugriff auf die aktuelle Position des OpenMANIPULATOR-X zu erhalten, wird ein weiterer Subscriber für das Topic \verb|kinematics_pose| benötigt, das eine Message vom Typ\\
 \verb|open_manipulator_msgs::msg::KinematicsPose| veröffentlicht.\\
 Um eine Beschädigung der Motoren zu vermeiden, soll die Bewegung bei einer Kollision abgebrochen werden.
 Hierfür sind zwei Aspekte nötig: die Kollisionserkennung sowie das Abbrechen der Bewegung.
@@ -250,7 +250,7 @@ Um das System praktisch anwenden zu können, wurden mehrere farbige Würfel aus 
 Auf der Basisplatte des OpenMANIPULATOR-X wurden die Positionen für drei Stapel markiert.
 Es werden mehrere Szenarien getestet, um die allgemeine Anwendbarkeit zu überprüfen.
 \subsubsection{PlanSys2 Terminal}
-Das \ac{PlanSys2} Terminal ist eine separate Node, welche es ermöglicht, das System durch Eingabe über die Konsole zu steuern.
+Das \ac{PlanSys2}-Terminal ist eine separate Node, die es ermöglicht, das System durch Eingabe über die Konsole zu steuern.
 Die wichtigsten Befehle sind hierbei \verb|get|, \verb|set| und \verb|run|.
 Mit \verb|get| können die Typen, Prädikate und Aktionen der geladenen Domäne sowie des aktuellen Problems angezeigt werden (s. Abbildung~\ref{fig:plansysterminal}).
 Der \verb|set| Befehl wird genutzt, um das aktuelle Problem zu verändern.
