@@ -51,7 +51,7 @@ Für den kompletten Zusammenbau sind ca. 3-4h zu veranschlagen.
 \label{fig:omxparts}
 \end{figure}
 \subsubsection{Virtuelle Maschine}
-Zur Nutzung des Greifarms wurde eine \ac{VM} mit VirtualBox {\footnote{https://www.virtualbox.org}} von Oracle aufgesetzt.
+Zur Nutzung des Greifarms wurde eine \acf{VM} mit VirtualBox{\footnote{\url{https://www.virtualbox.org}}} von Oracle aufgesetzt.
 Als Betriebssystem der \ac{VM} wurde das für ROS2 Foxy empfohlene~\citep{foxyreq} Ubuntu 20.04\footnote{\url{https://releases.ubuntu.com/20.04/}} gewählt.
 Danach wurde entsprechend der Anleitung für den OpenMANIPULATOR-X~\citep{foxyinstall} zuerst ROS 2 Foxy über das Installations-Skript von ROBOTIS und im Anschluss die für den Greifarm benötigten Packages installiert.
 
@@ -167,10 +167,6 @@ Das Prädikat \verb|clear| ist notwendig, da \ac{POPF} weder existentielle noch 
 Es wird genutzt, um zu überprüfen, ob ein Block der oberste eines Stapels ist, was es ermöglicht diesen zu nehmen oder einen anderen auf diesem abzulegen.
 Durch existentielle und negative Vorbedingungen könnte dies für die Aktion den Block B zu greifen, durch eine Bedingung der Form ''es existiert kein Block C für den gilt:( box\_on C B)'' ersetzt werden. \\ \\
 Da alle Aktionen eine Dauer haben und \ac{PlanSys2} auch nur diese unterstützt, werden alle Aktionen als \verb|durative-action| modelliert.
-Es wird jeder Aktion eine Dauer zugeordnet (\verb|:duration (= ?duration 0.25)|), die auch für Metriken genutzt werden kann.
-Zusätzlich bekommen Bedingungen und Effekte einen temporalen Zusatz: \verb|at start| und \verb|at end| können sowohl für Bedingungen als auch Effekte benutzt werden, um festzulegen zu welchem Zeitpunkt der Aktion diese Bedingung zutreffen oder der Effekt eintritt.
-Für Bedingungen gibt es außerdem \verb|over all|, damit eine Bedingung über die komplette Dauer der Aktion zutreffen muss, damit sie gültig ist.\\
-Da Bedingungen dadurch nicht mehr strikt vor Ausführung der Aktion gelten müssen, wird das Schlüsselwort \verb|:precondition| zu \verb|:condition| geändert.
 Im aktuellen Szenario wird \verb|over all| dafür genutzt, allen Block-Aktionen die Bedingung zu geben, dass sich der Greifer über die komplette Zeit an der gleichen Stelle wie der entsprechende Block befinden muss.\\
 Nur in der \verb|MOVE-GRIPPER| Aktion wird \verb|at start| für einen Effekt genutzt:\\
 \verb|(at start(not (gripper_at ?g ?l_from)))|.\\
@@ -178,6 +174,12 @@ Sobald die Aktion beginnt, befindet sich der Greifer nicht mehr an der Ausgangsp
 \verb|(at end(gripper_at ?g ?l_to))|.
 Würden beide Effekte erst am Ende der Aktion eintreten, würde der Planer mehrere \verb|MOVE-GRIPPER| Aktionen parallel ausführen (s. Abbildung~\ref{fig:tempgrippereffect}).
 Dies ist zum einen physisch nicht möglich, hinterlässt die Welt aber auch in einem ungültigen Zustand, da der Greifer sich dann an mehreren Positionen gleichzeitig befinden würde.
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{moveproblem}
+    \caption{Parallel ausgeführte MOVE-GRIPPER Aktionen bei fehlerhafter Domäne}
+    \label{fig:tempgrippereffect}
+\end{figure}
 
 \subsubsection{Action Nodes}
 Obwohl in der Domäne mehr als 2 Aktionen beschrieben sind, beschränken sich die ausgeführten Aktionen auf ein Bewegen des OpenMANIPULATOR-X sowie die Kontrolle des Greifers.
@@ -311,21 +313,21 @@ Der grau hervorgehobene Block ist jeweils der, der in diesem Schritt bewegt wurd
             \draw[black, thick] (0,1) rectangle (1,2) node[pos=.5] {C};
             \draw[black, thick] (1.5,0) rectangle (2.5,1) node[pos=.5] {B};
         \end{scope}
-        \draw[black, thick, 3pt, ->] (2.75,0.5) -- (3.75,0.5);
+        \draw[black, thick, 3pt, -{Latex[width=3mm]}] (2.75,0.5) -- (3.75,0.5);
         \begin{scope}[xshift=4cm]
             \draw (-0.5,0) -- (4.5,0);
             \draw[black, thick] (0,0) rectangle (1,1) node[pos=.5] {A};
             \draw[black, thick] (1.5,0) rectangle (2.5,1) node[pos=.5] {B};
             \filldraw[color=black, fill=gray!20, thick] (3,0) rectangle (4,1) node[pos=.5] {C};
         \end{scope}
-        \draw[black, thick, 3pt, ->] (8.25,0.5) -- (9.25,0.5);
+        \draw[black, thick, 3pt,  -{Latex[width=3mm]}] (8.25,0.5) -- (9.25,0.5);
         \begin{scope}[xshift=9.5cm]
             \draw (-0.5,0) -- (3,0);
             \draw[black, thick] (0,0) rectangle (1,1) node[pos=.5] {A};
             \filldraw[color=black, fill=gray!20, thick] (1.5,1) rectangle (2.5,2) node[pos=.5] {B};
             \draw[black, thick] (1.5,0) rectangle (2.5,1) node[pos=.5] {C};
         \end{scope}
-        \draw[black, thick, 3pt, ->] (12.25,0.5) -- (13.25,0.5);
+        \draw[black, thick, 3pt,  -{Latex[width=3mm]}] (12.25,0.5) -- (13.25,0.5);
         \begin{scope}[xshift=13.5cm]
             \draw (-0.5,0) -- (1.5,0);
             \draw[black, thick] (0,0) rectangle (1,1) node[pos=.5] {C};

@@ -286,7 +286,11 @@ In der Domäne werden die möglichen Typen deklariert, Objekte werden mit einem 
     :effect (and (person_at ?p ?loc_to)
                 (not (person_at ?p ?loc_from))))
 \end{lstlisting}
-Eine weitere Neuerung in \ac{PDDL} ist die \emph{durative action} zur Modellierung von Aktionen mit einer Dauer für das temporale Planen.\\
+Eine weitere Neuerung in \ac{PDDL}2.1 ist die \emph{durative action} zur Modellierung von Aktionen mit einer Dauer für das temporale Planen.\\
+Es wird jeder Aktion eine Dauer zugeordnet (\verb|:duration (= ?duration 0.25)|), die auch für Metriken genutzt werden kann.
+Zusätzlich bekommen Bedingungen und Effekte einen temporalen Zusatz: \verb|at start| und \verb|at end| können sowohl für Bedingungen als auch Effekte benutzt werden, um festzulegen zu welchem Zeitpunkt der Aktion diese Bedingung zutrifft oder der Effekt eintritt.
+Für Bedingungen gibt es außerdem \verb|over all|, damit eine Bedingung über die komplette Dauer der Aktion zutreffen muss, damit sie gültig ist.\\
+Da Bedingungen dadurch nicht mehr strikt vor Ausführung der Aktion gelten müssen, wird das Schlüsselwort \verb|:precondition| zu \verb|:condition| geändert.
 
 \subsubsection{\acs{PDDL}-Plugin für VS Code}
 Im Marketplace von Visual Studio Code ist ein PDDL-Plugin von Jan Dolejsi verfügbar.
