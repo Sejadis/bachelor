@@ -1,25 +1,27 @@
 \section{Implementierung}
 In diesem Abschnitt wird die Umsetzung beschrieben.
-Zunächst wird das Konzept vorgestellt.
-Hier wird dargestellt, welche Schritte und Systeme insgesamt nötig sind, um die Aufgabenstellung zu erfüllen.
+In Abschnitt~\ref{sec:konzept} wird das Konzept vorgestellt.
+Hier wird dargestellt, welche Schritte und Systeme insgesamt nötig sind, um das eingangs aufgestellte Ziel zu erreichen.
 Anschließend werden diese einzeln im Detail erklärt.
 Der Fokus liegt dabei auf der Beschreibung der Ergebnisse.
 Zusätzlich werden auch Details sowie mögliche Fehler- und Problemquellen genannt, auf die zu achten sind.
-\subsection{Konzept}{\label{konzept}}
+\subsection{Konzept}{\label{sec:konzept}}
 In diesem Abschnitt wird der Ansatz beschrieben, mit dem in dieser Arbeit vorgegangen werden soll.
 \subsubsection{Inbetriebnahme}
 Im ersten Schritt muss der OpenMANIPULATOR-X in Betrieb genommen werden.
 Dies beinhaltet den Zusammenbau und Konfiguration sowie die Installation nötiger Software.
 Ein besonderes Augenmerk wird dabei darauf gelegt, Details festzuhalten, die in den gegebenen Anleitungen nicht explizit angegeben werden oder leicht zu übersehen sind.
-\subsubsection{Struktur Nodes}{\label{konzept:nodes}}
-Um eine einfache sowie übersichtliche Steuerung des Greifarms zu ermöglichen, wird die Funktionalität in mehrere ROS2 Nodes aufgeteilt.
+\subsubsection{Struktur der Nodes}{\label{konzept:nodes}}
+Um eine einfache sowie übersichtliche Steuerung des Greifarms zu ermöglichen, wird die Funktionalität in mehrere \ac{ROS2}-Nodes aufgeteilt.
 Generell werden folgende Funktionalitäten benötigt: der Planer, die Speicherung des aktuellen Zustands der Welt, die Ausführung des Plans sowie die Möglichkeit, Eingaben zu verarbeiten und an die entsprechenden Nodes weiterzuleiten.\\
-Diese Aufteilung entspricht auch einer guten Aufteilung und Trennung der Verantwortungen, um daraus ROS2 Nodes zu machen.
+Diese Aufteilung entspricht auch einer guten Aufteilung und Trennung der Verantwortungen, um daraus \ac{ROS2}-Nodes zu machen.
 Hier haben die Nodes folgende Verantwortlichkeiten:\\
-Die Planungs-Node muss mit einer gegebenen Domäne und einem Problem einen Plan bestehend aus einer Reihe von Aktionen zurückgeben.\\
-Die Welt-Node hält den aktuellen Zustand der Welt bzw.\ des Problems und muss diesen konsistent halten.\\
-Die Ausführungs-Node muss entsprechend eines Plans die gegebenen Aktionen ausführen.\\
-Die Eingabe-Node ermöglicht die Erstellung eines Problems mit einem Welt-Zustand und einem Ziel.
+\begin{itemize}
+    \item Die Planungs-Node muss mit einer gegebenen Domäne und einem Problem einen Plan bestehend aus einer Reihe von Aktionen zurückgeben.
+    \item Die Welt-Node hält den aktuellen Zustand der Welt bzw.\ des Problems und muss diesen konsistent halten.
+    \item Die Ausführungs-Node muss entsprechend eines Plans die gegebenen Aktionen ausführen.
+    \item Die Eingabe-Node ermöglicht die Erstellung eines Problems mit einem Welt-Zustand und einem Ziel.
+\end{itemize}
 \subsubsection{Planungsmodell}{\label{konzept:planningmodel}}
 Für die Erstellung von Plänen wird eine Domäne im \ac{PDDL}-Format erstellt.
 In der Domäne werden die Aspekte des Stapelns von Blöcken mit denen des Greifers kombiniert.
@@ -37,7 +39,8 @@ Einige der mit den Servomotoren mitgelieferten Teile werden dabei nicht benötig
 Von allen Schrauben wurde außerdem Ersatz mitgeliefert.\\
 Der Zusammenbau erfolgte nach der auf der Webseite verfügbaren Bauanleitung\footnote{\url{https://emanual.robotis.com/docs/en/platform/openmanipulator_x/assembly/}}.
 Zu beachten ist, dass hier vorausgesetzt wird, dass den Servos bereits die IDs 11 (Basis des Greifarms) bis 15 (Greifer) zugewiesen wurden.
-Dies kann über die Software DYNAMIXEL Wizard{\footnote{\url{https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_wizard2/}}} erfolgen: die Servomotoren einzeln über das U2D2 (s. Abschnitt {\ref{u2d2}}) an den PC anschließen, die ID setzen und den Servo entsprechend markieren oder die ID merken.
+Dies kann über die Software DYNAMIXEL Wizard{\footnote{\url{https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_wizard2/}}} erfolgen.
+Die Servomotoren werden einzeln über das U2D2 (s. Abschnitt {\ref{u2d2}}) an den PC angeschlossen, die ID setzen und den Servo entsprechend markieren oder die ID merken.
 Weiterhin müssen bei den Abdeckungen der Servomotoren 12 und 14 die vorgestanzten Abdeckungen herausgebrochen werden.
 Dies ist in der Anleitung leicht zu übersehen.
 Weiterhin wird angenommen, dass das Horn der Servos bereits angebracht ist.
@@ -85,9 +88,9 @@ ros2 launch open_manipulator_x_controller
 \end{verbatim}
 gestartet werden.\\
 Für eine Nutzung des OpenMANIPULATOR-X ist dieses Package zwangsläufig nötig, da es alle Steuerungsmöglichkeiten sowie Informationen über den OpenMANIPULATOR-X zur Verfügung stellt.
-\subsubsection{Joint und Task Space}
-Der OpenMANIPULATOR-X kann in den zwei verschiedenen Arbeitsräumen \emph{Joint Space} und \emph{Task Space} betrachtet werden.\\
-Im \emph{Joint Space} werden die Gelenke und ihre aktuellen Winkel betrachtet.\\
+\subsubsection{Joint- und Task-Space}
+Der OpenMANIPULATOR-X kann in den zwei verschiedenen Arbeitsräumen \emph{Joint-Space} und \emph{Task-Space} betrachtet werden.
+Im \emph{Joint Space} werden die Gelenke und ihre aktuellen Winkel betrachtet.
 Der \emph{Task Space} entspricht einer Betrachtung in einem kartesischen Koordinatensystem, mit dem Motor mit der ID 11 als Ursprung.
 Zusätzlich zur Position gibt es eine Orientierung für jede Achse (Roll-Nick-Gier, engl.\ \emph{roll-pitch-yaw}).
 \subsubsection{Topics}
@@ -102,14 +105,14 @@ Ob die Motoren aktiviert sind, wird über das Feld \emph{open\_manipulator\_actu
 Der Bewegungsstatus, mit den möglichen Werten \emph{IS\_MOVING} und \emph{STOPPED}, ist im Feld \emph{open\_manipulator\_moving\_state} angegeben.\\
 \emph{/joint\_states} stellt Informationen über alle Gelenke zur Verfügung.
 Dies umfasst den Namen, den aktuell verbrauchten Strom, die Position (den Winkel des Motors) sowie die Geschwindigkeit.\\
-\emph{/kinematics\_pose} stellt Informationen über die Pose im Task Space zur Verfügung.
+\emph{/kinematics\_pose} stellt Informationen über die Pose im \emph{Task-Space} zur Verfügung.
 Eine Pose besteht dabei aus einer Position und einer Orientierung und bezieht sich auf den Greifer.
 Die Position enthält die Koordinaten der Mitte des Greifers.
 Die Orientierung gibt die Rotation als Quaternion an.
 
 \subsubsection{Kinematik}
 Der OpenMANIPULATOR-X lässt sich über zwei Formen der Kinematik steuern.
-Zum einen über die direkte Kinematik (auch Vorwärtskinematik, engl.\ \emph{forward kinematics}, FK), was einer Steuerung im Joint Space entspricht und zum anderen über die inverse Kinematik (engl.\ \emph{inverse kinematics}, IK), was einer Steuerung im \emph{Task Space} entspricht.\\
+Zum einen über die direkte Kinematik (auch Vorwärtskinematik, engl.\ \emph{forward kinematics}, FK), was einer Steuerung im \emph{Joint-Space} entspricht und zum anderen über die inverse Kinematik (engl.\ \emph{inverse kinematics}, IK), was einer Steuerung im \emph{Task Space} entspricht.\\
 Die komplette kinematische Steuerung erfolgt über Services, die sich dementsprechend darin unterscheiden, ob Winkel für die Gelenke oder Posen für den Greifer angegeben werden.
 Bei der Steuerung über Posen besteht wiederum die Möglichkeit, Position und Orientierung oder nur eines der beiden zu steuern und den aktuellen Wert des anderen beizubehalten.\\
 Die komplette Liste der Services ist in der Anleitung des OpenMANIPULATOR-X\footnote{\url{https://emanual.robotis.com/docs/en/platform/openmanipulator_x/ros_controller_msg/#message-list}} zu finden.
@@ -119,8 +122,8 @@ Die komplette Liste der Services ist in der Anleitung des OpenMANIPULATOR-X\foot
 Mit einem laufenden OpenMANIPULATOR-X-Controller kann der OpenMANIPULATOR-X auch ohne extra Programmierung direkt ferngesteuert werden.
 Mögliche Geräte zur Steuerung sind die Tastatur sowie Playstation- und XBOX-Controller.
 Für \ac{ROS2} Foxy wird aktuell allerdings nur die Steuerung über die Tastatur unterstützt.\\
-Der OpenMANIPULATOR-X kann dabei sowohl im Task Space als auch im Joint Space kontrolliert werden (s. Abbildung~\ref{fig:teleopkeyboard}).
-Zusätzlich gibt es 2 vordefinierte Posen (Init und Home) in die der OpenMANIPULATOR-X bewegt werden kann (s. Abbildung~\ref{fig:teleopposes}).
+Der OpenMANIPULATOR-X kann dabei sowohl im \emph{Task-Space} als auch im \emph{Joint-Space} kontrolliert werden (s. Abbildung~\ref{fig:teleopkeyboard}).
+Zusätzlich gibt es zwei vordefinierte Posen (Init und Home) in die der OpenMANIPULATOR-X bewegt werden kann (s. Abbildung~\ref{fig:teleopposes}).
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=\textwidth]{teleopkeyboard}
@@ -146,8 +149,8 @@ Zusätzlich gibt es 2 vordefinierte Posen (Init und Home) in die der OpenMANIPUL
 
 \subsection{PlanSys2}
 Für die Implementierung der in Abschnitt~\ref{konzept:nodes} genannten Funktionalitäten wird das Framework \ac{PlanSys2} genutzt.
-Es übernimmt dabei alle Funktionalitäten: die Verwaltung der Daten zur Domäne und dem aktuellen Problem erfolgt über die \emph{domain-expert} und \emph{problem-expert} Nodes.
-Die \emph{planer} Node ist für die komplette Planung zuständig und die Executioner Node für die Ausführung des Plans.\\
+Es übernimmt dabei alle Funktionalitäten: die Verwaltung der Daten zur Domäne und dem aktuellen Problem erfolgt über die \emph{domain-expert}- und \emph{problem-expert}-Nodes.
+Die \emph{planer} Node ist für die komplette Planung zuständig und die \emph{executioner}-Node für die Ausführung des Plans.\\
 Es müssen hier lediglich die Domäne erstellt sowie die tatsächliche Funktionalität der einzelnen Aktionen implementiert werden.
 Das Wort ''Action'' im Namen der Nodes und den folgenden Kapiteln bezieht sich hier auf die Aktionen der Domäne, nicht auf \ac{ROS2} Actions.
 
@@ -182,7 +185,7 @@ Dies ist zum einen physisch nicht möglich, hinterlässt die Welt aber auch in e
 \end{figure}
 
 \subsubsection{Action Nodes}
-Obwohl in der Domäne mehr als 2 Aktionen beschrieben sind, beschränken sich die ausgeführten Aktionen auf ein Bewegen des OpenMANIPULATOR-X sowie die Kontrolle des Greifers.
+Obwohl in der Domäne mehr als zwei Aktionen beschrieben sind, beschränken sich die ausgeführten Aktionen auf ein Bewegen des OpenMANIPULATOR-X sowie die Kontrolle des Greifers.
 Für diese wird jeweils eine Node erstellt.
 Damit diese Nodes von \ac{PlanSys2} genutzt werden können, müssen sie von der Basisklasse \verb|plansys2::ActionExecutorClient| erben.
 Da diese von \ac{PlanSys2} nur in C++ zur Verfügung gestellt wird, müssen auch die Aktionen in C++ implementiert werden.\\
@@ -218,7 +221,7 @@ Dies entspricht eine Höhe, in der keine Blöcke liegen können.
 Die zweite Zwischenposition bleibt auf der gleichen Höhe (Z-Koordinate 0,25) und bewegt sich zur X- und Y-Koordinate der Zielposition.
 Diese Zwischenposition befindet sich exakt oberhalb der Zielposition, sodass eine vertikale Bewegung zur Zielposition ohne Kollision möglich ist.\\
 Diese Zwischenpositionen werden übersprungen, wenn die aktuelle Position des OpenMANIPULATOR-X bereits dem korrekten Stapel der Zielposition entspricht.
-Hierbei werden die aktuellen Koordinaten auf 2 Dezimalstellen gerundet.\\
+Hierbei werden die aktuellen Koordinaten auf zwei Dezimalstellen gerundet.\\
 Für alle benötigten Positionen wird ein Request erzeugt und einer Queue hinzugefügt.
 Der Auslöser, den nächsten Request zu senden, ist jeweils das Ende der vorherigen Bewegung.\\
 Um Zugriff auf die aktuelle Position des OpenMANIPULATOR-X zu erhalten, wird ein weiterer Subscriber für das Topic \verb|kinematics_pose| benötigt, das eine Message vom Typ\\
@@ -243,7 +246,7 @@ Dies umfasst die C++ Dateien für die Aktionen sowie die Domänendatei.
 Es wurde eine Launch Datei erstellt, um das komplette System über einen Befehl starten zu können.
 In der Launch Datei wird zum einen \ac{PlanSys2} und zum anderen die Nodes für alle Aktionen gestartet.
 Weiterhin wird hier festgelegt, welche Domäne genutzt wird.\\
-Das Package enthält außerdem eine Readme Datei, in der die nötigen Schritte beschrieben sind um das gesamte System, einschließlich OpenMANIPULATOR-X, zu starten.
+Das Package enthält außerdem eine Readme-Datei, in der die nötigen Schritte beschrieben sind um das gesamte System, einschließlich OpenMANIPULATOR-X, zu starten.
 Weiterhin wurden mehrere Problemszenarien erstellt, die sowohl als \ac{PDDL}-Datei als auch als Befehle für das \ac{PlanSys2} Terminal zur Verfügung stehen.
 
 \subsection{Praktische Anwendung}
@@ -254,7 +257,7 @@ Es werden mehrere Szenarien getestet, um die allgemeine Anwendbarkeit zu überpr
 Das \ac{PlanSys2}-Terminal ist eine separate Node, die es ermöglicht, das System durch Eingabe über die Konsole zu steuern.
 Die wichtigsten Befehle sind hierbei \verb|get|, \verb|set| und \verb|run|.
 Mit \verb|get| können die Typen, Prädikate und Aktionen der geladenen Domäne sowie des aktuellen Problems angezeigt werden (s. Abbildung~\ref{fig:plansysterminal}).
-Der \verb|set| Befehl wird genutzt, um das aktuelle Problem zu verändern.
+Der \verb|set|-Befehl wird genutzt, um das aktuelle Problem zu verändern.
 Es können Instanzen, Prädikate sowie das Ziel erstellt und geändert werden.
 Über den Befehl \verb|run| lässt sich der Plan für das aktuelle Ziel ausführen.
 Es ist auch möglich nur einen Plan zu suchen, ohne ihn direkt auszuführen.
@@ -340,14 +343,14 @@ Der grau hervorgehobene Block ist jeweils der, der in diesem Schritt bewegt wurd
 \end{figure}
 \subsubsection{Mehr Blöcke, mehr Positionen}
 Die Anzahl der möglichen Blöcke und Positionen soll ausgereizt werden.
-Bei einem Szenario mit drei Stapeln mit jeweils drei Positionen kann ein Maximum von 9 Blöcken platziert werden.
+Bei einem Szenario mit drei Stapeln mit jeweils drei Positionen kann ein Maximum von neun Blöcken platziert werden.
 Dies verhindert jedoch das Bewegen von Blöcken, da die einzige freie Position, zu der ein aufgenommener Block bewegt werden kann, seine Ursprungsposition ist.
 Damit alle Blöcke bewegt werden können, muss die Anzahl der freien Positionen mindestens der Höhe der Stapel entsprechen.
-Gibt es bei einer Stapelhöhe von drei und drei Stapeln nur zwei freie Positionen, tritt das gleiche Problem für alle untersten Blöcke der Stapel auf: die einzige gültige Position nach dem Greifen ist ihre Ausgangsposition (s. Abbildung~\ref{fig:emptypos})
+Gibt es bei einer Stapelhöhe von drei und drei Stapeln nur zwei freie Positionen, tritt das gleiche Problem für alle untersten Blöcke der Stapel auf: die einzige gültige Position nach dem Greifen ist ihre Ausgangsposition (s. Abbildung~\ref{fig:emptypos}).
 Um mehr Blöcke verwenden zu können, müssen also die Anzahl der Stapel und/oder die maximale Höhe der Stapel erweitert werden.\\
 Für beide Varianten gibt es Einschränkungen, die zu beachten sind.
 Für höhere Stapel ist der Bewegungsraum des OpenMANIPULATOR-X zu beachten.
-Über dem äußeren Rand der Grundplatte beträgt die maximale Höhe ca 25 cm.
+Über dem äußeren Rand der Grundplatte beträgt die maximale Höhe ca 25\,cm.
 Da sich der Greifarm mit einem gegriffenen Block frei oberhalb der Stapel bewegen können muss, muss die maximale Höhe eines Stapels unterhalb dieses Werts liegen.
 Die exakte Maximalhöhe ist von der Größe der Blöcke abhängig.\\
 Für weitere Stapel wird als Voraussetzung angenommen, dass sich alle Stapel nebeneinander befinden sollen.
@@ -359,7 +362,7 @@ Da sowohl ein Erhöhen der Anzahl der Stapel als auch deren Höhe durch die Grö
 Dies ermöglicht bis zu 5 Stapel mit einer maximalen Höhe von 5 Blöcken.
 Das theoretische Limit an Blöcken wird damit auf 25 bzw. 20 um Bewegungen zu ermöglichen, erhöht.\\
 Bereits Tests mit Zielen, deren Plan aus nur wenigen Schritten besteht, zeigen, dass dies den Suchraum so stark erweitert, dass Pläne nicht oder erst nach langer Zeit gefunden werden.
-Ein Testfall mit 20 Blöcken und dem Ziel den obersten Block eines Stapels auf den eines anderen zu legen (optimale Planlänge: 4) führte dazu, dass der Planer ca 13 Minuten lief.
+Ein Testfall mit 20 Blöcken und dem Ziel den obersten Block eines Stapels auf den eines anderen zu legen (optimale Planlänge: 4) führte dazu, dass der Planer ca. 13 Minuten lief.
 Obwohl laut Konsolenausgabe ein Plan gefunden wurde, wird dieser nicht ausgegeben (s. Abbildung~\ref{fig:longplan}).\\
 Während bei den wenigen, größeren Blöcken eine Namensgebung entsprechend der Farbe ausreichend war, wurden die kleineren Blöcke durchnummeriert.
 Das \ac{PlanSys2} Terminal erlaubt zwar die Erstellung von Objekten und Prädikaten, die diese nutzen mit rein numerischen Namen stürzt jedoch beim Versuch, ein Ziel mit diesen zu erstellen ohne aussagekräftige Fehlermeldung ab.
@@ -371,7 +374,7 @@ Dieser Block kann zwar normal und sicher bewegt werden, benötigt beim Abblegen 
 Während der Ausführung eines Plans kam es wiederholt zu Abstürzen der \ac{PlanSys2} Node.
 Diese Abstürze verhinderten eine vollständige Ausführung des Plans und erforderten einen Neustart des \ac{PlanSys2}-Systems.
 Der Absturz erfolgte immer mit einem Exit Code 11, der auf ein \emph{segmentation fault} hinweist.
-Um die Stelle des Absturzes zu finden, wurde \ac{PlanSys2} zunächst in der \emph{distributed} anstelle der m\emph{monolithic} Version gestartet.
+Um die Stelle des Absturzes zu finden, wurde \ac{PlanSys2} zunächst in der \emph{distributed} anstelle der \emph{monolithic} Version gestartet.
 Hierdurch werden alle Nodes in eigenen Prozessen gestartet.
 Dies ermöglichte ein Eingrenzen auf die \emph{Executor Node}.\\
 Für das weitere Debugging wurde der GNU Project Debugger (GDB) sowie xterm (musste separat installiert werden) genutzt.

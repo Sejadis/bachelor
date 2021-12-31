@@ -1,38 +1,33 @@
 \section {Grundlagen}
-In diesem Abschnitt wird zunächst der Greifarm OpenMANIPULATOR-X vorgestellt.
-Anschließend wird eine Übersicht über die wichtigsten Komponenten des Betriebssystems gegeben, mit dem dieser Greifarm läuft.
-Weiterhin werden die theoretischen Grundlagen der Planung dargestellt, die zur Steuerung des Greifarms genutzt werden sollen.
-Abschließend wird das System erklärt, das Planung und Roboter kombiniert.
-\subsection{OpenMANIPULATOR-X}
+In Abschnitt~\ref{sec:omx} wird zunächst der Greifarm OpenMANIPULATOR-X vorgestellt.
+Anschließend wird in Abschnitt~\ref{sec:ros2} Übersicht über die wichtigsten Komponenten des Betriebssystems gegeben, mit dem dieser Greifarm läuft.
+Weiterhin werden in Abschnitt~\ref{sec:planning} die theoretischen Grundlagen der Planung dargestellt, die zur Steuerung des Greifarms genutzt werden sollen.
+Abschließend wird in Abschnitt~\ref{sec:ros2planning} das System erklärt, das Planung und Roboter kombiniert.
+\subsection{OpenMANIPULATOR-X}{\label{sec:omx}}
 Der OpenMANIPULATOR-X ist ein von der Firma ROBOTIS{\footnote{http://en.robotis.com}} nach den Prinzipien ``OpenSoftware`` und ``OpenHardware`` hergestellter Greifarm.
-OpenSoftware steht hierbei dafür, dass es ein OpenSource Projekt ist und auf dem OpenSource Projekt \ac{ROS2} basiert.
-OpenHardware steht dafür, dass die meisten Komponenten als STL-Dateien zur Verfügung stehen und als Ersatzteile oder zum Anpassen des Greifarms mittels eines 3D-Druckers selbst hergestellt werden können.\\
+''OpenSoftware'' steht hierbei dafür, dass es ein OpenSource-Projekt ist und auf dem OpenSource Projekt \ac{ROS2} basiert.
+''OpenHardware'' steht dafür, dass die meisten Komponenten als STL-Dateien zur Verfügung stehen und als Ersatzteile oder zum Anpassen des Greifarms mittels eines 3D-Druckers selbst hergestellt werden können.\\
 Der OpenMANIPULATOR-X ist eine 5DOF (5 Degrees of Freedom) Plattform, die mittels 5 Servomotoren{\footnote{Modelbezeichnung: DYNAMIXEL XM430-W350-T}} gesteuert wird.
 Dies ist aufgeteilt in 4DOF für den Arm sowie 1DOF für den Greifer.
 Es kann eine Last bis 500g getragen werden.
-\subsection{ROS2}
+\subsection{ROS2}{\label{sec:ros2}}
 \acf{ROS2} ist eine Sammlung von Bibliotheken und Werkzeugen für Robotik-Applikationen, die alle OpenSource sind.
-Die erste \ac{ROS2} Release-Version erschien im Dezember 2017 unter dem Namen ''Ardent Apalon''.\\
+Die erste \ac{ROS2}-Release-Version erschien im Dezember 2017 unter dem Namen ''Ardent Apalon''.\\
 Es werden  mehrere \acp{RCL}  zur Verfügung gestellt, die den Zugriff auf die \ac{ROS2}-API ermöglichen.
 Die \acp{RCL} für die Sprachen C++ und Python (rclcpp und rclpy) werden dabei direkt vom \ac{ROS2}-Team verwaltet.
 Von der Community wurden weitere \acp{RCL}, unter anderem für die Sprachen C\#, Swift und Rust, entwickelt.\\
-Um die Entwicklung der \acp{RCL} zu vereinfachen und die Logik sprachunabhängig zu machen werden Funktionalitäten als C Interfaces zugänglich gemacht, für die in den \acp{RCL} Wrapper geschrieben werden.\\
+Um die Entwicklung der \acp{RCL} zu vereinfachen und die Logik sprachunabhängig zu machen werden Funktionalitäten als C-Interfaces zugänglich gemacht, für die in den \acp{RCL} Wrapper geschrieben werden.\\
 Die grundlegende Komponente einer \ac{ROS2} Anwendung ist die Node.
 Typischerweise besteht eine Anwendung aus mehreren Nodes.
 Entsprechend dem Prinzip \emph{Separation of Concerns} (Trennung der Zuständigkeiten) sollen Nodes so implementiert werden, dass sie jeweils nur eine spezifische Aufgabe haben.
 \subsubsection{Interfaces}
-In diesem Abschnitt werden die verschiedenen Arten von Interfaces beschrieben, die für die im folgenden Abschnitt~\ref{rosnodecomm} erklärten Methoden zur Kommunikation zwischen mehreren Nodes genutzt werden.\\
+In diesem Abschnitt werden die verschiedenen Arten von Interfaces beschrieben, die für die in Abschnitt~\ref{rosnodecomm} erklärten Methoden zur Kommunikation zwischen mehreren Nodes genutzt werden.\\
 \ac{ROS2}-Interfaces definieren, welche Daten gesendet werden und welchen Datentyp diese haben.
-Sie werden in der \ac{IDL} geschrieben, die es ermöglicht automatisch Quellcode in verschiedenen Sprachen für diese zu generieren.\\
+Sie werden in der \ac{IDL} geschrieben, die es ermöglicht, automatisch Quellcode in verschiedenen Sprachen für diese zu generieren.\\
 
 \textbf{Message} Eine Message ist die einfachste Art der \ac{ROS2}-Interfaces, die gleichzeitig auch ein Baustein für die anderen Interfaces sein wird.\\
 Message-Definitionen haben die Dateiendung \verb|.msg| und werden per Konvention in einem Ordner \verb|msg/| gespeichert.
-Jede \verb|.msg| Datei besteht aus den folgenden Teilen:
-\begin{itemize}
-\item Felder
-\item Konstanten
-\end{itemize}
-Konstanten sind optional und es gibt mindestens ein Feld.
+Jede \verb|.msg| Datei besteht aus mindestens einem Feld und optinalen Konstanten.\\
 Jedes Feld besteht aus einem Datentyp und einem durch ein Leerzeichen getrennten Namen: \verb|typ name|, z.B. \verb|bool isDone|.
 Als Datentyp können dabei die integrierten Datentypen (s. Tabelle~\ref{tab:builtintypes}) oder der Name anderer Messages genutzt werden.
 Zusätzlich kann jeder integrierte Datentyp als Array definiert werden (s. Tabelle~\ref{tab:arraytypes}).\\
@@ -40,16 +35,16 @@ Feldnamen müssen kleingeschrieben sein.
 Es können alphanumerische Zeichen sowie der Unterstrich zur Trennung von Wörtern genutzt werden.
 Das erste Zeichen muss ein Buchstabe sein und der Name darf nicht mit einem Unterstrich enden.
 Zusätzlich darf es keine aufeinander folgende Unterstriche geben.\\
-Konstanten behalten das Format der Felder bei.
+Konstanten behalten dieses Format der Felder bei.
 Der Name der Konstante wird komplett in Großbuchstaben geschrieben.
 Zusätzlich bekommen Konstanten einen Wert zugewiesen, der nicht innerhalb des Programms geändert werden kann.
 Die Zuweisung des Wertes erfolgt mit dem ''\verb|=|'' Zeichen: \verb|string EXAMPLE="test"|.
 \begin{table}[ht]
     \centering
     \caption{Integrierte Datentypen für Interfaces und deren C++ Equivalent}
-\begin{tabular}{|l|l|}
+\begin{tabular}{l|l}
 \hline
-\textbf{Typ} & \textbf{C++}   \\ \hline
+\textbf{Datentyp} & \textbf{C++}   \\ \hline
 bool         & bool           \\ \hline
 byte         & uint8\_t       \\ \hline
 char         & char           \\ \hline
@@ -73,7 +68,7 @@ wstring      & std::u16string \\ \hline
     \caption{Array Typen und deren C++ Equivalent}
 \begin{tabular}{|l|l|}
 \hline
-\textbf{Typ} & \textbf{C++}   \\ \hline
+\textbf{Datentyp} & \textbf{C++}   \\ \hline
 static array               & std::array<T, N>   \\ \hline
 unbounded dynamic array    & std::vector        \\ \hline
 bounded dynamic array      & custom\_class<T, N> \\ \hline
@@ -96,7 +91,7 @@ float32 response_float_name
 \end{lstlisting}
 \end{minipage}
 
-\textbf{Action} Action-Definitionen bestehen aus den 3 Teilen Anfrage, Antwort und Feedback, in dieser Reihenfolge.
+\textbf{Action} Action-Definitionen bestehen aus den drei Teilen Anfrage, Antwort und Feedback, in dieser Reihenfolge.
 Wie auch für Service-Definitionen gilt, dass die Teile durch ''\verb|---|'' getrennt sind und jeder einzelne Teil gültig ist, wenn er einer gültigen Message-Definition entspricht.
 
 \subsubsection{Node-Kommunikation}{\label{rosnodecomm}}
@@ -137,13 +132,13 @@ Als Typ wird eine Servicedefinition genutzt.\\
     \caption{Nachrichtenfluss eines Service}
     \label{fig:service}
 \end{figure}
-\textbf{Action Server und Client} Actions sind für länger andauernde Prozesse gedacht.
-Eine Node erstellt einen Action Server über den eine Action zur Verfügung gestellt wird.
-Andere Nodes können über einen Action Client eine Anfrage senden.
+\textbf{Action-Server und Client} Actions sind für länger andauernde Prozesse gedacht.
+Eine Node erstellt einen Action-Server über den eine Action zur Verfügung gestellt wird.
+Andere Nodes können über einen Action-Client eine Anfrage senden.
 Der Server bearbeitet die Anfrage und sendet bei Beendigung eine Antwort mit einem Ergebnis an den Client.
 Während der Dauer der Action kann der Server den Client optional mit Feedback-Nachrichten über den aktuellen Status informieren.
 Dieser Nachrichtenfluss wird in Abbildung~\ref{fig:action} gezeigt.\\
-Als Typ wird eine Action Definition genutzt.\\
+Als Typ wird eine Action-Definition genutzt.\\
 \begin{figure}[ht!]
     \centering
     \begin{tikzpicture}[node distance=5cm,every node/.style={circle, draw, minimum size=2cm}]
@@ -159,7 +154,7 @@ Als Typ wird eine Action Definition genutzt.\\
     \caption{Nachrichtenfluss einer Action}
     \label{fig:action}
 \end{figure}
-\subsection {Planung}
+\subsection {Planung}{\label{sec:planning}}
 Planung (auch Handlungsplanung) ist ein Bereich der Künstlichen Intelligenz, der sich mit der Lösung von Planungs- und Schedulingproblemen befasst~\cite{aiplanning}.
 \subsubsection{Stanford Research Institute Problem Solver}{\label{chap:strips}}
 Der \emph{\ac{STRIPS}} ist ein automatischer Planer, der von Richard Fikes und Nils Nilsson 1971 entwickelt wurde~\cite{FIKES1971189}.
@@ -180,7 +175,7 @@ Aktionen bestehen wiederum aus:
 Ein \ac{STRIPS}-Modell kann mathematisch als 4-Tupel \((P,O,I,G)\) beschrieben werden \cite{stripsdef}:
 \begin{enumerate}
     \item \(P\): eine endliche Menge von Bedingungen
-    \item \(O\): eine endliche Menge von Aktionen (auch Operatoren) mit der Form $Pre \Rightarrow Post$:
+    \item \(O\): eine endliche Menge von Aktionen (auch Operatoren) mit der Form $Pre \Rightarrow Post$
     \item \(I\): der Startzustand, $I\subseteq P$
     \item \(G\): eine endliche Menge von Zielen
 \end{enumerate}
@@ -189,25 +184,26 @@ $P$ ist die Menge aller Bedingungen, die relevant sind.
 Jeder Zustand ist eine Teilmenge $S\subseteq P$.\\
 $O$ ist die Menge der Aktionen die einen Zustand in einen anderen ändern können.
 Aktionen sind 4-Tupel \((o^+,o^-,o_+,o_-)\), bei dem jedes Element eine Menge von Bedingungen sind.
-Die ersten zwei Mengen beschreiben die Vorbedingungen ($Pre$): Bedingungen, die wahr sein müssen ($o^+$) sowie Bedingungen, die falsch sein müssen ($o^-$).
-Die letzten beiden Mengen beschreiben den Effekt, den die Aktion nach ihrer Ausführung auf einen Zustand hat ($Post$): Bedingungen, die wahr werden ($o_+$) und Bedingungen, die falsch werden ($o_-$).\\
+Die ersten zwei Mengen beschreiben die Vorbedingungen ($Pre$).
+Das sind Bedingungen, die wahr sein müssen ($o^+$) sowie Bedingungen, die falsch sein müssen ($o^-$).
+Die letzten beiden Mengen beschreiben den Effekt, den die Aktion nach ihrer Ausführung auf einen Zustand hat ($Post$), also Bedingungen, die wahr werden ($o_+$) und Bedingungen, die falsch werden ($o_-$).\\
 $I$ beschreibt, welche Bedingungen anfangs wahr oder falsch sind.
 Eine Bedingung $p\in P$ ist anfangs wahr, wenn $p\in I$ und sonst falsch.\\
 $G$ ist die Menge der Bedingungen, die erreicht werden soll, bestehend aus den Zielen, die wahr sein sollen ($G_+$) und denen, die falsch sein sollen ($G_-$).
 Ein Zustand $S\subseteq P$  ist ein Zielzustand, wenn $G_+\subseteq S$ und $G_-\cap S =\emptyset$.\\
 Ein Plan besteht aus einer Menge von Aktionen, die vom Startzustand zu einem Zielzustand führen.
-Dieser Plan ist ein \emph{Total-Order} Plan: alle Aktionen haben eine feste Reihenfolge innerhalb des Plans.
+Dieser Plan ist ein \emph{Total-Order}-Plan: alle Aktionen haben eine feste Reihenfolge innerhalb des Plans.
 Um einen Plan zu finden, wird ein Suchbaum erstellt.
 Die Suche findet im Zustandsraum statt.
 Jeder Knoten ist ein Zustand.
-Jede Kante ist die Aktion, um den Zustand bzw. Knoten, von der die Kante ausgeht, zu dem Zustand zu überführen, zu dem die Kante geht.
+Jede Kante ist die Aktion, um den Zustand bzw. Knoten, von der die Kante ausgeht, zu dem Zustand zu überführen, zu dem die Kante führt.
 Es wird die GPS Strategie angewandt, um Unterschiede zwischen dem aktuellen Zustand und dem Ziel zu extrahieren und relevante Aktionen für diese Unterschiede zu finden~\cite{FIKES1971189}.\\
 \ac{STRIPS} beginnt damit, das Ziel $G_0$ für den Startzustand $M_0$ zu beweisen.
 Gelingt dies, ist das Ziel bereits erreicht und kein Plan notwendig.
 Ist das Ziel nicht beweisbar, wird der Unterschied zwischen $M_0$ und $G_0$ ermittelt und von diesem aus weiter gesucht.
 Es wird eine Aktion gesucht, die diesen Unterschied weiter verringern kann.
 Vorbedingungen dieser Aktion werden als Unterziel genutzt.
-Kann ein (Unter)Ziel für den Zustand $M_0$ bewiesen werden, werden die Effekte der Aktion auf $M_0$ angewandt und es entsteht ein Zustand $M_1$.
+Kann ein (Unter-)Ziel für den Zustand $M_0$ bewiesen werden, werden die Effekte der Aktion auf $M_0$ angewandt und es entsteht ein Zustand $M_1$.
 Dieses Verfahren wiederholt sich bis ein Zustand entsteht, in dem das Ziel $G_0$ bewiesen werden kann.
 \subsubsection{Planning Domain Definition Language}
 Die \emph{\ac{PDDL}} ist eine Sprache zur Modellierung von Planungsaufgaben.
@@ -260,7 +256,7 @@ Die Domäne enthält die allgemeinen Rahmenbedingungen für das Problem: Prädik
 Die Datei beginnt mit \verb|(define (domain name_der_domäne)|.\\
 Das Problem enthält die Informationen zu einem spezifischen Problem: Objekte, den Startzustand und das Ziel.
 Die Datei beginnt mit\\\verb|(define (problem name_des_problems) (:domain name_der_domäne)|.\\
-Um sicherzustellen, dass nur bestimmte Objekte für bestimmte Parameter in Frage kommen (es kann mit der \emph{move} Aktion nur eine Person bewegt werden und der Start und das Ziel sind Orte) wurden ursprünglich weitere Prädikate genutzt, um Objekte zu typisieren.
+Um sicherzustellen, dass nur bestimmte Objekte für bestimmte Parameter in Frage kommen (es kann mit der \emph{move}-Aktion nur eine Person bewegt werden und der Start und das Ziel sind Orte) wurden ursprünglich weitere Prädikate genutzt, um Objekte zu typisieren.
 Für das aktuelle Beispiel wären das die Prädikate \emph{location(x)} und \emph{person(x)}.
 Die Aktion \emph{move} wird dann um entsprechende Vorbedingungen erweitert (s. Listing~\ref{lst:pddlactiontypepredicates}).
 \begin{lstlisting}[caption={Move Aktion mit Prädikaten zur Typisierung},language=pddl,label={lst:pddlactiontypepredicates}]
@@ -327,8 +323,8 @@ Im unteren Abschnitt wird dargestellt, welche Instanzen zu welchem Zeitpunkt als
 \end{figure}
 \subsubsection{Partial Order Planning}{\label{section:pop}}
 \emph{\acf{POP}} ist eine Form des Planens, in dem die Aktionen eines Plans nur soweit geordnet sind, wie es notwendig ist \cite{dyer_2003}.
-Dies steht im Gegensatz zu \emph{Total-Order} Planern wie \ac{STRIPS}.\\
-Es wird nach dem emph{Principle Of Least Commitment} verfahren.
+Dies steht im Gegensatz zu \emph{Total-Order}-Planern wie \ac{STRIPS}.\\
+Es wird nach dem \emph{Principle Of Least Commitment} verfahren.
 Das bedeutet, dass Entscheidungen soweit wie möglich aufgeschoben und erst getroffen werden, wenn es absolut nötig ist.
 Dies umfasst nicht nur die Reihenfolge von Aktionen, sondern auch die Bindung von Variablen.\\
 Ein Partial-Order Plan kann als 4-Tupel \cite{grastien} beschrieben werden.
@@ -375,38 +371,38 @@ Die Prinzipien des \ac{POP} sollen nun mit Vorwärtsverkettung kombiniert werden
 Für Vorwärtsverkettung mit einem Total-Order Plan können Zustände als Tupel $(F,V,Q,P,C)$ beschrieben werden~\citep{popf}:
 \begin{itemize}
     \item F ist eine Menge von Fakten, die im Zustand gelten
-    \item V enthält die Werte numerischer Variablen
-    \item Q ist eine Liste von Aktionen, die begonnen haben, aber noch nicht beendet sind
+    \item V ist eine Menge, die die Werte numerischer Variablen enthält
+    \item Q ist eine Menge von Aktionen, die begonnen haben, aber noch nicht beendet sind
     \item P ist der Plan, um den Zustand zu erreichen
-    \item C ist eine Liste aller zeitlichen Einschränkungen der Schritte in $P$
+    \item C ist eine Menge aller zeitlichen Einschränkungen der Schritte in $P$
 \end{itemize}
 Um eine Aktion zum Plan hinzuzufügen, müssen deren Start- und Endpunkte hinzugefügt werden.
 Dies muss nicht in aufeinander folgenden Schritten geschehen.
-Wird eine Aktion hinzugefügt werden $F$ und $V$ entsprechend der Effekte angepasst.
+Wird eine Aktion hinzugefügt, werden $F$ und $V$ entsprechend der Effekte angepasst.
 Die Voraussetzung, um eine Aktion hinzufügen zu können ist, dass $Q$ keine Aktion enthält, zu der die Effekte der neuen Aktion einen Konflikt darstellen würden.\\
-Vorwärtsverkettung im Zustandsraum hat, durch den \emph{Total-Order} Plan, den Vorteil, dass nicht explizit nach Problemen gesucht werden muss.
+Vorwärtsverkettung im Zustandsraum hat, durch den \emph{Total-Order}-Plan, den Vorteil, dass nicht explizit nach Problemen gesucht werden muss.
 Neue Aktionen werden immer am Ende hinzugefügt, wodurch sie kein Problem für die Vorbedingungen und Effekte früherer Aktionen darstellen können.
 Gleichzeitig kann keine folgende Aktion ein Problem für diese darstellen.
 Dieser Vorteil kommt mit dem Nachteil der frühen Bindung und einer festgelegten Reihenfolge zwischen Aktion, zwischen denen kein Zusammenhang besteht.\\
-Es soll ein Kompromiss zwischen den Vorteilen von \emph{Total-} und \emph{Partial-Order} Planung gefunden werden.
+Es soll ein Kompromiss zwischen den Vorteilen von \emph{Total-} und \emph{Partial-Order}-Planung gefunden werden.
 Dem Tupel werden weitere Elemente hinzugefügt:
 \begin{itemize}
     \item $F^+(F^-)$, wobei $F^+(p)(F^-(p))$ den Index eines Schrittes $a$ angeben, indem der Fakt $p$ als letztes hinzugefügt (oder gelöscht) wurde
     \item $FP$, wobei $FP(p)$ eine Menge von Paaren $\langle i,d \rangle \in (\mathbb{N}_0 \times \{0,\epsilon\})$:\\
     \begin{itemize}
         \item $\langle i,0 \rangle \in FP(p)$ beschreibt, dass Schritt $i$ am Ende eines offenen Intervalls liegt, in dem $p$ wahr sein muss.\\
-        In \ac{PDDL} gibt es diese für Aktionen mit der \emph{over all} Bedingung $p$, wobei $i$ der Endpunkt dieser Aktion ist.
+        In \ac{PDDL} gibt es diese für Aktionen mit der \emph{over all}-Bedingung $p$, wobei $i$ der Endpunkt dieser Aktion ist.
         \item $\langle i,\epsilon \rangle \in FP(p)$ beschreibt, dass Schritt $i$ der Start eines Intervalls ist, indem $p$ wahr sein muss.\\
-        Dies entspricht \emph{at start} oder \emph{at end} Bedingungen in \ac{PDDL}, die relevant für den Schritt $i$ sind.
+        Dies entspricht \emph{at start}- oder \emph{at end}-Bedingungen in \ac{PDDL}, die relevant für den Schritt $i$ sind.
     \end{itemize}
 \end{itemize}
 
 \subsubsection{Partial Order Planning Forward}
 \ac{POPF} ist ein am King’s College London entwickelter Planer, der die in Abschnitt~\ref{section:pop} genannten Methoden implementiert~\citep{popf}.
-Als Heuristik wird ein temporaler \ac{RPG} genutzt.
-Ein \acf{RPG} ist ein Planungsgraph, in dem versucht wird, ein vereinfachtes Problem zu lösen.
+Als Heuristik wird ein temporaler \acf{RPG} genutzt.
+Ein \ac{RPG} ist ein Planungsgraph, in dem versucht wird, ein vereinfachtes Problem zu lösen.
 Die Vereinfachung besteht darin, alle negativen Effekte von Aktionen zu ignorieren.\\
-Der Graph besteht aus einer Sequenz $F_0, A_0, ..., F_{t-1}, A_{t-1}, F_t, A_t$: Aktions- und Faktenschichten, die sich abwechseln.
+Der Graph besteht aus einer Sequenz von sich abwechselnden Fakten- und Aktionsschichten: $F_0, A_0, ..., F_{t-1}, A_{t-1}, F_t, A_t$.
 Die Wurzel des Graphen ist eine Faktenschicht, die den aktuellen Zustand abbildet.
 Eine Aktionsschicht enthält alle Aktionen, die in der vorhergehenden Faktenschicht anwendbar sind.
 Eine Faktenschicht enthält alle Fakten, die durch alle Aktionen der vorhergehenden Aktionsschicht hinzugefügt werden.
@@ -507,9 +503,9 @@ Andernfalls wird ein vereinfachter Plan aus dem Graphen extrahiert.
 Die Länge des optimalen vereinfachten Plans ist eine zulässige Heuristik.
 Der optimale Plan lässt sich jedoch nicht effizient extrahieren~\cite{hoffmannnebel2001}.
 Daher wird ein suboptimaler Plan extrahiert, wodurch die Heuristik nicht mehr zulässig ist.\\
-Um einen \ac{RPG} für temporales Planen zu erweitern, werden Aktionen in Startaktionen $A_\vdash$ und Endaktionen $A_\dashv$ aufgeteilt, die jeweils nur \emph{at start} und \emph{at end} Effekte enthalten.
+Um einen \ac{RPG} für temporales Planen zu erweitern, werden Aktionen in Startaktionen $A_\vdash$ und Endaktionen $A_\dashv$ aufgeteilt, die jeweils nur \emph{at start}- und \emph{at end}-Effekte enthalten.
 Der Index $t$ einer Schicht entspricht nun einem Zeitstempel.\\
-Als Suchverfahren wird zunächst \ac{EHC} versucht.
+Als Suchverfahren wird zunächst \emph{\ac{EHC}} versucht.
 Der in Abbildung~\ref{fig:ehc_algo} beschriebene Algorithmus beginnt im Startzustand $S$.
 \begin{figure}[h!]
            \centering
@@ -521,7 +517,7 @@ Von diesem aus wird wird eine \emph{breadth-first} Suche gestartet.
 Diese findet den nächstbesten Nachfolger, also den nächsten Zustand $S'$, dessen Heuristik besser als die des aktuellen Zustands ist.
 Gelingt dies, wird der Weg von $S$ nach $S'$ zum Plan hinzugefügt.
 Die Suche wird gestoppt, wenn ein Zustand mit der Heuristik 0 gefunden wird.
-Ist die Heuristik des aktuellen Zustands $\neq 0$ und wird kein Zustand mit einer besseren Heuristik gefunden, schlägt der Algorithmus fehl.
+Ist die Heuristik des aktuellen Zustands ungleich null und wird kein Zustand mit einer besseren Heuristik gefunden, schlägt der Algorithmus fehl.
 Zustände werden in einer \emph{Queue} gespeichert und für eine Iteration der Suche wird der erste Zustand $S'$ von dieser entfernt und und die Heuristik berechnet.
 Die Suche ist erfolgreich, wenn die Heuristik für diesen Zustand $S'$ besser als die von $S$ ist.
 Andernfalls werden die Nachfolger von $S'$ zum Ende der \emph{Queue} hinzugefügt.
@@ -530,12 +526,12 @@ Die Suche schlägt fehl, wenn keine weiteren Zustände erreicht werden können.\
 Wird in einer Iteration kein besserer Zustand gefunden, stoppt \ac{EHC}, ohne eine Lösung zu finden.
 Dies geschieht, da \ac{EHC} Entscheidungen, eine Aktion in den Plan aufzunehmen, nie rückgängig macht.
 Der Algorithmus ist daher nur vollständig für Planungsaufgaben, die keine \emph{"dead ends"} enthalten.
-Ein \emph{Dead End} für eine Planungsaufgabe $(O,I,G)$ ist definiert als ein Zustand $S$, der erreichbar ist und von diesem aus keine Plan das Ziel erreichen kann:\\
+Ein \emph{dead end} für eine Planungsaufgabe $(O,I,G)$ ist definiert als ein Zustand $S$, der erreichbar ist und von diesem aus keine Plan das Ziel erreichen kann:\\
 $\exists P: S = Result(I,P)$  und  $\neg\exists P': G\subseteq Result(S,P')$\\
 Um die Vollständigkeit der Planung zu gewährleisten wird, im Fall eines Fehlschlags von \ac{EHC}, eine neue \emph{best-first} Suche ausgehend vom ursprünglichen Startzustand gestartet.
 \subsubsection{Behavior Tree}
 \acp{BT} sind ein modulares System, das in der Videospieleindustrie entwickelt wurde~\cite{bt_book}.
-Sie ermöglichen aus simplen Aktionen komplexe Verhaltensmuster zu modellieren ohne das Aktionen Kenntnis über andere Aktionen haben müssen~\cite{bt_robotics}.
+Sie ermöglichen aus simplen Aktionen komplexe Verhaltensmuster zu modellieren, ohne das Aktionen Kenntnis über andere Aktionen haben müssen~\cite{bt_robotics}.
 Entsprechend~\cite{bt_1} ist ein \ac{BT} ein gerichteter azyklischer Graph $G(V,E)$ mit $|V|$ Knoten und $|E|$ Kanten.
 Ein Elternknoten von einem Paar verbundener Knoten ist der, von dem die Kante ausgeht.
 Der Knoten mit der eingehenden Kante ist ein Kindknoten.
@@ -647,9 +643,9 @@ Beispiele für Dekoratoren sind~\cite{bt_book}:
 Für die Planung in \ac{ROS2} wird \ac{PlanSys2} genutzt.
 In diesem Abschnitt wird das in~\cite{plansys} beschriebene System zusammenfassend beschrieben.
 Es wird dabei jedoch nur auf die für diese Arbeit relevanten Teile eingegangen.\\
-\ac{PlanSys2} ist ein modulares OpenSource Planungsframework.
+\ac{PlanSys2} ist ein modulares OpenSource-Planungsframework.
 Ursprünglich als Nachfolger für ROSPlan~\cite{rosplan} geplant, bietet es viel umfangreichere Funktionen.
-Hierfür werden unter anderem neue Funktionen von \ac{ROS2} wie LifeCycle-Knoten oder Multicast Kommunikation genutzt.\\
+Hierfür werden unter anderem neue Funktionen von \ac{ROS2} wie LifeCycle-Knoten oder Multicast-Kommunikation genutzt.\\
 Eins der Designprinzipien bei der Entwicklung von \ac{PlanSys2} ist Modularität und Erweiterbarkeit.
 Alle Komponenten haben klar definierte Schnittstellen, wodurch sie einfach erweitert oder ausgetauscht werden können.\\
 Die Hauptkomponente ist der \emph{''Planner''} Knoten, der den tatsächlichen Planer aufruft.
@@ -670,7 +666,7 @@ Es kann mehrere Knoten geben, die die gleiche Domänenaktion ausführen, sich ab
 Mehrere Roboter können einen Knoten für die gleiche Aktion \emph{(move roboter start ziel)} ausführen, wobei sich jede darauf spezialisiert, die Aktion auszuführen, deren erster Parameter mit dem entsprechenden Roboter übereinstimmt.
 Die gleiche Aktion kann je nach vorhandenen Parametern von verschiedenen Knoten ausgeführt werden.\\
 \acp{BT} eignen sich für die Ausführung eines Plans, da sich mit ihnen sehr gut sequentielle und parallele Vorgänge beschreiben lassen.
-Zunächst wird von einem Plan ein Ausführungs-Graph erstellt, der die Abhängigkeiten zwischen Aktionen zeigt.
+Zunächst wird von einem Plan ein Ausführungsgraph erstellt, der die Abhängigkeiten zwischen Aktionen zeigt.
 Von diesen lässt sich ableiten, welche Aktionen parallel ausgeführt werden können und welche sequentiell ausgeführt werden müssen.
 Semantisch entspricht jedes Blatt im Graphen einer Aktion.
 In der Praxis ist jedes Blatt ein eigenständiger \ac{BT}, der nicht nur die selbst Aktion ausführt, sondern auch die Bedingungen überprüft und die Effekte ausführt (s. Abbildung~\ref{fig:plansysbtaction}).\\
