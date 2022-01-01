@@ -186,7 +186,7 @@ Dies ist zum einen physisch nicht möglich, hinterlässt die Welt aber auch in e
 
 \subsubsection{Action Nodes}
 Obwohl in der Domäne mehr als zwei Aktionen beschrieben sind, beschränken sich die ausgeführten Aktionen auf ein Bewegen des OpenMANIPULATOR-X sowie die Kontrolle des Greifers.
-Für diese wird jeweils eine Node erstellt.
+Für diese wird jeweils eine Node erstellt.\\
 Damit diese Nodes von \ac{PlanSys2} genutzt werden können, müssen sie von der Basisklasse \verb|plansys2::ActionExecutorClient| erben.
 Da diese von \ac{PlanSys2} nur in C++ zur Verfügung gestellt wird, müssen auch die Aktionen in C++ implementiert werden.\\
 In jeder Aktion muss die Methode \verb|void do_work()| implementiert werden.
@@ -202,10 +202,11 @@ Die Aktion wird hierdurch immer beim 2.\ Aufruf der Methode \verb|do_work| beend
 Zum Senden des Requests wird ein \ac{ROS2} Client für den Service \verb|goal_tool_control| mit dem Typ \verb|open_manipulator_msgs::srv::SetJointPosition| erstellt. 
 Um sowohl die Aktionen zum Öffnen sowie Schließen des Greifers mit einer Node implementieren zu können, wird ein Parameter eingeführt, der über den Konstruktor gesetzt wird und die Bewegung des Greifers bestimmt.
 Für jede Aktion wird eine Node mit entsprechenden Parametern erzeugt.\\
+
 Diese Nodes werden alle einem \verb|MultiThreadedExecutor| hinzugefügt. Dadurch können alle Nodes gemeinsam gestartet werden und laufen in einem Prozess, sind durch mehrere Threads aber unabhängig voneinander.
 
 \subsubsection{Move Gripper Aktion}
-Die Logik Node zur Bewegung des OpenMANIPULATOR-X wird in der Klasse \verb|MoveGripperAction| (s.~\ref{code:moveactionnode}) implementiert.\\
+Die Logik Node zur Bewegung des OpenMANIPULATOR-X wird in der Klasse\\\verb|MoveGripperAction| (s.~\ref{code:moveactionnode}) implementiert.\\
 Insgesamt umfasst dies das Senden des Bewegungsrequests an den vom OpenMANIPULATOR-X-Controller erstellten Service \verb|goal_task_space_path_position_only| mit dem Typ \verb|open_manipulator_msgs::srv::SetKinematicsPose| (s. Zeile~\ref{code:line:poseclient} in\ref{code:moveactionnode}) sowie das Beenden der Aktion wenn der OpenMANIPULATOR-X an der Zielposition angekommen ist.
 Ob die Bewegung beendet ist, wird über den im Topic \verb|states| gesendeten Bewegungsstatus geprüft.
 Dieser kann die beiden Werte \verb|IS_MOVING| und \verb|STOPPED| annehmen.
