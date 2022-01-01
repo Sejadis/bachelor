@@ -165,10 +165,10 @@ Als Aktionen werden das Nehmen sowie Ablegen eines Blocks benötigt.
 Da in den Bedingungen und Effekten einer Aktion nur mit Parametern gearbeitet werden kann, die auch Parameter der Aktion selbst sind, wird hier weiter aufgeteilt in ''Nehmen''/''Ablegen'' eines Blocks von/auf einen anderen Block sowie von/auf einen leeren Stapel.
 Für das Bewegen von Blöcken ergeben sich die 4 Aktionen \verb|GRAB, PLACE, STACK, UNSTACK|.\\
 Während für das reine Stapeln der Blöcke die exakte Position dieser nicht wichtig ist, wird diese jedoch für den Greifer benötigt, der vor diesen Aktionen an die richtige Stelle bewegt werden muss.
-Hier werden die weiteren Typen \verb|location| und \verb|stack| sowie die Prädikate \verb|(box_at ?b - box ?l - location)|,\\ \verb|(gripper_at ?g - gripper ?l - location)|,\\ \verb|(location_above ?l_above ?l_below - location)| und\\ \verb|(is_base_loc ?l - location ?s - stack)| eingeführt.\\ \\
+Hier werden die weiteren Typen \verb|location| und \verb|stack| sowie die Prädikate \verb|(box_at ?b - box ?l - location)|,\\ \verb|(gripper_at ?g - gripper ?l - location)|,\\ \verb|(location_above ?l_above ?l_below - location)|\\und \verb|(is_base_loc ?l - location ?s - stack)| eingeführt.\\
 Das Prädikat \verb|clear| ist notwendig, da \ac{POPF} weder existentielle noch negative Vorbedingungen unterstützt.
 Es wird genutzt, um zu überprüfen, ob ein Block der oberste eines Stapels ist, was es ermöglicht diesen zu nehmen oder einen anderen auf diesem abzulegen.
-Durch existentielle und negative Vorbedingungen könnte dies für die Aktion den Block B zu greifen, durch eine Bedingung der Form ''es existiert kein Block C für den gilt:( box\_on C B)'' ersetzt werden. \\ \\
+Durch existentielle und negative Vorbedingungen könnte dies für die Aktion den Block B zu greifen, durch eine Bedingung der Form ''es existiert kein Block C für den gilt:( box\_on C B)'' ersetzt werden.\\
 Da alle Aktionen eine Dauer haben und \ac{PlanSys2} auch nur diese unterstützt, werden alle Aktionen als \verb|durative-action| modelliert.
 Im aktuellen Szenario wird \verb|over all| dafür genutzt, allen Block-Aktionen die Bedingung zu geben, dass sich der Greifer über die komplette Zeit an der gleichen Stelle wie der entsprechende Block befinden muss.\\
 Nur in der \verb|MOVE-GRIPPER| Aktion wird \verb|at start| für einen Effekt genutzt:\\
