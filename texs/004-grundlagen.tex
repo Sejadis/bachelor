@@ -676,22 +676,22 @@ In der Praxis ist jedes Blatt ein eigenständiger \ac{BT}, der nicht nur die sel
     \begin{tikzpicture}
         \node (A) at (0,0) [draw] {$\rightarrowRHD$};
         \draw (A) -- (0,-1);
-        \draw (-8,-1) -- (8,-1);
-        \node (B) at (-8,-2.5) [ellipse,draw,align=left] {Warten\\\emph{at Start}};
-        \draw [-{Latex[width=3mm]}](-8,-1) -- (B);
-        \node (C) at (-4,-2.5) [draw,align=left] {\emph{at Start} Effekte\\anwenden};
-        \draw [-{Latex[width=3mm]}](-4,-1) -- (C);
-        \node (D) at (4,-2.5) [ellipse,draw,align=left] {Prüfe\\\emph{at End}};
-        \draw [-{Latex[width=3mm]}](4,-1) -- (D);
-        \node (E) at (8,-2.5) [draw,align=left] {\emph{at End} Effekte\\anwenden};
-        \draw [-{Latex[width=3mm]}](8,-1) -- (E);
+        \draw (-6,-1) -- (6,-1);
+        \node (B) at (-6,-2.5) [ellipse,draw,align=center] {Warten\\\emph{at Start}};
+        \draw [-{Latex[width=3mm]}](-6,-1) -- (B);
+        \node (C) at (-3,-2.5) [draw,align=center] {\emph{at Start} Effekte\\anwenden};
+        \draw [-{Latex[width=3mm]}](-3,-1) -- (C);
+        \node (D) at (3,-2.5) [ellipse,draw,align=center] {Prüfe\\\emph{at End}};
+        \draw [-{Latex[width=3mm]}](3,-1) -- (D);
+        \node (E) at (6,-2.5) [draw,align=center] {\emph{at End} Effekte\\anwenden};
+        \draw [-{Latex[width=3mm]}](6,-1) -- (E);
         \node (J) at (0,-2.5) [draw] {$\text{\FiveStarOpen} \rightarrowRHD$};
         \draw [-{Latex[width=3mm]}](0,-1) -- (J);
         \draw (-2,-3.5) -- (2,-3.5);
         \draw (J) -- (0,-3.5);
-        \node (F) at (-2,-5) [ellipse,draw,align=left] {Prüfe\\\emph{over all}};
+        \node (F) at (-2,-5) [ellipse,draw,align=center] {Prüfe\\\emph{over all}};
         \draw [-{Latex[width=3mm]}](-2,-3.5) -- (F);
-        \node (G) at (2,-5) [draw,align=left] {Aktion\\ausführen};
+        \node (G) at (2,-5) [draw,align=center] {Aktion\\ausführen};
         \draw [-{Latex[width=3mm]}](2,-3.5) -- (G);
     \end{tikzpicture}
     \caption{\acs{BT} zur Ausführung einer spezifischen Aktion, nach~\cite{plansys}}
