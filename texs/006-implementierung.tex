@@ -265,41 +265,51 @@ Dies ist mit \verb|get plan| möglich (s. Abbildung~\ref{fig:terminalplan}).\\
 Während der Ausführung eines Plans wird im Terminal die aktuelle Aktion sowie dessen Fortschritt (gesteuert über den Feedback Kanal innerhalb der Aktion) angezeigt.
 \subsubsection{Sussman Anomalie}
 Die Sussman Anomalie~\cite{sussman} beschreibt eine Schwäche von Planern, bei der bereits ausgeführte Teile bzw. erreichte Unterziele rückgängig gemacht werden müssen, um andere bzw. das Gesamtziel zu erreichen.
-Dieses Problem kann durch drei Blöcke beschrieben werden, die sich anfangs in den Positionen befinden, die in Abbildung~\ref{fig:sussmaninitial} gezeigt wird.
+Dieses Problem kann durch drei Blöcke beschrieben werden, die sich anfangs in den Positionen befinden, die in Abbildung~\ref{fig:sussstart} gezeigt wird.
 Das Ziel ist es, dass $A$ auf $B$ und $B$ auf $C$ gestapelt wird, wobei jeweils immer nur ein Block gewegt werden kann.
 Wird versucht als erstes $A$ auf $B$ zu erfüllen, wird $C$ zur Seite gelegt und $A$ auf $B$ platziert (s. Abbildung~\ref{fig:sussmanab}).
 Dieser Schritt muss nun wieder rückgängig gemacht werden, um $B$ auf $C$ zu platzieren.\\
 Wird stattdessen versucht als erstes $B$ auf $C$ zu erfüllen, so kann dies direkt durch bewegen von $B$ erreicht werden (s. Abbildung~\ref{fig:sussmanbc}).
 Um das Ziel $A$ auf $B$ zu erfüllen, muss dieser Schritt nun wieder rückgängig gemacht werden.
-\begin{figure}[!htb]
-    \minipage{0.32\textwidth}
-    \begin{tikzpicture}
-        \draw (-1,0) -- (4,0);
-        \draw[black, thick] (0,0) rectangle (1,1) node[pos=.5] {A};
-        \draw[black, thick] (0,1) rectangle (1,2) node[pos=.5] {C};
-        \draw[black, thick] (2,0) rectangle (3,1) node[pos=.5] {B};
-    \end{tikzpicture}
-    \caption{Startzustand der Sussman Anomalie}\label{fig:sussmaninitial}
-    \endminipage\hfill
-    \minipage{0.32\textwidth}
-    \begin{tikzpicture}
-        \draw (-1,0) -- (4,0);
-        \draw[black, thick] (0,0) rectangle (1,1) node[pos=.5] {C};
-        \draw[black, thick] (2,1) rectangle (3,2) node[pos=.5] {A};
-        \draw[black, thick] (2,0) rectangle (3,1) node[pos=.5] {B};
-    \end{tikzpicture}
-    \caption{Lösung des Teilziels $A$ auf $B$}\label{fig:sussmanab}
-    \endminipage\hfill
-    \minipage{0.32\textwidth}%
-    \begin{tikzpicture}
-        \draw (-1,0) -- (2,0);
-        \draw[black, thick] (0,0) rectangle (1,1) node[pos=.5] {A};
-        \draw[black, thick] (0,1) rectangle (1,2) node[pos=.5] {C};
-        \draw[black, thick] (0,2) rectangle (1,3) node[pos=.5] {B};
-    \end{tikzpicture}
-    \caption{Lösung des Teilziels $B$ auf $C$}\label{fig:sussmanbc}
-    \endminipage
-\end{figure}\\
+\begin{figure}
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \draw (-1,0) -- (4,0);
+            \draw[black, thick] (0,0) rectangle (1,1) node[pos=.5] {A};
+            \draw[black, thick] (0,1) rectangle (1,2) node[pos=.5] {C};
+            \draw[black, thick] (2,0) rectangle (3,1) node[pos=.5] {B};
+        \end{tikzpicture}
+        \caption{Startzustand}
+        \label{fig:sussstart}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \draw (-1,0) -- (4,0);
+            \draw[black, thick] (0,0) rectangle (1,1) node[pos=.5] {C};
+            \draw[black, thick] (2,1) rectangle (3,2) node[pos=.5] {A};
+            \draw[black, thick] (2,0) rectangle (3,1) node[pos=.5] {B};
+        \end{tikzpicture}
+        \caption{Lösung des Teilziels $A$ auf $B$}
+        \label{fig:sussmanab}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \draw (-1,0) -- (2,0);
+            \draw[black, thick] (0,0) rectangle (1,1) node[pos=.5] {A};
+            \draw[black, thick] (0,1) rectangle (1,2) node[pos=.5] {C};
+            \draw[black, thick] (0,2) rectangle (1,3) node[pos=.5] {B};
+        \end{tikzpicture}
+        \caption{Lösung des Teilziels $B$ auf $C$}
+        \label{fig:sussmanbc}
+    \end{subfigure}
+    \caption{Übersicht der Sussman Anomalie}
+    \label{fig:sussman}
+\end{figure}
 Um diese Anomalie zu handhaben, müssen Planer beide Ziele und deren Schritte kombinieren.
 \ac{POPF} generiert für dieses Ziel den in Abbildung~\ref{fig:sussmanpopf} gezeigten Plan, der in Abbildung~\ref{fig:sussmanpopfvis} visualisiert wird.
 Der grau hervorgehobene Block ist jeweils der, der in diesem Schritt bewegt wurde.
