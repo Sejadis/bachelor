@@ -132,7 +132,7 @@
   keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
   keywordstyle=\color{blue},       % keyword style
   %language=Octave,                 % the language of the code
-  morekeywords={*,...},            % if you want to add more keywords to the set
+  morekeywords={*,...,if,then,while,do},            % if you want to add more keywords to the set
   numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
   numbersep=5pt,                   % how far the line-numbers are from the code
   numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
@@ -145,6 +145,14 @@
   tabsize=2,	                   % sets default tabsize to 2 spaces
   %title=\lstname,                 %% show the filename of files included with \lstinputlisting; also try caption instead of title
   firstnumber=1,
+  literate=%
+    {Ö}{{\"O}}1
+    {Ä}{{\"A}}1
+    {Ü}{{\"U}}1
+    {ß}{{\ss}}1
+    {ü}{{\"u}}1
+    {ä}{{\"a}}1
+    {ö}{{\"o}}1
 }
 
 

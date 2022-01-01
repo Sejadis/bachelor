@@ -297,8 +297,8 @@ Der Pfad zum \ac{POPF}-Planer ist: \emph{/opt/ros/foxy/lib/popf/popf}.\\
 Über das Kontext-Menü einer Domänen- oder Problemdatei lässt sich der Planer starten und es erfolgt eine Ausgabe in der Konsole (s. Abbildung~\ref{fig:pluginplan}) sowie eine Visualisierung wenn ein Plan gefunden wurde (s. Abbildung~\ref{fig:pluginvis}).
 Der zeitliche Ablauf wird in der Abbildung von links nach rechts dargestellt.
 Alle Aktionen werden farblich markiert, wobei eine Aktion auch bei mehrfacher Ausführung die gleiche Farbe erhält.
-Im oberen Abschnitt gibt es eine einfache Übersicht des Plans: welche Aktionen wurden wann ausgeführt und mit welchen Parametern.
-Im unteren Abschnitt wird dargestellt, welche Instanzen zu welchem Zeitpunkt als Teil welcher Aktion genutzt wurden.
+Im linken Teil der Abbildung gibt es eine einfache Übersicht des Plans: welche Aktionen wurden wann ausgeführt und mit welchen Parametern.
+Im rechten Teil der Abbildung wird dargestellt, welche Instanzen zu welchem Zeitpunkt als Teil welcher Aktion genutzt wurden.
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth]{plugin_plan}
@@ -506,28 +506,34 @@ Daher wird ein suboptimaler Plan extrahiert, wodurch die Heuristik nicht mehr zu
 Um einen \ac{RPG} für temporales Planen zu erweitern, werden Aktionen in Startaktionen $A_\vdash$ und Endaktionen $A_\dashv$ aufgeteilt, die jeweils nur \emph{at start}- und \emph{at end}-Effekte enthalten.
 Der Index $t$ einer Schicht entspricht nun einem Zeitstempel.\\
 Als Suchverfahren wird zunächst \emph{\ac{EHC}} versucht.
-Der in Abbildung~\ref{fig:ehc_algo} beschriebene Algorithmus beginnt im Startzustand $S$.
-\begin{figure}[h!]
-           \centering
-           \includegraphics{ehc_algo}
-           \caption{\acl{EHC} Algorithmus~\cite{hoffmannnebel2001}}
-           \label{fig:ehc_algo}
-\end{figure}
+Der in Listing~\ref{lst:ehc_algo} als Pseudocode beschriebene Algorithmus beginnt im Startzustand $M$.\\
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={\acl{EHC} Algorithmus, nach~\cite{hoffmannnebel2001}}, label={lst:ehc_algo}]
+den aktuellen Plan als leeren Plan initialisieren < >
+M = I
+while h(M) != 0 do
+    breadth first Suche nach einem Zustand M' mit h(M') < h(M)
+    if kein solcher Zustand gefunden then
+        Fehlschlag zurückgeben, stoppen
+    die Aktionen um zu M' zu kommen zum Ende des aktuellen Plans hinzufügen
+    M = M'
+\end{lstlisting}
+\end{minipage}
 Von diesem aus wird wird eine \emph{breadth-first} Suche gestartet.
-Diese findet den nächstbesten Nachfolger, also den nächsten Zustand $S'$, dessen Heuristik besser als die des aktuellen Zustands ist.
-Gelingt dies, wird der Weg von $S$ nach $S'$ zum Plan hinzugefügt.
+Diese findet den nächstbesten Nachfolger, also den nächsten Zustand $M'$, dessen Heuristik besser als die des aktuellen Zustands ist.
+Gelingt dies, wird der Weg von $M$ nach $M'$ zum Plan hinzugefügt.
 Die Suche wird gestoppt, wenn ein Zustand mit der Heuristik 0 gefunden wird.
 Ist die Heuristik des aktuellen Zustands ungleich null und wird kein Zustand mit einer besseren Heuristik gefunden, schlägt der Algorithmus fehl.
-Zustände werden in einer \emph{Queue} gespeichert und für eine Iteration der Suche wird der erste Zustand $S'$ von dieser entfernt und und die Heuristik berechnet.
-Die Suche ist erfolgreich, wenn die Heuristik für diesen Zustand $S'$ besser als die von $S$ ist.
-Andernfalls werden die Nachfolger von $S'$ zum Ende der \emph{Queue} hinzugefügt.
+Zustände werden in einer \emph{Queue} gespeichert und für eine Iteration der Suche wird der erste Zustand $M'$ von dieser entfernt und und die Heuristik berechnet.
+Die Suche ist erfolgreich, wenn die Heuristik für diesen Zustand $M'$ besser als die von $M$ ist.
+Andernfalls werden die Nachfolger von $M'$ zum Ende der \emph{Queue} hinzugefügt.
 Wiederholte Zustände werden durch ein \emph{HashTable} der bereits besuchten Zustände vermieden.
 Die Suche schlägt fehl, wenn keine weiteren Zustände erreicht werden können.\\
 Wird in einer Iteration kein besserer Zustand gefunden, stoppt \ac{EHC}, ohne eine Lösung zu finden.
 Dies geschieht, da \ac{EHC} Entscheidungen, eine Aktion in den Plan aufzunehmen, nie rückgängig macht.
 Der Algorithmus ist daher nur vollständig für Planungsaufgaben, die keine \emph{"dead ends"} enthalten.
-Ein \emph{dead end} für eine Planungsaufgabe $(O,I,G)$ ist definiert als ein Zustand $S$, der erreichbar ist und von diesem aus keine Plan das Ziel erreichen kann:\\
-$\exists P: S = Result(I,P)$  und  $\neg\exists P': G\subseteq Result(S,P')$\\
+Ein \emph{dead end} für eine Planungsaufgabe $(O,I,G)$ ist definiert als ein Zustand $M$, der erreichbar ist und von diesem aus kein Plan das Ziel erreichen kann:\\
+$\exists P: M = Result(I,P)$  und  $\neg\exists P': G\subseteq Result(M,P')$\\
 Um die Vollständigkeit der Planung zu gewährleisten wird, im Fall eines Fehlschlags von \ac{EHC}, eine neue \emph{best-first} Suche ausgehend vom ursprünglichen Startzustand gestartet.
 \subsubsection{Behavior Tree}
 \acp{BT} sind ein modulares System, das in der Videospieleindustrie entwickelt wurde~\cite{bt_book}.
@@ -639,7 +645,7 @@ Beispiele für Dekoratoren sind~\cite{bt_book}:
 \end{table}
 
 - Visualisierungs bsp.\\
-\subsection{Planung in \ac{ROS2}}
+\subsection{Planung in \ac{ROS2}}\label{sec:ros2planning}
 Für die Planung in \ac{ROS2} wird \ac{PlanSys2} genutzt.
 In diesem Abschnitt wird das in~\cite{plansys} beschriebene System zusammenfassend beschrieben.
 Es wird dabei jedoch nur auf die für diese Arbeit relevanten Teile eingegangen.\\
