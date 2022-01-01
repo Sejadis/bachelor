@@ -1,15 +1,16 @@
 #include <memory>
 #include <algorithm>
 #include <queue>
+#include <regex>
 
 #include "plansys2_executor/ActionExecutorClient.hpp"
 
 #include "rclcpp/rclcpp.hpp"
-#include "rclcpp_action/rclcpp_action.hpp"
 
 #include "open_manipulator_msgs/msg/open_manipulator_state.hpp"
 #include "open_manipulator_msgs/msg/kinematics_pose.hpp"
 #include "open_manipulator_msgs/srv/set_kinematics_pose.hpp"
+#include "sensor_msgs/msg/joint_state.hpp"
 
 using namespace std::chrono_literals;
 using std::placeholders::_1;
@@ -18,10 +19,24 @@ class MoveGripperAction : public plansys2::ActionExecutorClient {
 public:
     MoveGripperAction()
             : plansys2::ActionExecutorClient("move_gripper", 100ms) {
+        initialize_parameters();
+        std::string size;
+        this->get_parameter("size", size);
+        if(size == "big"){
+            heightMap = &heightMapBig;
+            stackPosMap = &stackPosMapBig;
+        }
+        else{
+            heightMap = &heightMapSmall;
+            stackPosMap = &stackPosMapSmall;
+        }
         isStarted = false;
         isCurrentMovementFinished = false;
+
         manipulator_state_subscription_ = this->create_subscription<open_manipulator_msgs::msg::OpenManipulatorState>(
                 "states", 10, std::bind(&MoveGripperAction::manipulator_state_callback, this, _1));
+        joint_state_subscription_ = this->create_subscription<sensor_msgs::msg::JointState>(
+                "joint_states", 10, std::bind(&MoveGripperAction::joint_state_callback, this, _1));
         kinematics_pose_subscription_ = this->create_subscription<open_manipulator_msgs::msg::KinematicsPose>(
                 "kinematics_pose", 10, std::bind(&MoveGripperAction::kinematics_pose_callback, this, _1));
         kinematicsPoseClient = this->create_client<open_manipulator_msgs::srv::SetKinematicsPose>(
@@ -36,8 +51,14 @@ public:
     }
 
 private:
+    void initialize_parameters()
+    {
+        //this->declare_parameter<int>("stack_count", 3);
+        //this->declare_parameter<int>("stack_size", 3);
+        //this->declare_parameter<float>("block_size", 4.5);
+        this->declare_parameter<std::string>("size", "big");
+    }
     void manipulator_state_callback(const open_manipulator_msgs::msg::OpenManipulatorState::SharedPtr msg) {
-        //std::cout << msg->open_manipulator_moving_state << std::endl;
         last_moving_state = current_moving_state;
         current_moving_state = msg->open_manipulator_moving_state;
         if(last_moving_state == STATE_MOVING && current_moving_state == STATE_STOPPED){
@@ -46,55 +67,98 @@ private:
         }
     }
     void kinematics_pose_callback(const open_manipulator_msgs::msg::KinematicsPose::SharedPtr msg) {
-        //std::cout << &msg << std::endl;
         kinematicsPose = msg;
+    }
+
+    void joint_state_callback(const sensor_msgs::msg::JointState::SharedPtr msg) {
+        //we only care about the effort while this node is active
+        if(!isStarted) return;
+        for (int i = 0; i < 4; ++i) {
+            std::cout << msg->effort[i] << std::endl;
+        }
+        std::cout << "-------------" << std::endl;
+        //check all joints except gripper (gripper is always returned as effort 0 because of its control mode)
+        for (int i = 0; i < 4; i++) {
+            //increase the counter if the effort is greater than the threshold value
+            if(std::abs(msg->effort[i]) > EFFORT_THRESHOLD){
+                //save the position when the collision is initially detected to use as target position when aborting
+                if(jointEffortCounter[i] == 0){
+                    collisionPosition = kinematicsPose->pose.position;
+                }
+                int increment = msg->effort[i] >= 2 * EFFORT_THRESHOLD ? 2 : 1;
+                jointEffortCounter[i] += increment;
+                //abort plan when threshold is reached multiple consecutive times
+                if(jointEffortCounter[i] >= EFFORT_COUNT){
+                    abort_plan(i);
+                }
+            }
+            //reset counter when effort is below threshold
+            else{
+                jointEffortCounter[i] = 0;
+            }
+        }
+    }
+
+    void abort_plan(int servoIndex){
+        std::cout << "collision detected for servo " << servoIndex << ", aborting plan" <<std::endl;
+        auto request = create_request(collisionPosition.x, collisionPosition.y, collisionPosition.z);
+        auto result = kinematicsPoseClient->async_send_request(request);
+        //reset effort values
+        for (int i = 0; i < 4; i++) {
+            jointEffortCounter[i] = 0;
+        }
+        isStarted = false;
+        finish(false, 0, "Collision");
     }
 
     void do_work() {
 
         if (!isStarted) {
+            //get arguments and initialise values
+            //do only once per execution
             isStarted = true;
             isCurrentMovementFinished = true; //we want to immediately start the next movement
             auto args = get_arguments();
             int level = -1;
-
-            std::map<std::string, int>::const_iterator iterLevel = levelMap.find(args[2]);
-            if (iterLevel != levelMap.end()) {
-                std::cout << iterLevel->first << "->" << iterLevel->second << " ";
-                level = iterLevel->second;
-            }
             int stack = -1;
-            std::map<std::string, int>::const_iterator iterStack = stackMap.find(args[2]);
-            if (iterStack != levelMap.end()) {
-                std::cout << iterStack->first << "->" << iterStack->second;
-                stack = iterStack->second;
+            std::smatch match;
+            if(regex_match(args[2], match, re_pattern) && match.size() == 3){
+                std::cout << match.size() << " " << match[0] << " " << match[1] << " " << match[2] << std::endl;
+                stack = std::stoi(match[1].str());
+                level = std::stoi(match[2].str());
             }
-
+            else
+            {
+                std::cout << "Error parsing location" << std::endl;
+            }
+            if(heightMap->size() < level || stackPosMap->size() < stack){
+                std::cout << "Missing coordinate data for stack:" << stack << ", Level:" << level << std::endl;
+            }
             create_movement(stack, level);
             queueLength = requestQueue.size();
             queueTasksDone = 0;
             send_feedback(float(queueTasksDone) / queueLength, "Move started");
         }
         if(isCurrentMovementFinished){
+            //last movement finished, advance the queue
             if (!requestQueue.empty()) {
                 auto nextRequest = requestQueue.front();
                 requestQueue.pop();
                 isCurrentMovementFinished = false;
                 auto result = kinematicsPoseClient->async_send_request(nextRequest);
-                send_feedback(float(queueTasksDone) / queueLength, "Move started");
+                send_feedback(float(queueTasksDone) / queueLength, "Move continue");
+                //std::cout << "\r\e[K"  << std::flush;
+                std::cout << "Moving ... [" << roundTo2DecimalPlaces(float(queueTasksDone) / queueLength) << "]  " << std::endl;
             }
             else if(isStarted){
                 //we did start and no more movement enqueued
                 finish(true, 1.0, "Move completed");
 
                 isStarted = false;
-                std::cout << std::endl;
             }
         }
 
-
-        std::cout << "\r\e[K"  << std::flush;
-        std::cout << "Moving ... [" << float(queueTasksDone) / queueLength << "]  " << std::flush;
+        //send_feedback(float(queueTasksDone) / queueLength, "Move started");
     }
 
     void create_movement(int stack, int level){
@@ -102,24 +166,29 @@ private:
         std::queue<std::shared_ptr<open_manipulator_msgs::srv::SetKinematicsPose::Request>> emptyQueue;
         std::swap(requestQueue, emptyQueue);
         if(stack == -1 || level == -1 || kinematicsPose == nullptr){
-            std::cout << "Error detected when creating movement stack: " << stack << " level: " << level << " Pose null: " << (kinematicsPose == nullptr);
+            std::cout << "Error detected when creating movement stack: " << stack << " level: " << level << " Pose null: " << (kinematicsPose == nullptr) << std::endl;
             return;
         }
         //a position above the current that is clear from collisions
         auto currentPosition = kinematicsPose->pose.position;
-        std::cout << "Current (" << currentPosition.x << ", " << currentPosition.y << ", " << currentPosition.z << ")" << std::flush;
-        std::cout << "Target (" << STACK_POS << ", " << stackPosMap[stack] << ", " << heightMap[level] << ")" << std::flush;
-        if(roundTo2DecimalPlaces(currentPosition.x) != STACK_POS || roundTo2DecimalPlaces(currentPosition.y) != stackPosMap[stack]){
+        std::cout << "Calculating Positions..." << std::endl;
+        std::cout << "Current (" << currentPosition.x << ", " << currentPosition.y << ", " << currentPosition.z << ")" << std::endl;
+        std::cout << "Target (" << STACK_POS << ", " << (*stackPosMap)[stack] << ", " << (*heightMap)[level] << ")" << std::endl;
+        if(roundTo2DecimalPlaces(currentPosition.x) != STACK_POS || roundTo2DecimalPlaces(currentPosition.y) != (*stackPosMap)[stack]){
+            std::cout << "We are at the wrong stack, adding positions for collision free movement" << std::endl;
             auto currentClearRequest = create_request(currentPosition.x, currentPosition.y, CLEAR_HEIGHT);
 
             //a position above the target position that is clear from collisions
-            auto targetClearRequest = create_request(STACK_POS,stackPosMap[stack], CLEAR_HEIGHT);
+            auto targetClearRequest = create_request(STACK_POS,(*stackPosMap)[stack], CLEAR_HEIGHT);
+            std::cout << "Adding Position: (" << currentPosition.x << ", " << currentPosition.y << ", " << CLEAR_HEIGHT << ")" << std::endl;
             requestQueue.push(currentClearRequest);
+            std::cout << "Adding Position: (" << STACK_POS << ", " << (*stackPosMap)[stack] << ", " << CLEAR_HEIGHT << ")" << std::endl;
             requestQueue.push(targetClearRequest);
         }
 
         //the position we want to end up at
-        auto targetPointRequest = create_request(STACK_POS, stackPosMap[stack], heightMap[level]);
+        auto targetPointRequest = create_request(STACK_POS, (*stackPosMap)[stack], (*heightMap)[level]);
+        std::cout << "Adding Position: (" << STACK_POS << ", " << (*stackPosMap)[stack] << ", " << (*heightMap)[level] << ")" << std::endl;
         requestQueue.push(targetPointRequest);
     }
 
@@ -139,6 +208,7 @@ private:
     }
 
     rclcpp::Subscription<open_manipulator_msgs::msg::OpenManipulatorState>::SharedPtr manipulator_state_subscription_;
+    rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_subscription_;
     rclcpp::Subscription<open_manipulator_msgs::msg::KinematicsPose>::SharedPtr kinematics_pose_subscription_;
     rclcpp::Client<open_manipulator_msgs::srv::SetKinematicsPose>::SharedPtr kinematicsPoseClient;
     std::shared_ptr<open_manipulator_msgs::msg::KinematicsPose> kinematicsPose;
@@ -154,37 +224,38 @@ private:
     const std::string STATE_STOPPED = "STOPPED";
     const float STACK_POS = 0.25;
     const float CLEAR_HEIGHT = 0.25;
-    std::map<std::string, int> levelMap = {
-            {"s1l1", 1},
-            {"s2l1", 1},
-            {"s3l1", 1},
-            {"s1l2", 2},
-            {"s2l2", 2},
-            {"s3l2", 2},
-            {"s1l3", 3},
-            {"s2l3", 3},
-            {"s3l3", 3},
-    };
-    std::map<std::string, int> stackMap = {
-            {"s1l1", 1},
-            {"s1l3", 1},
-            {"s1l2", 1},
-            {"s2l1", 2},
-            {"s2l3", 2},
-            {"s2l2", 2},
-            {"s3l2", 3},
-            {"s3l1", 3},
-            {"s3l3", 3},
-    };
-    std::map<int, float> heightMap = {
+    const int EFFORT_COUNT = 10;
+    const float EFFORT_THRESHOLD = 400;
+    std::vector<int> jointEffortCounter {0, 0, 0, 0};
+    geometry_msgs::msg::Point collisionPosition;
+    std::regex re_pattern{"^s(\\d+)l(\\d+)", std::regex::ECMAScript};
+    std::map<int, float>* heightMap;
+    std::map<int, float>* stackPosMap;
+//maps for big blocks with 3stacks up to 3 blocks
+    std::map<int, float> heightMapBig = {
             {1, 0.04},
             {2, 0.085},
             {3, 0.13},
     };
-    std::map<int, float> stackPosMap = {
+    std::map<int, float> stackPosMapBig = {
             {1, -0.1},
             {2, 0.0},
             {3, 0.1},
+    };
+    //maps for small blocks with 5 stacks, up to 5 blocks
+    std::map<int, float> heightMapSmall = {
+            {1, 0.035},
+            {2,0.055},
+            {3, 0.075},
+            {4, 0.115},
+            {5, 0.15},
+    };
+    std::map<int, float> stackPosMapSmall = {
+            {1, -0.14},
+            {2, -0.07},
+            {3, 0.0},
+            {4, 0.07},
+            {5, 0.14},
     };
 
 };
