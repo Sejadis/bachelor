@@ -1,10 +1,16 @@
 \section{Ergebnis}
 \subsection{Zusammenfassung}
-Der Zusammenbau erfolgte ohne größere Probleme.
+In dieser Arbeit wurde der Prozess untersucht, der vom OpenMANIPULATOR-X in Einzelteilen zu einem benutzbaren Greifarm, der durch Handlungsplanung steuerbar ist, führt.
+Dabei werden die nötigen Grundkenntnisse zum Betrieb von Robotern mit \ac{ROS2} vermittelt und die Funktionsweise des Planers \ac{POPF} erklärt.\\
+Der Zusammenbau des OpenMANIPULATOR-X erfolgte ohne größere Probleme.
 Die beschriebenen Details, die leicht zu übersehen sind, lassen sich auch im Nachhinein ohne großen Aufwand beheben oder korrigieren.
-Durch die verfügbaren Installations-Skripte gab es auch softwareseitig keine Hindernisse für einen schnellen Einstieg.
-Auch wenn zu Beginn dieser Arbeit noch keine offizielle Unterstützung von \ac{ROS2} Foxy vorhanden war, konnte anhand der Anleitung für ältere \ac{ROS2} Distributionen alles zum laufen gebracht werden.
-Durch die Kombination der \ac{ROS2} Foxy Tutorials sowie der OpenMANIPULATOR-X API Dokumentation ließen sich auch ohne Vorkenntnisse gute Fortschritte machen.
+Durch die verfügbaren Installations-Skripts gab es auch softwareseitig keine Hindernisse für einen schnellen Einstieg.
+Auch wenn zu Beginn dieser Arbeit noch keine offizielle Unterstützung von \ac{ROS2}-Foxy vorhanden war, konnte anhand der Anleitung für ältere \ac{ROS2}-Distributionen alles zum Funktionieren gebracht werden.
+Durch die Kombination der \ac{ROS2}-Foxy Tutorials sowie der OpenMANIPULATOR-X API-Dokumentation ließen sich auch ohne Vorkenntnisse schnell Fortschritte machen.\\
+Die Einbindung von \ac{PlanSys2} erfolgt ohne weitere Konfiguration.
+Durch die Beispielprojekte lässt sich schnell und unkompliziert in die Entwicklung des eigenen Projekts starten.\\
+Bei der Entwicklung der Domäne zeigte sich, dass aufgrund der Einschränkungen der nutzbaren Funktionen von \ac{PDDL} durch \ac{POPF}, die Komplexität von Problemen schnell ansteigt.
+Bereits kleine Erhöhungen der Anzahl der Stapel oder Blöcke führte zu Berechnungszeiten, die eine Echtzeitsteuerung des Greifarms nicht ermöglicht.
 \subsection{Ausblick}
 \subsubsection{MoveIt}
 Um den in der dieser Arbeit verwendeten Ansatz der Bewegungsplanung robuster und dynamischer zu machen, empfiehlt sich die Implementierung der Bibliothek MoveIt\footnote{MOVEIT URL}.
@@ -14,12 +20,7 @@ In der virtuellen Szene befindet sich sowohl ein Modell des Roboters als auch al
 Wird eine Bewegung zu einer Position angefordert, kann der generierte Pfad auf potenzielle Kollisionen mit Objekten der Szene überprüft werden.
 \subsubsection{Vorschläge für Übungen in der Lehre}
 Um die Verwendung des OpenMANIPULATOR-X in der Lehre näher zu bringen, gibt es in dem für diese Arbeit entstandenen Package mehrere Stellen, an denen angesetzt werden kann.\\
-Grundsätzlich lassen sich diese in folgende Bereiche aufteilen:
-\begin{itemize}
-\item \ac{ROS2}
-\item Domäne und Problem in PDDL
-\item ...
-\end{itemize}
+Grundsätzlich lassen sich diese in die zwei Bereiche \ac{ROS2} und Greifarm sowie Planung mit Domäne und Problemen in \ac{PDDL} aufteilen.
 Für jeden dieser Bereiche besteht die Möglichkeit die Aufgaben in die folgenden Richtungen zu führen:
 \begin{itemize}
 \item Fehlersuche mit sinnvoll platzierten Fehlern
@@ -27,6 +28,6 @@ Für jeden dieser Bereiche besteht die Möglichkeit die Aufgaben in die folgende
 \item die Anpassung des Codes an ein ähnliches Szenario
 \end{itemize}
 Ein Beispiel für die Domäne ist, den Effekt der \verb|MOVE-GRIPPER| Aktion, der die Startposition löscht, erst am Ende der Aktion auszuführen, was dazu führt, dass zum Start des Plans alle nötigen Bewegungen gleichzeitig ausgeführt werden.\\
-Eine Aufgabe für das Schreiben/Anpassen eines Problems in PDDL, welche sich anbietet, ist eine vorgegeben Problemdatei, welche nur die grundlegende Struktur über Stapel und Positionen enthält, so zu erweitern, dass eine von mehreren möglichen, vorgegebenen Varianten von gestapelten Blöcken beschreibt.
+Eine Aufgabe für das Schreiben/Anpassen eines Problems in PDDL, welche sich anbietet, ist eine vorgegeben Problemdatei, welche nur die grundlegende Struktur über Stapel und Positionen enthält, so zu erweitern, dass eine von mehreren möglichen, vorgegebenen Varianten von gestapelten Blöcken beschrieben wird.
 Die Aufgabe kann dadurch erleichtert werden, dass das gegebene Problem bereits eine bestimmte Stapelung von Blöcken darstellt und nur angepasst werden muss.\\
-Für alle Aufgaben, die PDDL betreffen, bietet es sich an, VS-Code mit dem PDDL-Plugin zu nutzen, um schnelle Iterationen und eine Visualisierung der Pläne zu ermöglichen.
+Für alle Aufgaben, die \ac{PDDL} betreffen, bietet es sich an, VS-Code mit dem PDDL-Plugin zu nutzen, um schnelle Iterationen und eine Visualisierung der Pläne zu ermöglichen.

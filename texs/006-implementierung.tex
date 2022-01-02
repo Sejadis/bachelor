@@ -152,11 +152,11 @@ Für die Implementierung der in Abschnitt~\ref{konzept:nodes} genannten Funktion
 Es übernimmt dabei alle Funktionalitäten: die Verwaltung der Daten zur Domäne und dem aktuellen Problem erfolgt über die \emph{domain-expert}- und \emph{problem-expert}-Nodes.
 Die \emph{planer} Node ist für die komplette Planung zuständig und die \emph{executioner}-Node für die Ausführung des Plans.\\
 Es müssen hier lediglich die Domäne erstellt sowie die tatsächliche Funktionalität der einzelnen Aktionen implementiert werden.
-Das Wort ''Action'' im Namen der Nodes und den folgenden Kapiteln bezieht sich hier auf die Aktionen der Domäne, nicht auf \ac{ROS2} Actions.
+Das Wort ''Action'' im Namen der Nodes und den folgenden Abschnitten bezieht sich auf die Aktionen der Domäne, nicht auf \ac{ROS2}-Actions.
 
 
-\subsubsection{PDDL-Domain}
-Beim Erstellen der Domäne ist zu beachten, dass \ac{POPF} nicht alle Funktionen unterstützt, die mit PDDL beschrieben werden können.
+\subsubsection{PDDL-Domäne}
+Beim Erstellen der Domäne ist zu beachten, dass \ac{POPF} nicht alle Funktionen unterstützt, die mit \ac{PDDL} beschrieben werden können.
 Dies beinhaltet unter anderem existentielle sowie negative Vorbedingungen.
 Die vollständige Liste ist im \emph{''AI Planning \& PDDL Wiki''}\footnote{\url{https://planning.wiki/ref/planners/popf}} zu finden.\\
 Für den \emph{Blockworld}-Teil der Domäne gibt es zunächst den Typ \verb|box| und Prädikate, die das Stapeln von Blöcken darstellen.
@@ -185,29 +185,32 @@ Dies ist zum einen physisch nicht möglich, hinterlässt die Welt aber auch in e
 \end{figure}
 
 \subsubsection{Action Nodes}
-Obwohl in der Domäne mehr als zwei Aktionen beschrieben sind, beschränken sich die ausgeführten Aktionen auf ein Bewegen des OpenMANIPULATOR-X sowie die Kontrolle des Greifers.
+Obwohl in der Domäne mehr als zwei Aktionen beschrieben sind, beschränken sich die ausgeführten Aktionen auf ein Bewegen des OpenMANIPULATOR-X sowie die Steuerung des Greifers.
 Für diese wird jeweils eine Node erstellt.\\
 Damit diese Nodes von \ac{PlanSys2} genutzt werden können, müssen sie von der Basisklasse \verb|plansys2::ActionExecutorClient| erben.
 Da diese von \ac{PlanSys2} nur in C++ zur Verfügung gestellt wird, müssen auch die Aktionen in C++ implementiert werden.\\
 In jeder Aktion muss die Methode \verb|void do_work()| implementiert werden.
 Diese wird mit einem bestimmten Zeitintervall aufgerufen während die Aktion aktiv ist.
-Das Intervall wird im Konstruktor gesetzt (s. Zeile~\ref{code:line:nodeintervall} in~\ref{code:gripperactionnode}).
-Das Mapping einer Node zu einer Aktion erfolgt durch das Setzen des Parameters \verb|action_name| nach dem Erstellen der Node (s. Zeile~\ref{code:line:actionname} in~\ref{code:gripperactionnode}).
+Das Intervall wird im Konstruktor gesetzt (s. Zeile 20 in~\ref{lst:gripper_action}).
+Das Mapping einer Node zu einer Aktion erfolgt durch das Setzen des Parameters \verb|action_name| nach dem Erstellen der Node (s. Zeile 73 in~\ref{lst:gripper_action}).
 
 \subsubsection{Control Gripper Aktion}
-Die Logik Node zur Steuerung des Greifers wird in der Klasse \verb|ControlGripperAction| (s.~\ref{code:gripperactionnode}) implementiert.
-Da es vom OpenMANIPULATOR-X kein Feedback gibt, ob oder wann etwas gegriffen wurde, wird die Aktion mit einer fixen Wartezeit implementiert: wenn die Aktion gestartet wird, wird ein Request zur Steuerung des Greifers erzeugt (s. Zeile~\ref{code:line:gripperrequest} in~\ref{code:gripperactionnode}) und gesendet und nach einer bestimmten Zeit die Aktion beendet.
+Die Logik Node zur Steuerung des Greifers wird in der Klasse \verb|GripperControlAction| (s. Anhang~\ref{lst:gripper_action}) implementiert.
+Alle Zeilenangaben in diesem Abschnitt beziehen sich auf diesen Anhang.\\
+Da es vom OpenMANIPULATOR-X kein Feedback gibt, ob oder wann etwas gegriffen wurde, wird die Aktion mit einer fixen Wartezeit implementiert: wenn die Aktion gestartet wird, wird ein Request zur Steuerung des Greifers erzeugt (s. Zeile 39) und gesendet und nach einer bestimmten Zeit die Aktion beendet.
 Um unnötige Aufrufe der Methode während des Wartens zu verhindern, wird die Wartezeit über das Zeitintervall zur Ausführung der Node gesetzt.
 Die Aktion wird hierdurch immer beim 2.\ Aufruf der Methode \verb|do_work| beendet.\\
 Zum Senden des Requests wird ein \ac{ROS2} Client für den Service \verb|goal_tool_control| mit dem Typ \verb|open_manipulator_msgs::srv::SetJointPosition| erstellt. 
 Um sowohl die Aktionen zum Öffnen sowie Schließen des Greifers mit einer Node implementieren zu können, wird ein Parameter eingeführt, der über den Konstruktor gesetzt wird und die Bewegung des Greifers bestimmt.
 Für jede Aktion wird eine Node mit entsprechenden Parametern erzeugt.\\
-
-Diese Nodes werden alle einem \verb|MultiThreadedExecutor| hinzugefügt. Dadurch können alle Nodes gemeinsam gestartet werden und laufen in einem Prozess, sind durch mehrere Threads aber unabhängig voneinander.
+Damit alle Nodes gemeinsam gestartet aber unabhängig voneinander ausgeführt werden können, wird ein \verb|MultiThreadedExecutor| (s. Zeile 66) genutzt.
+Alle Nodes werden diesem \verb|MultiThreadedExecutor| hinzugefügt (s. Zeilen 85-88).
+Dadurch können alle Nodes gemeinsam gestartet werden und laufen in einem Prozess, sind durch mehrere Threads aber unabhängig voneinander.
 
 \subsubsection{Move Gripper Aktion}
-Die Logik Node zur Bewegung des OpenMANIPULATOR-X wird in der Klasse\\\verb|MoveGripperAction| (s.~\ref{code:moveactionnode}) implementiert.\\
-Insgesamt umfasst dies das Senden des Bewegungsrequests an den vom OpenMANIPULATOR-X-Controller erstellten Service \verb|goal_task_space_path_position_only| mit dem Typ \verb|open_manipulator_msgs::srv::SetKinematicsPose| (s. Zeile~\ref{code:line:poseclient} in\ref{code:moveactionnode}) sowie das Beenden der Aktion wenn der OpenMANIPULATOR-X an der Zielposition angekommen ist.
+Die Logik Node zur Bewegung des OpenMANIPULATOR-X wird in der Klasse\\\verb|MoveGripperAction| (s. Anhang~\ref{lst:move_action}) implementiert.
+Alle Zeilenangaben in diesem Abschnitt beziehen sich auf diesen Anhang.\\
+Insgesamt umfasst dies das Senden des Bewegungsrequests an den vom OpenMANIPULATOR-X-Controller erstellten Service-Client \verb|goal_task_space_path_position_only| mit dem Typ \verb|open_manipulator_msgs::srv::SetKinematicsPose| (s. Zeile(n) 42-43 für das Erstellen des Service-Clients, 148 für das Senden und 164-204 für das Erstellen der Requests) sowie das Beenden der Aktion wenn der OpenMANIPULATOR-X an der Zielposition angekommen ist.
 Ob die Bewegung beendet ist, wird über den im Topic \verb|states| gesendeten Bewegungsstatus geprüft.
 Dieser kann die beiden Werte \verb|IS_MOVING| und \verb|STOPPED| annehmen.
 Der aktuelle Status wird mit dem letzten empfangenen verglichen: war der letzte Status \verb|IS_MOVING| und der aktuelle \verb|STOPPED|, waren der OpenMANIPULATOR-X in einer Bewegung, die jetzt beendet ist.\\
@@ -225,21 +228,23 @@ Diese Zwischenpositionen werden übersprungen, wenn die aktuelle Position des Op
 Hierbei werden die aktuellen Koordinaten auf zwei Dezimalstellen gerundet.\\
 Für alle benötigten Positionen wird ein Request erzeugt und einer Queue hinzugefügt.
 Der Auslöser, den nächsten Request zu senden, ist jeweils das Ende der vorherigen Bewegung.\\
-Um Zugriff auf die aktuelle Position des OpenMANIPULATOR-X zu erhalten, wird ein weiterer Subscriber für das Topic \verb|kinematics_pose| benötigt, das eine Message vom Typ\\
-\verb|open_manipulator_msgs::msg::KinematicsPose| veröffentlicht.\\
+Um Zugriff auf die aktuelle Position des OpenMANIPULATOR-X zu erhalten, wird ein weiterer Subscriber für das Topic \verb|kinematics_pose| benötigt, das eine Message vom Typ \verb|open_manipulator_msgs::msg::KinematicsPose| veröffentlicht.\\
 Um eine Beschädigung der Motoren zu vermeiden, soll die Bewegung bei einer Kollision abgebrochen werden.
-Hierfür sind zwei Aspekte nötig: die Kollisionserkennung sowie das Abbrechen der Bewegung.
+Hierfür sind zwei Aspekte nötig: die Kollisionserkennung sowie das Abbrechen der Aktion.
+Die Kollisionserkennung erfolgt in der Methode \verb|joint_state_callback| (s. Zeilen 73-100).
+Der Abbruch der Aktion erfolgt in der Methode \verb|abort_plan| (s. Zeilen 102-112).
 Für die Kollisionserkennung wird der Stromverbrauch der einzelnen Motoren genutzt.
 Dieser steigt, wenn der Motor mehr Leistung bringen muss, wenn versucht wird, sich gegen ein Hindernis zu bewegen.\\
 Dieser ist in der Message des Topics \emph{joint\_states} als \emph{effort} enthalten.
-Die letzten $x$ Werte (konfigurierbar über die Variable \emph{EFFORT\_COUNT}, standardmäßig 10) werden für jeden Motor gespeichert (s. Zeile~\ref{code:line:effortsaving} in \ref{code:moveaction}) und ausgewertet (s. Zeile~\ref{code:line:efforteval} in \ref{code:moveaction}).
-Die Werte jedes Motors werden einzeln ausgewertet.
-Es wird das Maximum und das Minimum der Werte genommen und geprüft, ob die absolute Differenz größer als der festgelegte Grenzwert (konfigurierbar über die Variable \emph{EFFORT\_THRESHOLD}, standardmäßig 500) ist.
-Ist dies für mindestens einen Motor der Fall gilt die Aktion als fehlgeschlagen und der entsprechende Status wird zurückgegeben (s. Zeile~\ref{code:line:effortfail} in \ref{code:moveaction}).
+Für jedes Gelenk mit Ausnahme des Greifers (\emph{effort} ist für diesen immer 0) wird die Anzahl der Werte gespeichert, die konsekutiv über dem Grenzwert \emph{EFFORT\_THRESHOLD} liegen.
+Wird der Grenzwert deutlich überschritten (Wert ist mind. doppelt so hoch wie der Grenzwert), so wird dieser Wert auch doppelt gezählt um die Bewegung schneller abzubrechen.
+Liegt der Wert unterhalb des Grenzwerts, wird der Zähler wieder auf 0 zurückgesetzt.
+Erreicht der Zähler eines Gelenks den Grenzwert \emph{EFFORT\_COUNT} wird die Bewegung und damit der Plan abgebrochen.
+Zusätzlich wird die Position gespeichert, an der sich der OpenMANIPULATOR-X zum Zeitpunkt des Überschreitens des Grenzwerts befindet.\\
+Um die Ausführung der Aktion abzubrechen, wird die Methode \verb|finish| mit einem ersten Parameter \verb|false| aufgerufen.
 Eine fehlgeschlagene Aktion resultiert gleichzeitig in einem fehlgeschlagenen Plan.
 Ein Abbrechen der Aktion verhindert jedoch nicht, dass der OpenMANIPULATOR-X versucht, das aktuelle Bewegungsziel zu erreichen.
-Es wird ein neues Bewegungsziel erstellt, das sich an der aktuellen Position befindet.
-
+Es wird ein neues Bewegungsziel erstellt, für das der gespeicherte Wert der Kollisionsposition genutzt wird.
 
 \subsubsection{Package}
 Alle erstellten Komponenten werden in einem eigenen \ac{ROS2} Package gebündelt.
@@ -266,7 +271,7 @@ Dies ist mit \verb|get plan| möglich (s. Abbildung~\ref{fig:terminalplan}).\\
 Während der Ausführung eines Plans wird im Terminal die aktuelle Aktion sowie dessen Fortschritt (gesteuert über den Feedback Kanal innerhalb der Aktion) angezeigt.
 \subsubsection{Sussman Anomalie}
 Die Sussman Anomalie~\cite{sussman} beschreibt eine Schwäche von Planern, bei der bereits ausgeführte Teile bzw. erreichte Unterziele rückgängig gemacht werden müssen, um andere bzw. das Gesamtziel zu erreichen.
-Dieses Problem kann durch drei Blöcke beschrieben werden, die sich anfangs in den Positionen befinden, die in Abbildung~\ref{fig:sussstart} gezeigt wird.
+Dieses Problem kann durch drei Blöcke beschrieben werden, die sich anfangs in den Positionen befinden, die in Abbildung~\ref{fig:sussstart} gezeigt werden.
 Das Ziel ist es, dass $A$ auf $B$ und $B$ auf $C$ gestapelt wird, wobei jeweils immer nur ein Block gewegt werden kann.
 Wird versucht als erstes $A$ auf $B$ zu erfüllen, wird $C$ zur Seite gelegt und $A$ auf $B$ platziert (s. Abbildung~\ref{fig:sussmanab}).
 Dieser Schritt muss nun wieder rückgängig gemacht werden, um $B$ auf $C$ zu platzieren.\\
