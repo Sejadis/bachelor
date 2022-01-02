@@ -3,7 +3,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%   Zusaetzliche Pakete  %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{enumerate}  
+\usepackage{enumerate}
+\usepackage{url}
 \usepackage{fancyhdr}
 \usepackage{a4wide}
 \usepackage{graphicx}
@@ -36,6 +37,7 @@
 %\usepackage[ngerman, english]{babel}
 
 \usepackage[T1]{fontenc}
+\usepackage{microtype}
 \usepackage[utf8]{inputenc}
 \usepackage[bookmarks]{hyperref}
 \usepackage[justification=centering]{caption}
@@ -203,3 +205,6 @@
 
 \hyphenchar\font=\string"7F
 \hyphenation{Open-MANIPULATOR-X}
+\newcommand{\source}[1]{\vspace{-3pt} \caption*{ Quelle: {#1}} }
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}

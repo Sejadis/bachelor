@@ -1,15 +1,30 @@
 \section {Grundlagen}
 In Abschnitt~\ref{sec:omx} wird zunächst der Greifarm OpenMANIPULATOR-X vorgestellt.
-Anschließend wird in Abschnitt~\ref{sec:ros2} Übersicht über die wichtigsten Komponenten des Betriebssystems gegeben, mit dem dieser Greifarm läuft.
+Dies umfasst den grundsätzlichen Aufbau und Eigenschaften, die die Bearbeitung der Problemstellung beeinflussen.
+Anschließend wird in Abschnitt~\ref{sec:ros2} eine Übersicht über die wichtigsten Komponenten des Betriebssystems gegeben, mit dem dieser Greifarm läuft.
 Weiterhin werden in Abschnitt~\ref{sec:planning} die theoretischen Grundlagen der Planung dargestellt, die zur Steuerung des Greifarms genutzt werden sollen.
 Abschließend wird in Abschnitt~\ref{sec:ros2planning} das System erklärt, das Planung und Roboter kombiniert.
 \subsection{OpenMANIPULATOR-X}{\label{sec:omx}}
-Der OpenMANIPULATOR-X ist ein von der Firma ROBOTIS{\footnote{http://en.robotis.com}} nach den Prinzipien ``OpenSoftware`` und ``OpenHardware`` hergestellter Greifarm.
-''OpenSoftware'' steht hierbei dafür, dass es ein OpenSource-Projekt ist und auf dem OpenSource Projekt \ac{ROS2} basiert.
-''OpenHardware'' steht dafür, dass die meisten Komponenten als STL-Dateien zur Verfügung stehen und als Ersatzteile oder zum Anpassen des Greifarms mittels eines 3D-Druckers selbst hergestellt werden können.\\
+Der OpenMANIPULATOR-X (s. Abbildungen~\ref{fig:omx} und~\ref{fig:omxschematic}) ist ein von der Firma ROBOTIS{\footnote{http://en.robotis.com}} nach den Prinzipien ``OpenSoftware`` und ``OpenHardware`` hergestellter Greifarm~\cite{omxoverview}.
+''OpenSoftware'' steht hierbei dafür, dass es ein OpenSource-Projekt ist und auf dem OpenSource-Projekt \ac{ROS2} basiert.
+''OpenHardware'' steht dafür, dass die meisten Komponenten als STL-Dateien\footnote{Dateiformat, das 3D-Objekte beschreibt, häufig im 3D-Druck genutzt} zur Verfügung stehen und als Ersatzteile oder zum Anpassen des Greifarms mittels eines 3D-Druckers selbst hergestellt werden können.\\
 Der OpenMANIPULATOR-X ist eine 5DOF (5 Degrees of Freedom) Plattform, die mittels 5 Servomotoren{\footnote{Modelbezeichnung: DYNAMIXEL XM430-W350-T}} gesteuert wird.
-Dies ist aufgeteilt in 4DOF für den Arm sowie 1DOF für den Greifer.
+Dies ist aufgeteilt in 4DOF für den Arm sowie 1DOF für den Greifer.\\
+Die Bewegung des OpenMANIPULATOR-X erfolgt mit einer Wiederholbarkeit von <\,0.2\,mm.
+Der Greifer hat eine Spanne von 20~75\,mm.
 Es kann eine Last bis 500g getragen werden.
+\begin{figure}[ht!]
+     \centering
+     \includegraphics[width=.75\textwidth]{figs/omx}
+     \caption[OpenMANIPULATOR-X]{OpenMANIPULATOR-X~\cite{omximg}}
+     \label{fig:omx}
+\end{figure}
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=.75\textwidth]{figs/omx_schematic}
+    \caption[Schematische Darstellung des OpenMANIPULATOR-X mit Maßen]{Schematische Darstellung des OpenMANIPULATOR-X mit Maßen~\cite{omximg_schematic}}
+    \label{fig:omxschematic}
+\end{figure}
 \subsection{ROS2}{\label{sec:ros2}}
 \acf{ROS2} ist eine Sammlung von Bibliotheken und Werkzeugen für Robotik-Applikationen, die alle OpenSource sind.
 Die erste \ac{ROS2}-Release-Version erschien im Dezember 2017 unter dem Namen ''Ardent Apalon''.\\
@@ -42,7 +57,7 @@ Die Zuweisung des Wertes erfolgt mit dem ''\verb|=|'' Zeichen: \verb|string EXAM
 \begin{table}[ht]
     \centering
     \caption{Integrierte Datentypen für Interfaces und deren C++ Equivalent}
-\begin{tabular}{l|l}
+\begin{tabular}{|l|l|}
 \hline
 \textbf{Datentyp} & \textbf{C++}   \\ \hline
 bool         & bool           \\ \hline
@@ -172,40 +187,49 @@ Aktionen bestehen wiederum aus:
     \item Vorbedingungen
     \item Effekten
 \end{itemize}
-Ein \ac{STRIPS}-Modell kann mathematisch als 4-Tupel \((P,O,I,G)\) beschrieben werden \cite{stripsdef}:
+Ein \ac{STRIPS}-Modell kann mathematisch als 4-Tupel \((F,O,I,G)\) beschrieben werden \cite{stripsdef}:
 \begin{enumerate}
-    \item \(P\): eine endliche Menge von Bedingungen
+    \item \(F\): eine endliche Menge von Fakten
     \item \(O\): eine endliche Menge von Aktionen (auch Operatoren) mit der Form $Pre \Rightarrow Post$
-    \item \(I\): der Startzustand, $I\subseteq P$
+    \item \(I\): der Startzustand, $I\subseteq F$
     \item \(G\): eine endliche Menge von Zielen
 \end{enumerate}
 Es gilt die \emph{Closed World Assumption (CWA)}: alles was nicht explizit als wahr beschrieben ist, gilt als falsch.\\
-$P$ ist die Menge aller Bedingungen, die relevant sind.
-Jeder Zustand ist eine Teilmenge $S\subseteq P$.\\
+$F$ ist die Menge aller Fakten, die relevant sind.
+Jeder Zustand ist eine Teilmenge $S\subseteq F$.\\
 $O$ ist die Menge der Aktionen die einen Zustand in einen anderen ändern können.
-Aktionen sind 4-Tupel \((o^+,o^-,o_+,o_-)\), bei dem jedes Element eine Menge von Bedingungen sind.
+Aktionen sind 4-Tupel \((o^+,o^-,o_+,o_-)\), bei dem jedes Element eine Menge von Fakten ist.
 Die ersten zwei Mengen beschreiben die Vorbedingungen ($Pre$).
-Das sind Bedingungen, die wahr sein müssen ($o^+$) sowie Bedingungen, die falsch sein müssen ($o^-$).
-Die letzten beiden Mengen beschreiben den Effekt, den die Aktion nach ihrer Ausführung auf einen Zustand hat ($Post$), also Bedingungen, die wahr werden ($o_+$) und Bedingungen, die falsch werden ($o_-$).\\
-$I$ beschreibt, welche Bedingungen anfangs wahr oder falsch sind.
-Eine Bedingung $p\in P$ ist anfangs wahr, wenn $p\in I$ und sonst falsch.\\
-$G$ ist die Menge der Bedingungen, die erreicht werden soll, bestehend aus den Zielen, die wahr sein sollen ($G_+$) und denen, die falsch sein sollen ($G_-$).
-Ein Zustand $S\subseteq P$  ist ein Zielzustand, wenn $G_+\subseteq S$ und $G_-\cap S =\emptyset$.\\
-Ein Plan besteht aus einer Menge von Aktionen, die vom Startzustand zu einem Zielzustand führen.
+Das sind Fakten, die wahr sein müssen ($o^+$) sowie Fakten, die falsch sein müssen ($o^-$).
+\begin{definition}
+    Eine Aktion $A$ ist auf einen Zustand $\subseteq F$ anwendbar, wenn alle Fakten in $o^+$ in $S$ gelten und keiner der Fakten in $o^-$ in $S$ gilt:\\
+    \[o^+(A) \subseteq S\,,\;\;\;o^-(A) \cap S =\emptyset\]
+\end{definition}
+Die letzten beiden Mengen beschreiben den Effekt, den die Aktion nach ihrer Ausführung auf einen Zustand hat ($Post$), also Fakten, die wahr werden ($o_+$) und Fakten, die falsch werden ($o_-$).\\
+$I$ beschreibt, welche Fakten anfangs wahr oder falsch sind.
+Eine Fakt $f\in F$ ist anfangs wahr, wenn $f\in I$ und sonst falsch.\\
+$G$ ist die Menge der Fakten, die erreicht werden soll, bestehend aus den Zielen, die wahr sein sollen ($G_+$) und denen, die falsch sein sollen ($G_-$).
+\begin{definition}
+    Ein Zustand $S\subseteq F$  ist ein Zielzustand, wenn:
+    \[G_+\subseteq S\,,\;\;\;G_-\cap S =\emptyset\]
+\end{definition}
+\begin{definition}
+    Ein Plan besteht aus einer Menge von Aktionen, die vom Startzustand zu einem Zielzustand führen.
+\end{definition}
+
 Dieser Plan ist ein \emph{Total-Order}-Plan: alle Aktionen haben eine feste Reihenfolge innerhalb des Plans.
 Um einen Plan zu finden, wird ein Suchbaum erstellt.
 Die Suche findet im Zustandsraum statt.
 Jeder Knoten ist ein Zustand.
-Jede Kante ist die Aktion, um den Zustand bzw. Knoten, von der die Kante ausgeht, zu dem Zustand zu überführen, zu dem die Kante führt.
-Es wird die GPS Strategie angewandt, um Unterschiede zwischen dem aktuellen Zustand und dem Ziel zu extrahieren und relevante Aktionen für diese Unterschiede zu finden~\cite{FIKES1971189}.\\
-\ac{STRIPS} beginnt damit, das Ziel $G_0$ für den Startzustand $M_0$ zu beweisen.
+Jede Kante ist die Aktion, um den Zustand bzw. Knoten, von der die Kante ausgeht, zu dem Zustand zu überführen, zu dem die Kante führt.\\
+\ac{STRIPS} beginnt damit, das Ziel $G_0$ für den Startzustand $I_0$ zu beweisen.
 Gelingt dies, ist das Ziel bereits erreicht und kein Plan notwendig.
-Ist das Ziel nicht beweisbar, wird der Unterschied zwischen $M_0$ und $G_0$ ermittelt und von diesem aus weiter gesucht.
+Ist das Ziel nicht beweisbar, wird der Unterschied zwischen $I_0$ und $G_0$ ermittelt und von diesem aus weiter gesucht.
 Es wird eine Aktion gesucht, die diesen Unterschied weiter verringern kann.
 Vorbedingungen dieser Aktion werden als Unterziel genutzt.
-Kann ein (Unter-)Ziel für den Zustand $M_0$ bewiesen werden, werden die Effekte der Aktion auf $M_0$ angewandt und es entsteht ein Zustand $M_1$.
+Kann ein (Unter-)Ziel für den Zustand $I_0$ bewiesen werden, werden die Effekte der Aktion auf $I_0$ angewandt und es entsteht ein Zustand $I_1$.
 Dieses Verfahren wiederholt sich bis ein Zustand entsteht, in dem das Ziel $G_0$ bewiesen werden kann.
-\subsubsection{Planning Domain Definition Language}
+\subsubsection{Planning Domain Definition Language}{\label{sec:pddl}}
 Die \emph{\ac{PDDL}} ist eine Sprache zur Modellierung von Planungsaufgaben.
 Im Rahmen dieser Arbeit wird nicht auf alle Aspekte von \ac{PDDL} eingegangen.
 Der Fokus liegt auf einigen grundlegenden Teilen sowie auf den genutzten Erweiterungen.\\
@@ -290,35 +314,36 @@ Da Bedingungen dadurch nicht mehr strikt vor Ausführung der Aktion gelten müss
 
 \subsubsection{\acs{PDDL}-Plugin für VS Code}
 Im Marketplace von Visual Studio Code ist ein PDDL-Plugin von Jan Dolejsi verfügbar.
-Dieses vereinfacht die Entwicklung und das Testen von Domänen und Problemen im \ac{PDDL}-Format.
+Dieses vereinfacht die Entwicklung und das Testen von Domänen und Problemen, die in dem in Abschnitt~\ref{sec:pddl} beschriebenen \ac{PDDL}-Format vorliegen.
 Es beinhaltet Syntax-Highlighting und Snippets, sowie die Möglichkeit direkt Pläne zu suchen und zu visualisieren.
 Um Pläne mit \ac{POPF} zu suchen, muss der Planer in der Overview-Page des Plugins hinzugefügt werden.
-Der Pfad zum \ac{POPF}-Planer ist: \emph{/opt/ros/foxy/lib/popf/popf}.\\
+Der Pfad zum \ac{POPF}-Planer ist: \path{/opt/ros/foxy/lib/popf/popf}.\\
 Über das Kontext-Menü einer Domänen- oder Problemdatei lässt sich der Planer starten und es erfolgt eine Ausgabe in der Konsole (s. Abbildung~\ref{fig:pluginplan}) sowie eine Visualisierung wenn ein Plan gefunden wurde (s. Abbildung~\ref{fig:pluginvis}).
 Der zeitliche Ablauf wird in der Abbildung von links nach rechts dargestellt.
 Alle Aktionen werden farblich markiert, wobei eine Aktion auch bei mehrfacher Ausführung die gleiche Farbe erhält.
-Im linken Teil der Abbildung gibt es eine einfache Übersicht des Plans: welche Aktionen wurden wann ausgeführt und mit welchen Parametern.
-Im rechten Teil der Abbildung wird dargestellt, welche Instanzen zu welchem Zeitpunkt als Teil welcher Aktion genutzt wurden.
+In~\ref{fig:planvis_actions} wird eine einfache Übersicht des Plans gezeigt: welche Aktionen wurden wann ausgeführt und mit welchen Parametern.
+In~\ref{fig:planvis_objects} wird dargestellt, welche Objekte zu welchem Zeitpunkt als Teil welcher Aktion genutzt wurden.
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth]{plugin_plan}
     \caption{Konsolenausgabe nach Ausführung des Planers über das \acs{PDDL}-Plugin}
     \label{fig:pluginplan}
 \end{figure}
-
 \begin{figure}[ht!]
     \centering
-    \begin{minipage}[t]{0.45\linewidth}
+    \begin{subfigure}[b]{0.55\textwidth}
         \centering
         \includegraphics[width=\linewidth,keepaspectratio]{plugin_vis1}
-    \end{minipage}% <- sonst wird hier ein Leerzeichen eingefügt
-    \hfill
-    \begin{minipage}[t]{0.45\linewidth}
+        \caption{Abfolge der Aktionen}
+        \label{fig:planvis_actions}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.35\textwidth}
         \centering
-        \includegraphics[width=.66\linewidth,keepaspectratio,valign=c]{plugin_vis3}
-    \end{minipage}
-    \title{Visualisierung eines Plans mit dem PDDL-Plugin}
-    \caption{Visualisierung eines Plans mit dem \acs{PDDL}-Plugin mit Fokus auf die Aktionen (links) und relevante Objekte (rechts)}
+        \includegraphics[width=\linewidth,keepaspectratio]{plugin_vis3}
+        \caption{Nutzung der Objekte im Plan}
+        \label{fig:planvis_objects}
+    \end{subfigure}
+    \caption{Visualisierung eines Plans durch das \acs{PDDL}-Plugin}
     \label{fig:pluginvis}
 \end{figure}
 \subsubsection{Partial Order Planning}{\label{section:pop}}
@@ -327,7 +352,7 @@ Dies steht im Gegensatz zu \emph{Total-Order}-Planern wie \ac{STRIPS}.\\
 Es wird nach dem \emph{Principle Of Least Commitment} verfahren.
 Das bedeutet, dass Entscheidungen soweit wie möglich aufgeschoben und erst getroffen werden, wenn es absolut nötig ist.
 Dies umfasst nicht nur die Reihenfolge von Aktionen, sondern auch die Bindung von Variablen.\\
-Ein Partial-Order Plan kann als 4-Tupel \cite{grastien} beschrieben werden.
+Ein \emph{Partial-Order}-Plan kann als 4-Tupel~\cite{grastien} beschrieben werden.
 \begin{itemize}
     \item eine Menge von Aktionen
     \item eine Menge von Einschränkungen der Reihenfolge
@@ -336,9 +361,13 @@ Ein Partial-Order Plan kann als 4-Tupel \cite{grastien} beschrieben werden.
 \end{itemize}
 Die Menge der Aktionen enthält Instanzen von Aktionen der Domäne.
 Eine Aktion der Domäne kann daher mehrfach vorkommen.
-Einschränkungen der Reihenfolge $A < B$ bilden ab, dass Aktion $A$ vor Aktion $B$ ausgeführt werden muss.
-Zyklische Einschränkungen sind nicht erlaubt.
-Ein kausaler Zusammenhang $A \xrightarrow{\alpha} B$ beschreibt, dass die Aktion $A$ die Vorbedingung $\alpha$ der Aktion $B$ erfüllt.\\
+\begin{definition}
+    Eine Einschränkung der Reihenfolge $A < B$ beschreibt, dass Aktion $A$ vor Aktion $B$ ausgeführt werden muss.
+    Zyklische Einschränkungen sind nicht erlaubt.
+\end{definition}
+\begin{definition}
+    Ein kausaler Zusammenhang $A \xrightarrow{\alpha} B$ beschreibt, dass die Aktion $A$ die Vorbedingung $\alpha$ der Aktion $B$ erfüllt.
+\end{definition}
 Die Suche erfolgt im Plan Space.
 Jeder Knoten im Graph entspricht einem Teilplan und jede Kante einer Änderung des einen zum anderen Plan.
 Dies kann durch das Hinzufügen eines weiteren Schrittes oder einer Einschränkung sowie der Bindung einer Variable geschehen.
@@ -357,11 +386,14 @@ Ist der aktuelle Plan keine Lösung, werden folgende Schritte vorgenommen~\cite{
     \item eine existierende Aktion $A$, die die Vorbedingung $p$ erfüllt wählen oder eine neue Aktion $A$ erzeugen
     \item den kausalen Zusammenhang $A \xrightarrow{p} B$ und die Reihenfolge $A < B$ hinzufügen
     \item wenn $A$ eine neue Aktion ist, die Reihenfolge $Start < A$ hinzufügen
-    \item Probleme zwischen dem neuen kausalen Zusammenhang und den existierenden Aktionen lösen sowie zwischen den existierenden kausalen Zusammenhang und $A$, wenn $A$ eine neue Aktion ist.
+    \item Probleme zwischen dem neuen kausalen Zusammenhang und den existierenden Aktionen lösen sowie zwischen den existierenden kausalen Zusammenhängen und $A$, wenn $A$ eine neue Aktion ist.
     \item entsteht durch das Hinzufügen der Reihenfolgen ein Zyklus, kann der Plan keine Lösung mehr werden
 \end{itemize}
-Ein Problem ist eine Beziehung zwischen einer Aktion $C$ und einem kausalen Zusammenhang  $A \xrightarrow{p} B$, bei der die Aktion $C$ einen Effekt $\neg p$ hat.
-Sollte $C$ nach $A$ aber vor $B$ ausgeführt werden, ist die Vorbedingung $p$ für $B$ nicht mehr gegeben.
+\begin{definition}
+    Ein Problem ist eine Beziehung zwischen einer Aktion $C$ und einem kausalen Zusammenhang  $A \xrightarrow{\alpha} B$, bei der die Aktion $C$ einen Effekt $\neg \alpha$ hat.
+\end{definition}
+
+Sollte in einem Problemfall $C$ nach $A$ aber vor $B$ ausgeführt werden, ist die Vorbedingung $p$ für $B$ nicht mehr gegeben.
 Probleme können durch \emph{Promotion} oder \emph{Demotion} gelöst werden~\cite{dyer_2003}.
 Bei \emph{Promotion} wird der problematische Schritt $C$ nach dem kausalen Zusammenhang ausgeführt: die Reihenfolge $B < C$ wird hinzugefügt.
 Bei \emph{Demotion} wird der problematische Schritt $C$ vor dem kausalen Zusammenhang ausgeführt: die Reihenfolge $C < A$ wird hinzugefügt.
@@ -370,11 +402,11 @@ Bei \emph{Demotion} wird der problematische Schritt $C$ vor dem kausalen Zusamme
 Die Prinzipien des \ac{POP} sollen nun mit Vorwärtsverkettung kombiniert werden.
 Für Vorwärtsverkettung mit einem Total-Order Plan können Zustände als Tupel $(F,V,Q,P,C)$ beschrieben werden~\citep{popf}:
 \begin{itemize}
-    \item F ist eine Menge von Fakten, die im Zustand gelten
-    \item V ist eine Menge, die die Werte numerischer Variablen enthält
-    \item Q ist eine Menge von Aktionen, die begonnen haben, aber noch nicht beendet sind
-    \item P ist der Plan, um den Zustand zu erreichen
-    \item C ist eine Menge aller zeitlichen Einschränkungen der Schritte in $P$
+    \item \(F\): eine Menge von Fakten, die im Zustand gelten
+    \item \(V\): eine Menge, die die Werte numerischer Variablen enthält
+    \item \(Q\): eine Menge von Aktionen, die begonnen haben, aber noch nicht beendet sind
+    \item \(P\): der Plan, um den Zustand zu erreichen
+    \item \(C\): eine Menge aller zeitlichen Einschränkungen der Schritte in $P$
 \end{itemize}
 Um eine Aktion zum Plan hinzuzufügen, müssen deren Start- und Endpunkte hinzugefügt werden.
 Dies muss nicht in aufeinander folgenden Schritten geschehen.
@@ -383,16 +415,16 @@ Die Voraussetzung, um eine Aktion hinzufügen zu können ist, dass $Q$ keine Akt
 Vorwärtsverkettung im Zustandsraum hat, durch den \emph{Total-Order}-Plan, den Vorteil, dass nicht explizit nach Problemen gesucht werden muss.
 Neue Aktionen werden immer am Ende hinzugefügt, wodurch sie kein Problem für die Vorbedingungen und Effekte früherer Aktionen darstellen können.
 Gleichzeitig kann keine folgende Aktion ein Problem für diese darstellen.
-Dieser Vorteil kommt mit dem Nachteil der frühen Bindung und einer festgelegten Reihenfolge zwischen Aktion, zwischen denen kein Zusammenhang besteht.\\
-Es soll ein Kompromiss zwischen den Vorteilen von \emph{Total-} und \emph{Partial-Order}-Planung gefunden werden.
+Dies kommt mit dem Nachteil der frühen Bindung und einer festgelegten Reihenfolge zwischen Aktionen, zwischen denen kein Zusammenhang besteht.\\
+Es soll ein Kompromiss zwischen den Vor- und Nachteilen von \emph{Total-} und \emph{Partial-Order}-Planung gefunden werden.
 Dem Tupel werden weitere Elemente hinzugefügt:
 \begin{itemize}
-    \item $F^+(F^-)$, wobei $F^+(p)(F^-(p))$ den Index eines Schrittes $a$ angeben, indem der Fakt $p$ als letztes hinzugefügt (oder gelöscht) wurde
-    \item $FP$, wobei $FP(p)$ eine Menge von Paaren $\langle i,d \rangle \in (\mathbb{N}_0 \times \{0,\epsilon\})$:\\
+    \item $F^+(F^-)$, wobei $F^+(f)(F^-(f))$ den Index eines Schrittes $a$ angeben, indem der Fakt $f$ als letztes hinzugefügt (oder gelöscht) wurde
+    \item $FP$, wobei $FP(f)$ eine Menge von Paaren $\langle i,d \rangle \in (\mathbb{N}_0 \times \{0,\epsilon\})$:\\
     \begin{itemize}
-        \item $\langle i,0 \rangle \in FP(p)$ beschreibt, dass Schritt $i$ am Ende eines offenen Intervalls liegt, in dem $p$ wahr sein muss.\\
-        In \ac{PDDL} gibt es diese für Aktionen mit der \emph{over all}-Bedingung $p$, wobei $i$ der Endpunkt dieser Aktion ist.
-        \item $\langle i,\epsilon \rangle \in FP(p)$ beschreibt, dass Schritt $i$ der Start eines Intervalls ist, indem $p$ wahr sein muss.\\
+        \item $\langle i,0 \rangle \in FP(f)$ beschreibt, dass Schritt $i$ am Ende eines offenen Intervalls liegt, in dem $f$ wahr sein muss.\\
+        In \ac{PDDL} gibt es diese für Aktionen mit der \emph{over all}-Bedingung $f$, wobei $i$ der Endpunkt dieser Aktion ist.
+        \item $\langle i,\epsilon \rangle \in FP(f)$ beschreibt, dass Schritt $i$ der Start eines Intervalls ist, indem $f$ wahr sein muss.\\
         Dies entspricht \emph{at start}- oder \emph{at end}-Bedingungen in \ac{PDDL}, die relevant für den Schritt $i$ sind.
     \end{itemize}
 \end{itemize}
@@ -506,35 +538,35 @@ Daher wird ein suboptimaler Plan extrahiert, wodurch die Heuristik nicht mehr zu
 Um einen \ac{RPG} für temporales Planen zu erweitern, werden Aktionen in Startaktionen $A_\vdash$ und Endaktionen $A_\dashv$ aufgeteilt, die jeweils nur \emph{at start}- und \emph{at end}-Effekte enthalten.
 Der Index $t$ einer Schicht entspricht nun einem Zeitstempel.\\
 Als Suchverfahren wird zunächst \emph{\ac{EHC}} versucht.
-Der in Listing~\ref{lst:ehc_algo} als Pseudocode beschriebene Algorithmus beginnt im Startzustand $M$.\\
+Der in Listing~\ref{lst:ehc_algo} als Pseudocode beschriebene Algorithmus beginnt im, mit dem Startzustand $I$ initialisierten, Zustand $S$.\\
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[caption={\acl{EHC} Algorithmus, nach~\cite{hoffmannnebel2001}}, label={lst:ehc_algo}]
 den aktuellen Plan als leeren Plan initialisieren < >
-M = I
-while h(M) != 0 do
-    breadth first Suche nach einem Zustand M' mit h(M') < h(M)
+S = I
+while h(S) != 0 do
+    breadth first Suche nach einem Zustand S' mit h(S') < h(S)
     if kein solcher Zustand gefunden then
         Fehlschlag zurückgeben, stoppen
-    die Aktionen um zu M' zu kommen zum Ende des aktuellen Plans hinzufügen
-    M = M'
+    die Aktionen um zu S' zu kommen zum Ende des aktuellen Plans hinzufügen
+    S = S'
 \end{lstlisting}
 \end{minipage}
 Von diesem aus wird wird eine \emph{breadth-first} Suche gestartet.
-Diese findet den nächstbesten Nachfolger, also den nächsten Zustand $M'$, dessen Heuristik besser als die des aktuellen Zustands ist.
-Gelingt dies, wird der Weg von $M$ nach $M'$ zum Plan hinzugefügt.
+Diese findet den nächstbesten Nachfolger, also den nächsten Zustand $S'$, dessen Heuristik besser als die des aktuellen Zustands ist.
+Gelingt dies, wird der Weg von $S$ nach $S'$ zum Plan hinzugefügt.
 Die Suche wird gestoppt, wenn ein Zustand mit der Heuristik 0 gefunden wird.
 Ist die Heuristik des aktuellen Zustands ungleich null und wird kein Zustand mit einer besseren Heuristik gefunden, schlägt der Algorithmus fehl.
-Zustände werden in einer \emph{Queue} gespeichert und für eine Iteration der Suche wird der erste Zustand $M'$ von dieser entfernt und und die Heuristik berechnet.
-Die Suche ist erfolgreich, wenn die Heuristik für diesen Zustand $M'$ besser als die von $M$ ist.
-Andernfalls werden die Nachfolger von $M'$ zum Ende der \emph{Queue} hinzugefügt.
+Zustände werden in einer \emph{Queue} gespeichert und für eine Iteration der Suche wird der erste Zustand $S'$ von dieser entfernt und und die Heuristik berechnet.
+Die Suche ist erfolgreich, wenn die Heuristik für diesen Zustand $S'$ besser als die von $S$ ist.
+Andernfalls werden die Nachfolger von $S'$ zum Ende der \emph{Queue} hinzugefügt.
 Wiederholte Zustände werden durch ein \emph{HashTable} der bereits besuchten Zustände vermieden.
 Die Suche schlägt fehl, wenn keine weiteren Zustände erreicht werden können.\\
 Wird in einer Iteration kein besserer Zustand gefunden, stoppt \ac{EHC}, ohne eine Lösung zu finden.
 Dies geschieht, da \ac{EHC} Entscheidungen, eine Aktion in den Plan aufzunehmen, nie rückgängig macht.
 Der Algorithmus ist daher nur vollständig für Planungsaufgaben, die keine \emph{"dead ends"} enthalten.
-Ein \emph{dead end} für eine Planungsaufgabe $(O,I,G)$ ist definiert als ein Zustand $M$, der erreichbar ist und von diesem aus kein Plan das Ziel erreichen kann:\\
-$\exists P: M = Result(I,P)$  und  $\neg\exists P': G\subseteq Result(M,P')$\\
-Um die Vollständigkeit der Planung zu gewährleisten wird, im Fall eines Fehlschlags von \ac{EHC}, eine neue \emph{best-first} Suche ausgehend vom ursprünglichen Startzustand gestartet.
+Ein \emph{dead end} für eine Planungsaufgabe $(O,I,G)$ ist definiert als ein Zustand $S$, der erreichbar ist und von diesem aus kein Plan das Ziel erreichen kann:\\
+\[\exists P: S = Result(I,P),\;\;\;\neg\exists P': G\subseteq Result(S,P')\]\\
+Um die Vollständigkeit der Planung zu gewährleisten wird, im Fall eines Fehlschlags von \ac{EHC}, eine neue \emph{best-first} Suche ausgehend vom Startzustand $I$ gestartet.
 \subsubsection{Behavior Tree}
 \acp{BT} sind ein modulares System, das in der Videospieleindustrie entwickelt wurde~\cite{bt_book}.
 Sie ermöglichen aus simplen Aktionen komplexe Verhaltensmuster zu modellieren, ohne das Aktionen Kenntnis über andere Aktionen haben müssen~\cite{bt_robotics}.
@@ -640,7 +672,7 @@ Beispiele für Dekoratoren sind~\cite{bt_book}:
             Während der Ausführung \\ \hline
         \end{tabular}%
     }
-    \caption{Übersicht der \acs{BT} Knoten, nach~\cite{bt_book}}
+    \caption[Übersicht der \acs{BT} Knoten]{Übersicht der \acs{BT} Knoten, nach~\cite{bt_book}}
     \label{tab:btoverview}
 \end{table}
 
@@ -700,7 +732,7 @@ In der Praxis ist jedes Blatt ein eigenständiger \ac{BT}, der nicht nur die sel
         \node (G) at (2,-5) [draw,align=center] {Aktion\\ausführen};
         \draw [-{Latex[width=3mm]}](2,-3.5) -- (G);
     \end{tikzpicture}
-    \caption{\acs{BT} zur Ausführung einer spezifischen Aktion, nach~\cite{plansys}}
+    \caption[\acs{BT} zur Ausführung einer spezifischen Aktion]{\acs{BT} zur Ausführung einer spezifischen Aktion, nach~\cite{plansys}}
     \label{fig:plansysbtaction}
     \end{figure}
 \ac{PlanSys2} hat drei große Limitationen.

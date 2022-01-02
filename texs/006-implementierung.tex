@@ -231,7 +231,7 @@ Der Auslöser, den nächsten Request zu senden, ist jeweils das Ende der vorheri
 Um Zugriff auf die aktuelle Position des OpenMANIPULATOR-X zu erhalten, wird ein weiterer Subscriber für das Topic \verb|kinematics_pose| benötigt, das eine Message vom Typ \verb|open_manipulator_msgs::msg::KinematicsPose| veröffentlicht.\\
 Um eine Beschädigung der Motoren zu vermeiden, soll die Bewegung bei einer Kollision abgebrochen werden.
 Hierfür sind zwei Aspekte nötig: die Kollisionserkennung sowie das Abbrechen der Aktion.
-Die Kollisionserkennung erfolgt in der Methode \verb|joint_state_callback| (s. Zeilen 73-100).
+Die Kollisionserkennung erfolgt in der Methode\\\verb|joint_state_callback| (s. Zeilen 73-100).
 Der Abbruch der Aktion erfolgt in der Methode \verb|abort_plan| (s. Zeilen 102-112).
 Für die Kollisionserkennung wird der Stromverbrauch der einzelnen Motoren genutzt.
 Dieser steigt, wenn der Motor mehr Leistung bringen muss, wenn versucht wird, sich gegen ein Hindernis zu bewegen.\\
@@ -256,7 +256,7 @@ Das Package enthält außerdem eine Readme-Datei, in der die nötigen Schritte b
 Weiterhin wurden mehrere Problemszenarien erstellt, die sowohl als \ac{PDDL}-Datei als auch als Befehle für das \ac{PlanSys2} Terminal zur Verfügung stehen.
 
 \subsection{Praktische Anwendung}
-Um das System praktisch anwenden zu können, wurden mehrere farbige Würfel aus LEGO gebaut (s. Abbildung~\ref{fig:legocubes}).
+Um das System praktisch anwenden zu können, wurden mehrere farbige Würfel aus LEGO gebaut.
 Auf der Basisplatte des OpenMANIPULATOR-X wurden die Positionen für drei Stapel markiert.
 Es werden mehrere Szenarien getestet, um die allgemeine Anwendbarkeit zu überprüfen.
 \subsubsection{PlanSys2 Terminal}
@@ -320,11 +320,6 @@ Um diese Anomalie zu handhaben, müssen Planer beide Ziele und deren Schritte ko
 \ac{POPF} generiert für dieses Ziel den in Abbildung~\ref{fig:sussmanpopf} gezeigten Plan, der in Abbildung~\ref{fig:sussmanpopfvis} visualisiert wird.
 Der grau hervorgehobene Block ist jeweils der, der in diesem Schritt bewegt wurde.
 \begin{figure}[!htb]
-    \includegraphics{sussmanpopfplan}
-    \caption{Durch \acs{POPF} generierter Plan für die Sussman Anomalie}
-    \label{fig:sussmanpopf}
-\end{figure}
-\begin{figure}[!htb]
     \begin{tikzpicture}
         \begin{scope}
             \draw (-0.5,0) -- (3,0);
@@ -357,12 +352,18 @@ Der grau hervorgehobene Block ist jeweils der, der in diesem Schritt bewegt wurd
     \caption{Visualisierte Lösung der Sussman Anomalie durch \acs{POPF}}
     \label{fig:sussmanpopfvis}
 \end{figure}
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=.75\textwidth]{sussmanpopfplan}
+    \caption{Durch \acs{POPF} generierter Plan für die Sussman Anomalie}
+    \label{fig:sussmanpopf}
+\end{figure}
 \subsubsection{Mehr Blöcke, mehr Positionen}
 Die Anzahl der möglichen Blöcke und Positionen soll ausgereizt werden.
 Bei einem Szenario mit drei Stapeln mit jeweils drei Positionen kann ein Maximum von neun Blöcken platziert werden.
 Dies verhindert jedoch das Bewegen von Blöcken, da die einzige freie Position, zu der ein aufgenommener Block bewegt werden kann, seine Ursprungsposition ist.
 Damit alle Blöcke bewegt werden können, muss die Anzahl der freien Positionen mindestens der Höhe der Stapel entsprechen.
-Gibt es bei einer Stapelhöhe von drei und drei Stapeln nur zwei freie Positionen, tritt das gleiche Problem für alle untersten Blöcke der Stapel auf: die einzige gültige Position nach dem Greifen ist ihre Ausgangsposition (s. Abbildung~\ref{fig:emptypos}).
+Gibt es bei einer Stapelhöhe von drei und drei Stapeln nur zwei freie Positionen, tritt das gleiche Problem für alle untersten Blöcke der Stapel auf: die einzige gültige Position nach dem Greifen ist ihre Ausgangsposition.
 Um mehr Blöcke verwenden zu können, müssen also die Anzahl der Stapel und/oder die maximale Höhe der Stapel erweitert werden.\\
 Für beide Varianten gibt es Einschränkungen, die zu beachten sind.
 Für höhere Stapel ist der Bewegungsraum des OpenMANIPULATOR-X zu beachten.
@@ -410,7 +411,7 @@ Obwohl dieser dafür sorgt, dass einige Messages nicht gesendet werden, führte 
 
 \begin{figure}[ht!]
     \centering
-    \includegraphics[width=\textwidth]{simple_plan}
+    \includegraphics[width=.66\textwidth]{simple_plan}
     \caption{Ausgabe eines Plans in \ac{PlanSys2} Terminal}
     \label{fig:terminalplan}
 \end{figure}
