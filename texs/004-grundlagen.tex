@@ -282,7 +282,7 @@ Das Problem enthält die Informationen zu einem spezifischen Problem: Objekte, d
 Die Datei beginnt mit\\\verb|(define (problem name_des_problems) (:domain name_der_domäne)|.\\
 Um sicherzustellen, dass nur bestimmte Objekte für bestimmte Parameter in Frage kommen (es kann mit der \emph{move}-Aktion nur eine Person bewegt werden und der Start und das Ziel sind Orte) wurden ursprünglich weitere Prädikate genutzt, um Objekte zu typisieren.
 Für das aktuelle Beispiel wären das die Prädikate \emph{location(x)} und \emph{person(x)}.
-Die Aktion \emph{move} wird dann um entsprechende Vorbedingungen erweitert (s. Listing~\ref{lst:pddlactiontypepredicates}).
+Die Aktion \emph{move} wird dann um entsprechende Vorbedingungen erweitert (s. Listing~\ref{lst:pddlactiontypepredicates}).\\
 \begin{lstlisting}[caption={Move Aktion mit Prädikaten zur Typisierung},language=pddl,label={lst:pddlactiontypepredicates}]
 (:action move
     :parameters (?p ?loc_from ?loc_to)
@@ -293,6 +293,7 @@ Die Aktion \emph{move} wird dann um entsprechende Vorbedingungen erweitert (s. L
     :effect (and (person_at ?p ?loc_to)
                 (not (person_at ?p ?loc_from))))
 \end{lstlisting}
+
 Um dies zu vereinfachen, wurde mit \acs{PDDL} 2.1 unter anderem direkte Typisierung eingeführt.
 In der Domäne werden die möglichen Typen deklariert, Objekte werden mit einem Typ initialisert und Aktionen können Parameter auf einen Typ beschränken (s. Listing~\ref{lst:pddltypes})
 \begin{lstlisting}[caption={Typ Unterstützung in \acs{PDDL} 2.1},language=pddl,label={lst:pddltypes}]
@@ -378,8 +379,11 @@ Zusätzlich enthält der Plan die Einschränkung, dass die Aktion für den Start
 Ein Plan ist eine Lösung, wenn \cite{grastien}:
 \begin{itemize}
     \item keine Aktion des Plans eine offene Vorbedingung hat
-    \item und wenn keine Threats existieren
+    \item und wenn keine Probleme existieren
 \end{itemize}
+\begin{definition}
+    Ein Problem ist eine Beziehung zwischen einer Aktion $C$ und einem kausalen Zusammenhang  $A \xrightarrow{\alpha} B$, bei der die Aktion $C$ einen Effekt $\neg \alpha$ hat.
+\end{definition}
 Ist der aktuelle Plan keine Lösung, werden folgende Schritte vorgenommen~\cite{grastien}:
 \begin{itemize}
     \item eine offene Vorbedingung $p$ einer Aktion $B$ wählen
@@ -389,9 +393,7 @@ Ist der aktuelle Plan keine Lösung, werden folgende Schritte vorgenommen~\cite{
     \item Probleme zwischen dem neuen kausalen Zusammenhang und den existierenden Aktionen lösen sowie zwischen den existierenden kausalen Zusammenhängen und $A$, wenn $A$ eine neue Aktion ist.
     \item entsteht durch das Hinzufügen der Reihenfolgen ein Zyklus, kann der Plan keine Lösung mehr werden
 \end{itemize}
-\begin{definition}
-    Ein Problem ist eine Beziehung zwischen einer Aktion $C$ und einem kausalen Zusammenhang  $A \xrightarrow{\alpha} B$, bei der die Aktion $C$ einen Effekt $\neg \alpha$ hat.
-\end{definition}
+
 
 Sollte in einem Problemfall $C$ nach $A$ aber vor $B$ ausgeführt werden, ist die Vorbedingung $p$ für $B$ nicht mehr gegeben.
 Probleme können durch \emph{Promotion} oder \emph{Demotion} gelöst werden~\cite{dyer_2003}.
@@ -432,7 +434,7 @@ Dem Tupel werden weitere Elemente hinzugefügt:
 \subsubsection{Partial Order Planning Forward}
 \ac{POPF} ist ein am King’s College London entwickelter Planer, der die in Abschnitt~\ref{section:pop} genannten Methoden implementiert~\citep{popf}.
 Als Heuristik wird ein temporaler \acf{RPG} genutzt.
-Ein \ac{RPG} ist ein Planungsgraph, in dem versucht wird, ein vereinfachtes Problem zu lösen.
+Ein \ac{RPG} ist, wie in~\cite{youtube_rpg} beschrieben, ein Planungsgraph, in dem versucht wird, ein vereinfachtes Problem zu lösen.
 Die Vereinfachung besteht darin, alle negativen Effekte von Aktionen zu ignorieren.\\
 Der Graph besteht aus einer Sequenz von sich abwechselnden Fakten- und Aktionsschichten: $F_0, A_0, ..., F_{t-1}, A_{t-1}, F_t, A_t$.
 Die Wurzel des Graphen ist eine Faktenschicht, die den aktuellen Zustand abbildet.
@@ -537,7 +539,7 @@ Der optimale Plan lässt sich jedoch nicht effizient extrahieren~\cite{hoffmannn
 Daher wird ein suboptimaler Plan extrahiert, wodurch die Heuristik nicht mehr zulässig ist.\\
 Um einen \ac{RPG} für temporales Planen zu erweitern, werden Aktionen in Startaktionen $A_\vdash$ und Endaktionen $A_\dashv$ aufgeteilt, die jeweils nur \emph{at start}- und \emph{at end}-Effekte enthalten.
 Der Index $t$ einer Schicht entspricht nun einem Zeitstempel.\\
-Als Suchverfahren wird zunächst \emph{\ac{EHC}} versucht.
+Als Suchverfahren wird zunächst der in~\cite{hoffmannnebel2001} beschriebene \emph{\ac{EHC}} Algorithmus angewendet.
 Der in Listing~\ref{lst:ehc_algo} als Pseudocode beschriebene Algorithmus beginnt im, mit dem Startzustand $I$ initialisierten, Zustand $S$.\\
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[caption={\acl{EHC} Algorithmus, nach~\cite{hoffmannnebel2001}}, label={lst:ehc_algo}]
@@ -707,7 +709,6 @@ Zunächst wird von einem Plan ein Ausführungsgraph erstellt, der die Abhängigk
 Von diesen lässt sich ableiten, welche Aktionen parallel ausgeführt werden können und welche sequentiell ausgeführt werden müssen.
 Semantisch entspricht jedes Blatt im Graphen einer Aktion.
 In der Praxis ist jedes Blatt ein eigenständiger \ac{BT}, der nicht nur die selbst Aktion ausführt, sondern auch die Bedingungen überprüft und die Effekte ausführt (s. Abbildung~\ref{fig:plansysbtaction}).\\
-
 \begin{figure}
     \centering
     \begin{tikzpicture}
